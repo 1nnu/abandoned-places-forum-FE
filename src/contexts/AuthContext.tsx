@@ -1,4 +1,3 @@
-// src/contexts/AuthContext.tsx
 import { createContext, useContext, useState, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthService from '../auth/AuthService';
@@ -20,7 +19,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         try {
             await AuthService.login(username, password);
             setIsAuthenticated(true);
-            navigate('/'); // Redirect to home or dashboard
+            navigate('/');
         } catch (error) {
             console.error('Login failed', error);
         }
@@ -30,7 +29,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         try {
             await AuthService.register(username ,email, password);
             setIsAuthenticated(true);
-            navigate('/'); // Redirect to home or dashboard after registration
+            navigate('/');
         } catch (error) {
             console.error('Registration failed', error);
         }
