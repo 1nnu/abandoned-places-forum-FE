@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         try {
             await AuthService.login(username, password);
             setIsAuthenticated(true);
-            navigate('/');
+            navigate('/dashboard');
         } catch (error) {
             console.error('Login failed', error);
         }
@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         try {
             await AuthService.register(username ,email, password);
             setIsAuthenticated(true);
-            navigate('/');
+            navigate('/dashboard');
         } catch (error) {
             console.error('Registration failed', error);
         }

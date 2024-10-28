@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../../../contexts/AuthContext';
-import { Button } from '../../../ui/button'; // Importing Shadcn Button
-import { Input } from '../../../ui/input'; // Importing Shadcn Input
-import { Label } from '../../../ui/label'; // Importing Shadcn Label
-import { Card, CardHeader, CardTitle } from '../../../ui/card'; // Importing Shadcn Card components
+import { Button } from '../../../ui/button';
+import { Input } from '../../../ui/input';
+import { Label } from '../../../ui/label';
+import { Card, CardHeader, CardTitle } from '../../../ui/card';
 
 export default function Register() {
     const { register } = useAuth();
@@ -14,7 +14,7 @@ export default function Register() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setError(null); // Reset error on submit
+        setError(null);
         try {
             await register(username, email, password);
         } catch (error) {

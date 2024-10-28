@@ -4,24 +4,28 @@ import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/pages/Auth/ProtectedRoute';
 import Dashboard from './components/pages/Dashboard/DashboardPage';
 import LoginPage from './components/pages/Auth/LoginPage';
+import NavMenu from './components/shared/NavMenu';
 
 const App: React.FC = () => {
     return (
-        <Router>
-            <AuthProvider>
-            <Routes>
-                    <Route path="/login" element={<LoginPage />} />
-                    <Route
-                        path="/"
-                        element={
-                            <ProtectedRoute>
-                                <Dashboard />
-                            </ProtectedRoute>
-                        }
-                    />
-                </Routes>
-            </AuthProvider>
-        </Router>
+        <>
+            <Router>
+                <AuthProvider>
+            <NavMenu/>
+                <Routes>
+                        <Route path="/login" element={<LoginPage />} />
+                        <Route
+                            path="/dashboard"
+                            element={
+                                <ProtectedRoute>
+                                    <Dashboard />
+                                </ProtectedRoute>
+                            }
+                        />
+                    </Routes>
+                </AuthProvider>
+            </Router>
+        </>
     );
 };
 
