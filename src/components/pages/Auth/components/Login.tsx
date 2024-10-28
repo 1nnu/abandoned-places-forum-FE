@@ -1,4 +1,3 @@
-// src/pages/Login.tsx
 import React, { useState } from 'react';
 import { useAuth } from '../../../../contexts/AuthContext';
 import { Button } from '../../../ui/button';
