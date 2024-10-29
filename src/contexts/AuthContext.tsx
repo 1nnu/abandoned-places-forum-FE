@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const logout = () => {
         AuthService.logout();
         setIsAuthenticated(false);
-        navigate('/login');
+        navigate('/');
     };
 
     return (
