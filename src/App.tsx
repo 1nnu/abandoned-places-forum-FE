@@ -1,8 +1,9 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './contexts/AuthContext';
+import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+import {AuthProvider} from './contexts/AuthContext';
 import ProtectedRoute from './components/pages/Auth/ProtectedRoute';
 import Dashboard from './components/pages/Dashboard/DashboardPage';
+import MapView from './components/pages/MapView/MapView';
 import LoginPage from './components/pages/Auth/LoginPage';
 import NavMenu from './components/shared/NavMenu';
 
@@ -11,8 +12,8 @@ const App: React.FC = () => {
         <>
             <Router>
                 <AuthProvider>
-            <NavMenu/>
-                <Routes>
+                    <NavMenu/>
+                    <Routes>
                         <Route path="/" element={<LoginPage />} />
                         <Route
                             path="/dashboard"
@@ -22,6 +23,7 @@ const App: React.FC = () => {
                                 </ProtectedRoute>
                             }
                         />
+                        <Route path="/map" element={<MapView />} />
                     </Routes>
                 </AuthProvider>
             </Router>
