@@ -1,40 +1,34 @@
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "../src/components/ui/alert-dialog";
+import React from 'react';
+import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+import {AuthProvider} from './contexts/AuthContext';
+import ProtectedRoute from './components/pages/Auth/ProtectedRoute';
+import Dashboard from './components/pages/Dashboard/DashboardPage';
+import MapView from './components/pages/MapView/MapView';
+import LoginPage from './components/pages/Auth/LoginPage';
+import NavMenu from './components/shared/NavMenu';
 
-function App() {
-  return (
-    <div>
-      <AlertDialog>
-        <AlertDialogTrigger>
-          <div className="absolute mt-16 left-1/2 bg-red-500 hover:bg-red-400 cursor-pointer p-2 rounded-md text-slate-50">
-            ava nupuke!
-          </div>
-        </AlertDialogTrigger>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete your
-              account and remove your data from our servers.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction>Continue</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </div>
-  );
-}
+const App: React.FC = () => {
+    return (
+        <>
+            <Router>
+                <AuthProvider>
+                    <NavMenu/>
+                    <Routes>
+                        <Route path="/" element={<LoginPage />} />
+                        <Route
+                            path="/dashboard"
+                            element={
+                                <ProtectedRoute>
+                                    <Dashboard />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route path="/map" element={<MapView />} />
+                    </Routes>
+                </AuthProvider>
+            </Router>
+        </>
+    );
+};
 
 export default App;
