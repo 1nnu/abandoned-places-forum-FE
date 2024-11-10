@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthService from '../auth/AuthService';
 
@@ -12,13 +12,21 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+        return localStorage.getItem('isAuthenticated') === 'true';
+    });
     const navigate = useNavigate();
+
+    useEffect(() => {
+        // Sync state with localStorage
+        localStorage.setItem('isAuthenticated', isAuthenticated.toString());
+    }, [isAuthenticated]);
 
     const login = async (username: string, password: string) => {
         try {
             await AuthService.login(username, password);
             setIsAuthenticated(true);
+            localStorage.setItem('isAuthenticated', 'true');
             navigate('/dashboard');
         } catch (error) {
             console.error('Login failed', error);
@@ -27,8 +35,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const register = async (username: string, email: string, password: string) => {
         try {
-            await AuthService.register(username ,email, password);
+            await AuthService.register(username, email, password);
             setIsAuthenticated(true);
+            localStorage.setItem('isAuthenticated', 'true');
             navigate('/dashboard');
         } catch (error) {
             console.error('Registration failed', error);
@@ -38,6 +47,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const logout = () => {
         AuthService.logout();
         setIsAuthenticated(false);
+        localStorage.removeItem('isAuthenticated');
         navigate('/');
     };
 

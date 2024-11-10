@@ -23,7 +23,7 @@ export default function Register() {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="flex items-center justify-center bg-gray-100 h-full">
             <Card className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
                 <CardHeader>
                     <CardTitle className="text-2xl font-bold text-center">Register</CardTitle>

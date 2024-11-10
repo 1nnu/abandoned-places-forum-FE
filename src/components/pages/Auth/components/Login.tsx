@@ -22,7 +22,7 @@ export default function Login() {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="flex items-center justify-center bg-gray-100">
             <Card className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
                 <CardHeader>
                     <CardTitle className="text-2xl font-bold text-center">Login</CardTitle>
