@@ -1,16 +1,14 @@
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
-  SidebarHeader,
   SidebarGroupLabel,
   SidebarGroupContent,
   SidebarMenu,
   SidebarMenuItem,
-  SidebarMenuButton
-} from "../ui/sidebar"
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
+  SidebarMenuButton,
+} from "../ui/sidebar";
+import { Calendar, Home, Inbox, Search, Settings } from "lucide-react";
 
 const items = [
   {
@@ -38,7 +36,7 @@ const items = [
     url: "#",
     icon: Settings,
   },
-]
+];
 
 export function AppSidebar() {
   return (
@@ -63,5 +61,5 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
-  )
+  );
 }
