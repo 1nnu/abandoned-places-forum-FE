@@ -10,7 +10,7 @@ interface Post {
   body: string;
   locationId: string;
   createdBy: string;
-  creatadAt: string;
+  createdAt: string;
 }
 
 const PostList: React.FC = () => {
@@ -21,6 +21,9 @@ const PostList: React.FC = () => {
       try {
         const response = await fetch(`${apiUrl}/api/feed`);
         const data = await response.json();
+
+        data.sort((a: Post, b: Post) => b.id - a.id);
+
         setPosts(data);
       } catch (error) {
         console.error("Error fetching posts:", error);
@@ -41,51 +44,11 @@ const PostList: React.FC = () => {
             id={post.id}
             title={post.title}
             body={post.body}
-            locationId="2"
+            locationId={post.locationId}
             createdBy={post.createdBy}
-            creatadAt="7. nov"
+            creatadAt={post.createdAt}
           />
         ))}
-        <PostCard
-          id={1}
-          title="Cool"
-          body="Mina leidsin aged amahajaetud majakese"
-          locationId="2"
-          createdBy="Martin Janov"
-          creatadAt="7. nov"
-        />
-        <PostCard
-          id={1}
-          title="Cool"
-          body="Mina leidsin aged amahajaetud majakese"
-          locationId="2"
-          createdBy="Martin Janov"
-          creatadAt="7. nov"
-        />
-        <PostCard
-          id={1}
-          title="Cool"
-          body="Mina leidsin aged amahajaetud majakese"
-          locationId="2"
-          createdBy="Martin Janov"
-          creatadAt="7. nov"
-        />
-        <PostCard
-          id={1}
-          title="Cool"
-          body="Mina leidsin aged amahajaetud majakese"
-          locationId="2"
-          createdBy="Martin Janov"
-          creatadAt="7. nov"
-        />
-        <PostCard
-          id={1}
-          title="Cool"
-          body="Mina leidsin aged amahajaetud majakese"
-          locationId="2"
-          createdBy="Martin Janov"
-          creatadAt="7. nov"
-        />
       </div>
     </div>
   );

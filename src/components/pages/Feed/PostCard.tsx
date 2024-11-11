@@ -42,7 +42,7 @@ export default function PostCard({
               {createdBy}
             </h2>
           </div>
-          <div className="flex font-sm text-slate-600">
+          <div className="flex flex-col font-sm text-slate-600 gap-y-2">
             {creatadAt}
             {locationId}
             {id}
