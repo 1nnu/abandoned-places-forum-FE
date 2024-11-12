@@ -43,9 +43,12 @@ export default function PostCard({
             </h2>
           </div>
           <div className="flex flex-col font-sm text-slate-600 gap-y-2">
-            {creatadAt}
-            {locationId}
-            {id}
+            <p>
+              {creatadAt}
+            </p>
+            <p>
+              {locationId}
+            </p>
           </div>
         </CardHeader>
         <CardContent className="p-0 flex flex-col gap-y-2">

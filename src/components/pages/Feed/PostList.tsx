@@ -34,6 +34,15 @@ const PostList: React.FC = () => {
     fetchPosts();
   }, []);
 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    });
+  };
+
   return (
     <div className="p-4 w-full max-w-[800px]">
       <div className="flex flex-col gap-y-4">
@@ -46,7 +55,7 @@ const PostList: React.FC = () => {
             body={post.body}
             locationId={post.locationId}
             createdBy={post.createdByUsername}
-            creatadAt={post.createdAt}
+            creatadAt={formatDate(post.createdAt)}
           />
         ))}
       </div>
