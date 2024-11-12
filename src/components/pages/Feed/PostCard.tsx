@@ -78,7 +78,7 @@ export default function PostCard({
               Like
               <HandMetalIcon />
             </Button>
-            <CommentsDialog />
+            <CommentsDialog postId={id}/>
           </div>
         </div>
       </Card>

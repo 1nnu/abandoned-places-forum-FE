@@ -20,14 +20,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
         return localStorage.getItem('isAuthenticated') === 'true';
     });
-    const [JWToken, setJWToken] = useState("");
-    const [userId, setUserId] = useState("");
-    const [username, setUsername] = useState("");
-    const [role, setRole] = useState("");
-    const [points, setPoints] = useState(0);
+    const [JWToken, setJWToken] = useState<string>(localStorage.getItem('JWToken') || "");
+    const [userId, setUserId] = useState<string>(localStorage.getItem('userId') || "");
+    const [username, setUsername] = useState<string>(localStorage.getItem('username') || "");
+    const [role, setRole] = useState<string>(localStorage.getItem('role') || "");
+    const [points, setPoints] = useState<number>(() => {
+        const storedPoints = localStorage.getItem('points');
+        return storedPoints ? parseInt(storedPoints) : 0;
+    });
+
     const navigate = useNavigate();
 
     useEffect(() => {
+        // Store authentication state in localStorage whenever it's updated
         localStorage.setItem('isAuthenticated', isAuthenticated.toString());
         if (isAuthenticated) {
             localStorage.setItem('JWToken', JWToken);
@@ -75,6 +80,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
             setIsAuthenticated(true);
 
+            // Clear previous data if any
             localStorage.removeItem('token');
             localStorage.removeItem('userId');
             localStorage.removeItem('username');
@@ -82,6 +88,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             localStorage.removeItem('points');
             localStorage.removeItem('isAuthenticated');
 
+            // Set new data in localStorage
             localStorage.setItem('token', token);
             localStorage.setItem('userId', userId);
             localStorage.setItem('username', fetchedUsername);
@@ -100,7 +107,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             console.error('Registration failed', error);
         }
     };
-
 
     const logout = () => {
         AuthService.logout();

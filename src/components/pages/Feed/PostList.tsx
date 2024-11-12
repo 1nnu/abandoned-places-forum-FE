@@ -9,7 +9,7 @@ interface Post {
   title: string;
   body: string;
   locationId: string;
-  createdBy: string;
+  createdByUsername: string;
   createdAt: string;
 }
 
@@ -45,7 +45,7 @@ const PostList: React.FC = () => {
             title={post.title}
             body={post.body}
             locationId={post.locationId}
-            createdBy={post.createdBy}
+            createdBy={post.createdByUsername}
             creatadAt={post.createdAt}
           />
         ))}

@@ -11,25 +11,35 @@ import { Button } from "../../ui/button";
 import { MessageCircle, SendIcon } from "lucide-react";
 import { FormControl, FormMessage, FormItem, FormField } from "../../ui/form";
 import { z } from "zod";
-import {
-  useForm,
-  SubmitHandler,
-  FieldValues,
-  FormProvider,
-} from "react-hook-form";
+import { useForm, SubmitHandler, FieldValues, FormProvider } from "react-hook-form";
 import { useState, useEffect, useRef } from "react";
 import { Input } from "../../ui/input";
 import Comment from "./Comment";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { XIcon } from "lucide-react";
+import { useAuth } from "../../../contexts/AuthContext";
 
 const CommentSchema = z.object({
   comment: z.string().min(1, "Comment cannot be empty"),
 });
 
-export default function CommentsDialog() {
-  const [comments, setComments] = useState<string[]>([]);
+interface CommentsDialogProps {
+  postId: number
+}
+
+interface CommentProps {
+  createdByUsername: string;
+  body: string;
+}
+
+const apiUrl = import.meta.env.VITE_API_URL;
+
+export default function CommentsDialog({postId} : CommentsDialogProps) {
+  const [comments, setComments] = useState<CommentProps[]>([]);
   const [showComments, setShowComments] = useState(false);
+  const { userId } = useAuth();
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   const methods = useForm({
     resolver: zodResolver(CommentSchema),
@@ -41,12 +51,6 @@ export default function CommentsDialog() {
     formState: { errors },
   } = methods;
 
-  const handleAddComment: SubmitHandler<FieldValues> = (data) => {
-    if (data.comment) {
-      setComments((prevComments) => [...prevComments, data.comment]);
-    }
-  };
-
   // Reference to the dummy div at the end of the comments list
   const endOfCommentsRef = useRef<HTMLDivElement>(null);
 
@@ -56,6 +60,62 @@ export default function CommentsDialog() {
       endOfCommentsRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [comments]);
+
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const response = await fetch(`${apiUrl}/api/feed/${postId}/comments`);
+        
+        if (response.ok) {
+          const commentsData = await response.json();
+          setComments(commentsData);
+        } else {
+          setError('Failed to load comments');
+        }
+      } catch (error) {
+        setError('Error fetching comments');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchComments();
+    console.log(comments)
+  }, [postId]);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
+
+  const handleAddComment: SubmitHandler<FieldValues> = async (data) => {
+    if (data.comment) {
+      const newComment = data.comment;
+      try {
+        // Make a POST request to add the comment
+        const response = await fetch(`${apiUrl}/api/feed/${postId}/comments`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "User-ID": userId,
+          },
+          body: JSON.stringify({
+          comment: newComment,
+          postId: postId,
+          userId: userId 
+        }),
+        });
+
+        if (response.ok) {
+          const commentData = await response.json();
+          console.log(commentData)
+          setComments((prevComments) => [...prevComments, commentData.body]);
+        } else {
+          console.error("Failed to add comment");
+        }
+      } catch (error) {
+        console.error("Error adding comment:", error);
+      }
+    }
+  };
 
   return (
     <div>
@@ -82,7 +142,7 @@ export default function CommentsDialog() {
               <div className="flex flex-col gap-y-2 h-[40vh] overflow-y-scroll">
                 {comments.length > 0 ? (
                   comments.map((comment, index) => (
-                    <Comment name={"Martin"} comment={comment} key={index} />
+                    <Comment name={comment.createdByUsername} comment={comment.body} key={index} />
                   ))
                 ) : (
                   <div className="p-2 text-slate-500 italic">No comments</div>
@@ -106,7 +166,7 @@ export default function CommentsDialog() {
                           {...field}
                         />
                       </FormControl>
-                      {errors.comment && <FormMessage>{}</FormMessage>}
+                      {errors.comment && <FormMessage></FormMessage>}
                     </FormItem>
                   )}
                 />

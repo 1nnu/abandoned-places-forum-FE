@@ -1,6 +1,8 @@
 import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
+import { useAuth } from "../../../contexts/AuthContext";
 
 export default function ProfileCard() {
+  const {username} = useAuth();
   return (
     <div className="flex gap-x-4 items-center">
       <Avatar className="rounded-full">
@@ -13,7 +15,7 @@ export default function ProfileCard() {
           CN
         </AvatarFallback>
       </Avatar>
-      <h2 className="text-2xl font-semibold text-slate-800">Martin Janov</h2>
+      <h2 className="text-2xl font-semibold text-slate-800">{username}</h2>
     </div>
   );
 }

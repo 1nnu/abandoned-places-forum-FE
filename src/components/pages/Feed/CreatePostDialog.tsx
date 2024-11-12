@@ -13,12 +13,14 @@ import {
 import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
 import { Textarea } from "../../ui/textarea";
+import { useAuth } from "../../../contexts/AuthContext";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
 export default function CreatePostDialog() {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
+  const { userId } = useAuth();
 
   const handleCreatePost = async (title: string, body: string) => {
     try {
@@ -27,7 +29,7 @@ export default function CreatePostDialog() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ title, body }),
+        body: JSON.stringify({ userId, title, body }),
       });
 
       if (!response.ok) {

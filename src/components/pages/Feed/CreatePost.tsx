@@ -4,12 +4,14 @@ import { Input } from "../../ui/input";
 import { Textarea } from "../../ui/textarea";
 import { Card, CardContent, CardFooter, CardHeader } from "../../ui/card";
 import { CircleArrowDown } from "lucide-react";
+import { useAuth } from "../../../contexts/AuthContext";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
 export default function CreatePost() {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
+  const { userId } = useAuth();
 
   const handleCreatePost = async (title: string, body: string) => {
     try {
@@ -18,7 +20,7 @@ export default function CreatePost() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ title, body }),
+        body: JSON.stringify({ userId, title, body }),
       });
 
       if (!response.ok) {
