@@ -1,8 +1,12 @@
-import { Card, CardHeader, CardContent } from "../../ui/card";
-import { Button } from "../../ui/button";
-import { HandMetalIcon } from "lucide-react";
-import CommentsDialog from "./CommentsDialog";
+import { Card, CardHeader, CardContent } from "../../../../ui/card";
+import CommentsDialog from "../comment/CommentsDialog";
 import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
+import { useEffect, useState } from "react";
+import UpvoteButton from "../upvote/UpvoteButton";
+import { useAuth } from "../../../../../contexts/AuthContext";
+import emitter from "../../../../../emitter/eventEmitter";
+
+const apiUrl = import.meta.env.VITE_API_URL;
 
 interface PostCardProps {
   id: number;
@@ -14,6 +18,19 @@ interface PostCardProps {
   images?: string[];
 }
 
+interface Upvote {
+  id: number;
+  postId: number;
+  userId: string;
+}
+
+interface Comment {
+  id: number;
+  postId: number;
+  userId: string;
+  content: string;
+}
+
 export default function PostCard({
   id,
   title,
@@ -23,6 +40,49 @@ export default function PostCard({
   creatadAt,
   images = [],
 }: PostCardProps) {
+   const [upvotes, setUpvotes] = useState<Upvote[]>([]);
+   const [comments, setComments] = useState<Comment[]>([]);
+   const { userId } = useAuth();
+   const [refresh, setRefresh] = useState(0);
+   const [isUpvoted, setIsUpvoted] = useState(false);
+
+   useEffect(() => {
+    const handleIncrement = () => setRefresh((prev) => prev + 1);
+    emitter.on("refreshPostCard", handleIncrement);
+    return () => {
+      emitter.off("refreshPostCard", handleIncrement);
+    };
+  }, []);
+
+  useEffect(() => {
+    const fetchUpvotes = async () => {
+      try {
+        const response = await fetch(`${apiUrl}/api/feed/upvotes/byPost/${id}`);
+        if (!response.ok) throw new Error("Failed to fetch upvotes");
+        const data: Upvote[] = await response.json();
+        const alreadyLiked = data.some((upvote: any) => upvote.userId === userId);
+        setIsUpvoted(alreadyLiked);
+        setUpvotes(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const fetchComments = async () => {
+      try {
+        const response = await fetch(`${apiUrl}/api/feed/${id}/comments`);
+        if (!response.ok) throw new Error("Failed to fetch comments");
+        const data: Comment[] = await response.json();
+        setComments(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchUpvotes();
+    fetchComments();
+  }, [id, refresh]);
+  
   return (
     <div className="flex flex-col gap-y-2">
       <Card className="py-4 px-6 w-full flex flex-col gap-y-8">
@@ -73,14 +133,11 @@ export default function PostCard({
         </CardContent>
         <div className="w-full flex justify-between gap-x-2 items-center">
           <div className="flex gap-x-4">
-            <p className="text-sm text-slate-600 font-normal">Likes: 2</p>
-            <p className="text-sm text-slate-600 font-normal">Comments: 3</p>
+            <p className="text-sm text-slate-600 font-normal"> Likes: {upvotes.length}</p>
+            <p className="text-sm text-slate-600 font-normal">Comments: {comments.length}</p>
           </div>
           <div className="flex gap-x-2">
-            <Button className="bg-blue-600 hover:bg-blue-700">
-              Like
-              <HandMetalIcon />
-            </Button>
+            <UpvoteButton postId={id} userId={userId} isUpvoted={isUpvoted} />
             <CommentsDialog postId={id}/>
           </div>
         </div>

@@ -7,7 +7,7 @@ import MapView from "./components/pages/MapView/MapView";
 import LoginPage from "./components/pages/Auth/LoginPage";
 import NavMenu from "./components/shared/NavMenu";
 import FeedPage from "./components/pages/Feed/FeedPage";
-import OpenedPost from "./components/pages/Feed/OpenedPost";
+import OpenedPost from "./components/pages/Feed/components/post/OpenedPost";
 
 const App: React.FC = () => {
   return (

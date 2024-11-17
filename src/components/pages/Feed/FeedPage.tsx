@@ -1,4 +1,4 @@
-import PostList from "./PostList";
+import PostList from "./components/post/PostList";
 import SideMenu from "./SideMenu";
 
 export default function FeedPage() {

@@ -6,18 +6,19 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "../../ui/alert-dialog";
-import { Button } from "../../ui/button";
+} from "../../../../ui/alert-dialog";
+import { Button } from "../../../../ui/button";
 import { MessageCircle, SendIcon } from "lucide-react";
-import { FormControl, FormMessage, FormItem, FormField } from "../../ui/form";
+import { FormControl, FormMessage, FormItem, FormField } from "../../../../ui/form";
 import { z } from "zod";
 import { useForm, SubmitHandler, FieldValues, FormProvider } from "react-hook-form";
 import { useState, useEffect, useRef } from "react";
-import { Input } from "../../ui/input";
+import { Input } from "../../../../ui/input";
 import Comment from "./Comment";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { XIcon } from "lucide-react";
-import { useAuth } from "../../../contexts/AuthContext";
+import { useAuth } from "../../../../../contexts/AuthContext";
+import emitter from "../../../../../emitter/eventEmitter";
 
 const CommentSchema = z.object({
   comment: z.string().min(1, "Comment cannot be empty"),
@@ -51,11 +52,9 @@ export default function CommentsDialog({postId} : CommentsDialogProps) {
     formState: { errors },
   } = methods;
 
-  // Reference to the dummy div at the end of the comments list
   const endOfCommentsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Scroll to the bottom when comments update
     if (endOfCommentsRef.current) {
       endOfCommentsRef.current.scrollIntoView({ behavior: "smooth" });
     }
@@ -80,8 +79,7 @@ export default function CommentsDialog({postId} : CommentsDialogProps) {
     };
 
     fetchComments();
-    console.log(comments)
-  }, [postId]);
+  }, [postId, comments]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
@@ -90,7 +88,6 @@ export default function CommentsDialog({postId} : CommentsDialogProps) {
     if (data.comment) {
       const newComment = data.comment;
       try {
-        // Make a POST request to add the comment
         const response = await fetch(`${apiUrl}/api/feed/${postId}/comments`, {
           method: "POST",
           headers: {
@@ -106,13 +103,14 @@ export default function CommentsDialog({postId} : CommentsDialogProps) {
 
         if (response.ok) {
           const commentData = await response.json();
-          console.log(commentData)
           setComments((prevComments) => [...prevComments, commentData.body]);
         } else {
           console.error("Failed to add comment");
         }
       } catch (error) {
         console.error("Error adding comment:", error);
+      } finally {
+        emitter.emit("refreshPostCard");
       }
     }
   };

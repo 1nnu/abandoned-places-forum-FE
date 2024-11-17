@@ -1,5 +1,5 @@
 import { Button } from "../../ui/button";
-import CreatePostDialog from "./CreatePostDialog";
+import CreatePostDialog from ".//components/post/CreatePostDialog";
 import ProfileCard from "./ProfileCard";
 
 interface SideMenuProps {

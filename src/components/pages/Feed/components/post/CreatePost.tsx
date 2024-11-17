@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Button } from "../../ui/button";
-import { Input } from "../../ui/input";
-import { Textarea } from "../../ui/textarea";
-import { Card, CardContent, CardFooter, CardHeader } from "../../ui/card";
+import { Button } from "../../../../ui/button";
+import { Input } from "../../../../ui/input";
+import { Textarea } from "../../../../ui/textarea";
+import { Card, CardContent, CardFooter, CardHeader } from "../../../../ui/card";
 import { CircleArrowDown } from "lucide-react";
-import { useAuth } from "../../../contexts/AuthContext";
+import { useAuth } from "../../../../../contexts/AuthContext";
+import emitter from "../../../../../emitter/eventEmitter";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -31,6 +32,8 @@ export default function CreatePost() {
       setBody("");
     } catch (error) {
       console.error("Error creating post:", error);
+    } finally {
+      emitter.emit("refreshPostList");
     }
   };
 

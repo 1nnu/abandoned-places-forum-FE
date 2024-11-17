@@ -9,11 +9,12 @@ import {
   AlertDialogFooter,
   AlertDialogCancel,
   AlertDialogAction,
-} from "../../ui/alert-dialog";
-import { Button } from "../../ui/button";
-import { Input } from "../../ui/input";
-import { Textarea } from "../../ui/textarea";
-import { useAuth } from "../../../contexts/AuthContext";
+} from "../../../../ui/alert-dialog";
+import { Button } from "../../../../ui/button";
+import { Input } from "../../../../ui/input";
+import { Textarea } from "../../../../ui/textarea";
+import { useAuth } from "../../../../../contexts/AuthContext";
+import emitter from "../../../../../emitter/eventEmitter";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -40,6 +41,8 @@ export default function CreatePostDialog() {
       setBody("");
     } catch (error) {
       console.error("Error creating post:", error);
+    } finally {
+      emitter.emit("refreshPostList");
     }
   };
 

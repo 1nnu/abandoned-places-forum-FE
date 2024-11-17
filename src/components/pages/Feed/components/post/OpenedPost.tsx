@@ -1,8 +1,8 @@
 import { useEffect, useState, useRef } from "react";
-import { Card, CardContent, CardFooter, CardHeader } from "../../ui/card";
-import { Button } from "../../ui/button";
-import { FormControl, FormMessage, FormItem, FormField } from "../../ui/form";
-import { Input } from "../../ui/input";
+import { Card, CardContent, CardFooter, CardHeader } from "../../../../ui/card";
+import { Button } from "../../../../ui/button";
+import { FormControl, FormMessage, FormItem, FormField } from "../../../../ui/form";
+import { Input } from "../../../../ui/input";
 import { SendIcon } from "lucide-react";
 
 import { z } from "zod";
@@ -12,7 +12,7 @@ import {
   FieldValues,
   FormProvider,
 } from "react-hook-form";
-import Comment from "./Comment";
+import Comment from "../comment/Comment";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 const CommentSchema = z.object({

@@ -1,4 +1,4 @@
-import { Card } from "../../ui/card";
+import { Card } from "../../../../ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
 
 interface CommentProps {

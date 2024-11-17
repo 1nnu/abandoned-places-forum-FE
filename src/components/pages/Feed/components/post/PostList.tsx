@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import PostCard from "./PostCard";
 import CreatePost from "./CreatePost";
+import emitter from "../../../../../emitter/eventEmitter";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -15,6 +16,15 @@ interface Post {
 
 const PostList: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
+  const [refresh, setRefresh] = useState(0);
+
+  useEffect(() => {
+    const handleIncrement = () => setRefresh((prev) => prev + 1);
+    emitter.on("refreshPostList", handleIncrement);
+    return () => {
+      emitter.off("refreshPostList", handleIncrement);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -32,7 +42,7 @@ const PostList: React.FC = () => {
     };
 
     fetchPosts();
-  }, []);
+  }, [refresh]);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
