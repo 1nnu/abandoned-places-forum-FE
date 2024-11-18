@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { createContext, useContext, useState, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthService from '../auth/AuthService';
 
@@ -17,37 +17,14 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
-        return localStorage.getItem('isAuthenticated') === 'true';
-    });
-    const [JWToken, setJWToken] = useState<string>(localStorage.getItem('JWToken') || "");
-    const [userId, setUserId] = useState<string>(localStorage.getItem('userId') || "");
-    const [username, setUsername] = useState<string>(localStorage.getItem('username') || "");
-    const [role, setRole] = useState<string>(localStorage.getItem('role') || "");
-    const [points, setPoints] = useState<number>(() => {
-        const storedPoints = localStorage.getItem('points');
-        return storedPoints ? parseInt(storedPoints) : 0;
-    });
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+    const [JWToken, setJWToken] = useState<string>("");
+    const [userId, setUserId] = useState<string>("");
+    const [username, setUsername] = useState<string>("");
+    const [role, setRole] = useState<string>("");
+    const [points, setPoints] = useState<number>(0);
 
     const navigate = useNavigate();
-
-    useEffect(() => {
-        // Store authentication state in localStorage whenever it's updated
-        localStorage.setItem('isAuthenticated', isAuthenticated.toString());
-        if (isAuthenticated) {
-            localStorage.setItem('JWToken', JWToken);
-            localStorage.setItem('userId', userId);
-            localStorage.setItem('username', username);
-            localStorage.setItem('role', role);
-            localStorage.setItem('points', points.toString());
-        } else {
-            localStorage.removeItem('JWToken');
-            localStorage.removeItem('userId');
-            localStorage.removeItem('username');
-            localStorage.removeItem('role');
-            localStorage.removeItem('points');
-        }
-    }, [isAuthenticated, JWToken, userId, username, role, points]);
 
     const login = async (username: string, password: string) => {
         try {
@@ -61,13 +38,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             setRole(role);
             setPoints(points);
 
-            localStorage.setItem('isAuthenticated', 'true');
-            localStorage.setItem('JWToken', token);
-            localStorage.setItem('userId', userId);
-            localStorage.setItem('username', fetchedUsername);
-            localStorage.setItem('role', role);
-            localStorage.setItem('points', points.toString());
-
             navigate('/dashboard');
         } catch (error) {
             console.error('Login failed', error);
@@ -79,22 +49,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             const { token, userId, username: fetchedUsername, role, points } = await AuthService.register(username, email, password);
 
             setIsAuthenticated(true);
-
-            // Clear previous data if any
-            localStorage.removeItem('token');
-            localStorage.removeItem('userId');
-            localStorage.removeItem('username');
-            localStorage.removeItem('role');
-            localStorage.removeItem('points');
-            localStorage.removeItem('isAuthenticated');
-
-            // Set new data in localStorage
-            localStorage.setItem('token', token);
-            localStorage.setItem('userId', userId);
-            localStorage.setItem('username', fetchedUsername);
-            localStorage.setItem('role', role);
-            localStorage.setItem('points', points.toString());
-            localStorage.setItem('isAuthenticated', 'true');
 
             setJWToken(token);
             setUserId(userId);
@@ -111,12 +65,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const logout = () => {
         AuthService.logout();
         setIsAuthenticated(false);
-        localStorage.removeItem('isAuthenticated');
-        localStorage.removeItem('JWToken');
-        localStorage.removeItem('userId');
-        localStorage.removeItem('username');
-        localStorage.removeItem('role');
-        localStorage.removeItem('points');
+        setJWToken("");
+        setUserId("");
+        setUsername("");
+        setRole("");
+        setPoints(0);
         navigate('/');
     };
 

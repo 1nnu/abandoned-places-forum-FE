@@ -3,11 +3,9 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/pages/Auth/ProtectedRoute";
 import Dashboard from "./components/pages/Dashboard/DashboardPage";
-import MapView from "./components/pages/MapView/MapView";
 import LoginPage from "./components/pages/Auth/LoginPage";
 import NavMenu from "./components/shared/NavMenu";
 import FeedPage from "./components/pages/Feed/FeedPage";
-import OpenedPost from "./components/pages/Feed/components/post/OpenedPost";
 
 const App: React.FC = () => {
   return (
@@ -25,9 +23,14 @@ const App: React.FC = () => {
                 </ProtectedRoute>
               }
             />
-            <Route path="/feed" element={<FeedPage />} />
-            <Route path="/map" element={<MapView />} />
-            <Route path="/post" element={<OpenedPost />} />
+            <Route
+              path="/feed"
+              element={
+                <ProtectedRoute>
+                  <FeedPage />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         </AuthProvider>
       </Router>
