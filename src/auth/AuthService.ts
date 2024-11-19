@@ -1,7 +1,15 @@
 const apiUrl = import.meta.env.VITE_API_URL;
 
+interface AuthResponse {
+    token: string;
+    userId: string;
+    username: string;
+    role: string;
+    points: number;
+}
+
 const AuthService = {
-    login: async (username: string, password: string): Promise<void> => {
+    login: async (username: string, password: string): Promise<AuthResponse> => {
         const response = await fetch(`${apiUrl}/api/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -15,13 +23,19 @@ const AuthService = {
         const data = await response.json();
         
         if (data.token) {
-            localStorage.setItem('token', data.token);
+            return {
+                token: data.token,
+                userId: data.userId,
+                username: data.username,
+                role: data.role,
+                points: data.points,
+            };
         } else {
             throw new Error('No token returned from login');
         }
     },
 
-    register: async (username: string, email: string, password: string): Promise<void> => {
+    register: async (username: string, email: string, password: string): Promise<AuthResponse> => {
         const response = await fetch(`${apiUrl}/api/auth/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -36,7 +50,13 @@ const AuthService = {
         const data = await response.json();
         
         if (data.token) {
-            localStorage.setItem('token', data.token);
+            return {
+                token: data.token,
+                userId: data.userId,
+                username: data.username,
+                role: data.role,
+                points: data.points,
+            };
         } else {
             throw new Error('No token returned from registration');
         }
@@ -44,6 +64,10 @@ const AuthService = {
 
     logout: (): void => {
         localStorage.removeItem('token');
+        localStorage.removeItem('userId');
+        localStorage.removeItem('username');
+        localStorage.removeItem('role');
+        localStorage.removeItem('points');
     },
 
     isAuthenticated: (): boolean => {
@@ -55,9 +79,8 @@ const AuthService = {
     },
 
     setAuthHeader: (headers: Record<string, string> = {}): Record<string, string> => {
-        const token = AuthService.getToken(); // Directly calling without this
+        const token = AuthService.getToken();
 
-        // Check if token is not null or undefined
         if (token) {
             headers['Authorization'] = `Bearer ${token}`;
         }
