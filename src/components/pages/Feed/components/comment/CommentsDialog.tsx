@@ -60,26 +60,26 @@ export default function CommentsDialog({postId} : CommentsDialogProps) {
     }
   }, [comments]);
 
-  useEffect(() => {
-    const fetchComments = async () => {
-      try {
-        const response = await fetch(`${apiUrl}/api/feed/${postId}/comments`);
-        
-        if (response.ok) {
-          const commentsData = await response.json();
-          setComments(commentsData);
-        } else {
-          setError('Failed to load comments');
-        }
-      } catch (error) {
-        setError('Error fetching comments');
-      } finally {
-        setLoading(false);
+  const fetchComments = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/api/feed/${postId}/comments`);
+      
+      if (response.ok) {
+        const commentsData = await response.json();
+        setComments(commentsData);
+      } else {
+        setError('Failed to load comments');
       }
-    };
+    } catch (error) {
+      setError('Error fetching comments');
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchComments();
-  }, [postId, comments]);
+  }, [postId]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
@@ -111,6 +111,7 @@ export default function CommentsDialog({postId} : CommentsDialogProps) {
         console.error("Error adding comment:", error);
       } finally {
         emitter.emit("refreshPostCard");
+        fetchComments();
       }
     }
   };
