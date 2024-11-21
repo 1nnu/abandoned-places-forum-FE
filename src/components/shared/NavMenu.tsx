@@ -110,6 +110,11 @@ export default function NavMenu() {
                     Feed
                   </Button>
                 </Link>
+                <Link to={"profile"} onClick={toggleMobileMenu}>
+                  <Button className="bg-slate-50 hover:bg-slate-200 text-slate-800 w-full">
+                    Profile
+                  </Button>
+                </Link>
                 <Button
                   onClick={() => {
                     handleLogout();
@@ -135,6 +140,11 @@ export default function NavMenu() {
               <Link to={"feed"}>
                 <Button className="bg-slate-50 hover:bg-slate-200 text-slate-800">
                   Feed
+                </Button>
+              </Link>
+              <Link to={"profile"}>
+                <Button className="bg-slate-50 hover:bg-slate-200 text-slate-800">
+                  Profile
                 </Button>
               </Link>
               <Button
