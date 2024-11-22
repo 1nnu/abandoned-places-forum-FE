@@ -6,6 +6,7 @@ import Dashboard from "./components/pages/Dashboard/DashboardPage";
 import LoginPage from "./components/pages/Auth/LoginPage";
 import NavMenu from "./components/shared/NavMenu";
 import FeedPage from "./components/pages/Feed/FeedPage";
+import MapPage from "./components/pages/Map/MapPage.tsx";
 
 const App: React.FC = () => {
   return (
@@ -30,6 +31,14 @@ const App: React.FC = () => {
                   <FeedPage />
                 </ProtectedRoute>
               }
+            />
+            <Route
+                path="/map"
+                element={
+                    <ProtectedRoute>
+                        <MapPage />
+                    </ProtectedRoute>
+                }
             />
           </Routes>
         </AuthProvider>

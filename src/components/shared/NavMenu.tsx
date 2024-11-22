@@ -43,7 +43,7 @@ export default function NavMenu() {
   }, [isMobileMenuOpen]);
 
   return (
-    <div className="w-full h-20 bg-blue-600 rounded-b-sm flex items-center justify-center px-6">
+    <div className="w-full h-20 bg-blue-600 rounded-b-sm flex items-center justify-center px-6 z-10">
       <div className="flex flex-row items-center justify-between w-full max-w-[1440px]">
         <Link to={"booking"} className="font-bold text-2xl text-white">
           Urbex
@@ -127,6 +127,11 @@ export default function NavMenu() {
         <div className="hidden lg:flex gap-x-4 h-fit">
           {isAuthenticated && (
             <>
+              <Link to={"map"}>
+                <Button className="bg-slate-50 hover:bg-slate-200 text-slate-800">
+                  Map
+                </Button>
+              </Link>
               <Link to={"dashboard"}>
                 <Button className="bg-slate-50 hover:bg-slate-200 text-slate-800">
                   Dashboard
