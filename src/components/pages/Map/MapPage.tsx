@@ -30,7 +30,6 @@ function MapPage() {
 
     const onApplyFilters = (filteredLocations: MapLocation[]) => {
         setDisplayedLocations(filteredLocations);
-        console.log(filteredLocations);
     };
 
     const isSidebarOpen = sidebarContent !== null;
