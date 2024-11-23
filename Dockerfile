@@ -4,6 +4,12 @@ FROM node:18 AS build
 # Set working directory for building the React app
 WORKDIR /app
 
+# Define build argument for VITE_API_URL
+ARG VITE_API_URL
+
+# Set environment variable inside the container
+ENV VITE_API_URL=$VITE_API_URL
+
 # Copy the package.json and package-lock.json
 COPY package.json package-lock.json ./
 
