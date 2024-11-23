@@ -30,7 +30,7 @@ RUN npm install -g serve
 
 # Use the `serve` package to serve the React app
 # Note: If `npm run build` creates 'dist', we should reference that directory here.
-CMD ["serve", "-s", "dist", "-l", "80"]
+CMD ["serve", "-s", "dist", "-l", "5173"]
 
 # Expose port 80 (the port `serve` will use)
-EXPOSE 80
+EXPOSE 5173
