@@ -4,7 +4,7 @@ import { useAuth } from "../../../../../contexts/AuthContext.tsx";
 import {MapLocation} from "../MapView/map-utils.ts";
 
 interface FilteringSidebarProps {
-    onApplyFilters: (filteredLocations: MapLocation[]) => void; // Pass filtered locations to the parent
+    onApplyFilters: (filteredLocations: MapLocation[]) => void;
 }
 
 function FilteringSidebar({ onApplyFilters }: FilteringSidebarProps) {
@@ -13,9 +13,9 @@ function FilteringSidebar({ onApplyFilters }: FilteringSidebarProps) {
     const [conditions, setConditions] = useState<{ id: number; name: string }[]>([]);
     const [statuses, setStatuses] = useState<{ id: number; name: string }[]>([]);
 
-    const [selectedCategories, setSelectedCategories] = useState<number[]>([]); // Multiple categories
-    const [selectedCondition, setSelectedCondition] = useState<number | null>(null); // Single condition
-    const [selectedStatus, setSelectedStatus] = useState<number | null>(null); // Single status
+    const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
+    const [selectedCondition, setSelectedCondition] = useState<number | null>(null);
+    const [selectedStatus, setSelectedStatus] = useState<number | null>(null);
 
     const { userId } = useAuth();
 
@@ -47,7 +47,6 @@ function FilteringSidebar({ onApplyFilters }: FilteringSidebarProps) {
 
     const handleApplyFilters = async () => {
         try {
-            // Build the query string manually
             const queryParams = new URLSearchParams();
             queryParams.append("userId", userId);
 
@@ -69,7 +68,6 @@ function FilteringSidebar({ onApplyFilters }: FilteringSidebarProps) {
                 queryParams.append("statusId", String(selectedStatus));
             }
 
-            // Make the GET request with the constructed query string
             const response = await axios.get(
                 `${API_URL}/api/locations?${queryParams.toString()}`
             );
@@ -84,7 +82,6 @@ function FilteringSidebar({ onApplyFilters }: FilteringSidebarProps) {
         <div className="p-4 text-white">
             <h2 className="text-lg font-bold mb-4">Filter Locations</h2>
 
-            {/* Categories (Checkboxes for multiple selection) */}
             <div className="mb-4">
                 <h3 className="text-md font-semibold">Categories</h3>
                 <ul className="list-none">
@@ -104,7 +101,6 @@ function FilteringSidebar({ onApplyFilters }: FilteringSidebarProps) {
                 </ul>
             </div>
 
-            {/* Conditions (Radio Buttons for single selection) */}
             <div className="mb-4">
                 <h3 className="text-md font-semibold">Conditions</h3>
                 <ul className="list-none">
@@ -125,7 +121,6 @@ function FilteringSidebar({ onApplyFilters }: FilteringSidebarProps) {
                 </ul>
             </div>
 
-            {/* Statuses (Radio Buttons for single selection) */}
             <div className="mb-4">
                 <h3 className="text-md font-semibold">Statuses</h3>
                 <ul className="list-none">
@@ -146,7 +141,6 @@ function FilteringSidebar({ onApplyFilters }: FilteringSidebarProps) {
                 </ul>
             </div>
 
-            {/* Apply Button */}
             <div className="flex justify-between mt-4">
                 <button
                     className="bg-green-500 text-white px-4 py-2 rounded shadow"
