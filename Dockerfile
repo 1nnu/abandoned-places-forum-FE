@@ -14,16 +14,17 @@ RUN npm install
 COPY . ./
 
 # Build the React app
-RUN npm run build
+RUN npm run build  # This creates the dist/ directory (if that's your output)
 
-# Step 2: Use Nginx to serve the built React app
-FROM nginx:alpine
+# Step 2: Serve the React app directly with a simple static file server (optional)
+# You could use `serve` to serve the app, or if you're using Nginx, you can continue with that approach.
 
-# Copy the build directory from the build step
-COPY --from=build /app/build /usr/share/nginx/html
+# Install the serve package (optional, if you want to use it)
+RUN npm install -g serve
 
-# Expose the default HTTP port
+# Use the `serve` package to serve the React app
+# Note: If `npm run build` creates 'dist', we should reference that directory here.
+CMD ["serve", "-s", "dist", "-l", "80"]
+
+# Expose port 80 (the port `serve` will use)
 EXPOSE 80
-
-# Start Nginx in the foreground (to keep the container running)
-CMD ["nginx", "-g", "daemon off;"]
