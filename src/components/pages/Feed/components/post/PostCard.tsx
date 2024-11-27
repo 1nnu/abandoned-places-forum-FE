@@ -40,13 +40,13 @@ export default function PostCard({
   creatadAt,
   images = [],
 }: PostCardProps) {
-   const [upvotes, setUpvotes] = useState<Upvote[]>([]);
-   const [comments, setComments] = useState<Comment[]>([]);
-   const { userId } = useAuth();
-   const [refresh, setRefresh] = useState(0);
-   const [isUpvoted, setIsUpvoted] = useState(false);
+  const [upvotes, setUpvotes] = useState<Upvote[]>([]);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const { userId } = useAuth();
+  const [refresh, setRefresh] = useState(0);
+  const [isUpvoted, setIsUpvoted] = useState(false);
 
-   useEffect(() => {
+  useEffect(() => {
     const handleIncrement = () => setRefresh((prev) => prev + 1);
     emitter.on("refreshPostCard", handleIncrement);
     return () => {
@@ -57,10 +57,25 @@ export default function PostCard({
   useEffect(() => {
     const fetchUpvotes = async () => {
       try {
-        const response = await fetch(`${apiUrl}/api/feed/upvotes/byPost/${id}`);
+        const userToken = localStorage.getItem("userToken");
+
+        const response = await fetch(
+          `${apiUrl}/api/feed/upvotes/byPost/${id}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${userToken}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
         if (!response.ok) throw new Error("Failed to fetch upvotes");
         const data: Upvote[] = await response.json();
-        const alreadyLiked = data.some((upvote: any) => upvote.userId === userId);
+        const alreadyLiked = data.some(
+          (upvote: any) => upvote.userId === userId
+        );
+
         setIsUpvoted(alreadyLiked);
         setUpvotes(data);
       } catch (error) {
@@ -70,9 +85,20 @@ export default function PostCard({
 
     const fetchComments = async () => {
       try {
-        const response = await fetch(`${apiUrl}/api/feed/${id}/comments`);
+        const userToken = localStorage.getItem("userToken");
+
+        const response = await fetch(`${apiUrl}/api/feed/${id}/comments`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+            "Content-Type": "application/json",
+          },
+        });
+
         if (!response.ok) throw new Error("Failed to fetch comments");
+
         const data: Comment[] = await response.json();
+
         setComments(data);
       } catch (error) {
         console.error(error);
@@ -82,7 +108,7 @@ export default function PostCard({
     fetchUpvotes();
     fetchComments();
   }, [id, refresh]);
-  
+
   return (
     <div className="flex flex-col gap-y-2">
       <Card className="py-4 px-6 w-full flex flex-col gap-y-8">
@@ -103,12 +129,8 @@ export default function PostCard({
             </h2>
           </div>
           <div className="flex flex-col font-sm text-slate-600 gap-y-2">
-            <p>
-              {creatadAt}
-            </p>
-            <p>
-              {locationId}
-            </p>
+            <p>{creatadAt}</p>
+            <p>{locationId}</p>
           </div>
         </CardHeader>
         <CardContent className="p-0 flex flex-col gap-y-2">
@@ -133,12 +155,17 @@ export default function PostCard({
         </CardContent>
         <div className="w-full flex justify-between gap-x-2 items-center">
           <div className="flex gap-x-4">
-            <p className="text-sm text-slate-600 font-normal"> Likes: {upvotes.length}</p>
-            <p className="text-sm text-slate-600 font-normal">Comments: {comments.length}</p>
+            <p className="text-sm text-slate-600 font-normal">
+              {" "}
+              Likes: {upvotes.length}
+            </p>
+            <p className="text-sm text-slate-600 font-normal">
+              Comments: {comments.length}
+            </p>
           </div>
           <div className="flex gap-x-2">
             <UpvoteButton postId={id} userId={userId} isUpvoted={isUpvoted} />
-            <CommentsDialog postId={id}/>
+            <CommentsDialog postId={id} />
           </div>
         </div>
       </Card>

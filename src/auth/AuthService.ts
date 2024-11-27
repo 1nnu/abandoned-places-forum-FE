@@ -38,6 +38,7 @@ const AuthService = {
     register: async (username: string, email: string, password: string): Promise<AuthResponse> => {
         const response = await fetch(`${apiUrl}/api/auth/register`, {
             method: 'POST',
+            credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, email, password }),
         });
@@ -63,7 +64,7 @@ const AuthService = {
     },
 
     logout: (): void => {
-        localStorage.removeItem('token');
+        localStorage.removeItem('userToken');
         localStorage.removeItem('userId');
         localStorage.removeItem('username');
         localStorage.removeItem('role');
@@ -71,11 +72,11 @@ const AuthService = {
     },
 
     isAuthenticated: (): boolean => {
-        return !!localStorage.getItem('token');
+        return !!localStorage.getItem('userToken');
     },
 
     getToken: (): string | null => {
-        return localStorage.getItem('token');
+        return localStorage.getItem('userToken');
     },
 
     setAuthHeader: (headers: Record<string, string> = {}): Record<string, string> => {
@@ -90,6 +91,7 @@ const AuthService = {
 
     getUserInfo: async (): Promise<any> => {
         const response = await fetch(`${apiUrl}/api/auth/userinfo`, {
+            credentials: 'include',
             method: 'GET',
             headers: AuthService.setAuthHeader({
                 'Content-Type': 'application/json',

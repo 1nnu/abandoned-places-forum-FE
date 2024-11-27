@@ -1,6 +1,18 @@
 import { useAuth } from "../../../contexts/AuthContext";
 import ProfileCard from "./components/ProfileCard";
 import { useState, useEffect } from "react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "../../ui/tabs";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardFooter,
+} from "../../ui/card";
+import { Label } from "../../ui/label";
+import { Button } from "../../ui/button";
+import { Input } from "../../ui/input";
 
 interface UserProfile {
   username: string;
@@ -17,8 +29,17 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
+        const userToken = localStorage.getItem("userToken");
+
         const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/profile/${userId}`
+          `${import.meta.env.VITE_API_URL}/api/profile/${userId}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${userToken}`,
+              "Content-Type": "application/json",
+            },
+          }
         );
 
         if (!response.ok) {
@@ -47,12 +68,67 @@ export default function ProfilePage() {
   return (
     <div className="flex justify-center w-full py-8">
       <div className="max-w-[1440px] flex flex-row w-full justify-center">
-        <ProfileCard
-          username={userData.username}
-          email={userData.email}
-          points={userData.points}
-          role={userData.role}
-        />
+        <Tabs defaultValue="account" className="w-[400px]">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="account">Account</TabsTrigger>
+            <TabsTrigger value="email">Email</TabsTrigger>
+            <TabsTrigger value="password">Password</TabsTrigger>
+          </TabsList>
+          <TabsContent value="account">
+            <ProfileCard
+              username={userData.username}
+              email={userData.email}
+              points={userData.points}
+              role={userData.role}
+            />
+          </TabsContent>
+          <TabsContent value="email">
+            <Card>
+              <CardHeader>
+                <CardTitle>Password</CardTitle>
+                <CardDescription>
+                  Change your password here. After saving, you'll be logged out.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="space-y-1">
+                  <Label htmlFor="current">Current password</Label>
+                  <Input id="current" type="password" />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="new">New password</Label>
+                  <Input id="new" type="password" />
+                </div>
+              </CardContent>
+              <CardFooter>
+                <Button>Save password</Button>
+              </CardFooter>
+            </Card>
+          </TabsContent>
+          <TabsContent value="password">
+            <Card>
+              <CardHeader>
+                <CardTitle>Password</CardTitle>
+                <CardDescription>
+                  Change your password here. After saving, you'll be logged out.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="space-y-1">
+                  <Label htmlFor="current">Current password</Label>
+                  <Input id="current" type="password" />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="new">New password</Label>
+                  <Input id="new" type="password" />
+                </div>
+              </CardContent>
+              <CardFooter>
+                <Button>Save password</Button>
+              </CardFooter>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );

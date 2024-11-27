@@ -16,9 +16,12 @@ export default function CreatePost() {
 
   const handleCreatePost = async (title: string, body: string) => {
     try {
+      const userToken = localStorage.getItem("userToken");
+
       const response = await fetch(`${apiUrl}/api/feed/createPost`, {
         method: "POST",
         headers: {
+          Authorization: `Bearer ${userToken}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ userId, title, body }),

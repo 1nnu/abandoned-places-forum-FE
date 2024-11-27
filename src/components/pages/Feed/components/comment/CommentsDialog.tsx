@@ -9,9 +9,19 @@ import {
 } from "../../../../ui/alert-dialog";
 import { Button } from "../../../../ui/button";
 import { MessageCircle, SendIcon } from "lucide-react";
-import { FormControl, FormMessage, FormItem, FormField } from "../../../../ui/form";
+import {
+  FormControl,
+  FormMessage,
+  FormItem,
+  FormField,
+} from "../../../../ui/form";
 import { z } from "zod";
-import { useForm, SubmitHandler, FieldValues, FormProvider } from "react-hook-form";
+import {
+  useForm,
+  SubmitHandler,
+  FieldValues,
+  FormProvider,
+} from "react-hook-form";
 import { useState, useEffect, useRef } from "react";
 import { Input } from "../../../../ui/input";
 import Comment from "./Comment";
@@ -25,7 +35,7 @@ const CommentSchema = z.object({
 });
 
 interface CommentsDialogProps {
-  postId: number
+  postId: number;
 }
 
 interface CommentProps {
@@ -35,7 +45,7 @@ interface CommentProps {
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
-export default function CommentsDialog({postId} : CommentsDialogProps) {
+export default function CommentsDialog({ postId }: CommentsDialogProps) {
   const [comments, setComments] = useState<CommentProps[]>([]);
   const [showComments, setShowComments] = useState(false);
   const { userId } = useAuth();
@@ -62,16 +72,24 @@ export default function CommentsDialog({postId} : CommentsDialogProps) {
 
   const fetchComments = async () => {
     try {
-      const response = await fetch(`${apiUrl}/api/feed/${postId}/comments`);
-      
+      const userToken = localStorage.getItem("userToken");
+
+      const response = await fetch(`${apiUrl}/api/feed/${postId}/comments`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          "Content-Type": "application/json",
+        },
+      });
+
       if (response.ok) {
         const commentsData = await response.json();
         setComments(commentsData);
       } else {
-        setError('Failed to load comments');
+        setError("Failed to load comments");
       }
     } catch (error) {
-      setError('Error fetching comments');
+      setError("Error fetching comments");
     } finally {
       setLoading(false);
     }
@@ -88,17 +106,20 @@ export default function CommentsDialog({postId} : CommentsDialogProps) {
     if (data.comment) {
       const newComment = data.comment;
       try {
+        const userToken = localStorage.getItem("userToken");
+
         const response = await fetch(`${apiUrl}/api/feed/${postId}/comments`, {
           method: "POST",
           headers: {
+            Authorization: `Bearer ${userToken}`,
             "Content-Type": "application/json",
             "User-ID": userId,
           },
           body: JSON.stringify({
-          comment: newComment,
-          postId: postId,
-          userId: userId 
-        }),
+            comment: newComment,
+            postId: postId,
+            userId: userId,
+          }),
         });
 
         if (response.ok) {
@@ -141,7 +162,11 @@ export default function CommentsDialog({postId} : CommentsDialogProps) {
               <div className="flex flex-col gap-y-2 h-[40vh] overflow-y-scroll">
                 {comments.length > 0 ? (
                   comments.map((comment, index) => (
-                    <Comment name={comment.createdByUsername} comment={comment.body} key={index} />
+                    <Comment
+                      name={comment.createdByUsername}
+                      comment={comment.body}
+                      key={index}
+                    />
                   ))
                 ) : (
                   <div className="p-2 text-slate-500 italic">No comments</div>

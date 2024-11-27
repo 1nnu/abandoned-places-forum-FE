@@ -29,7 +29,16 @@ const PostList: React.FC = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch(`${apiUrl}/api/feed`);
+        const userToken = localStorage.getItem("userToken");
+
+        const response = await fetch(`${apiUrl}/api/feed`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+            "Content-Type": "application/json",
+          },
+        });
+
         const data = await response.json();
 
         data.sort((a: Post, b: Post) => b.id - a.id);
@@ -49,7 +58,7 @@ const PostList: React.FC = () => {
     return date.toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
-      day: "numeric"
+      day: "numeric",
     });
   };
 

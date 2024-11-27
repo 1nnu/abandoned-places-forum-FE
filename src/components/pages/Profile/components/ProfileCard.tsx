@@ -7,6 +7,7 @@ import {
   CardFooter,
 } from "../../../ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "../../../ui/avatar";
+import { Separator } from "../../../ui/separator";
 
 interface ProfileCardProps {
   username: string;
@@ -22,8 +23,8 @@ export default function ProfileCard({
   role,
 }: ProfileCardProps) {
   return (
-    <Card className="w-full max-w-[800px]">
-      <CardHeader className="flex flex-row justify-between items-center">
+    <Card className="">
+      <CardHeader className="flex flex-col gap-y-4 justify-start items-start">
         <div className="flex gap-x-4 items-center">
           <Avatar className="rounded-full">
             <AvatarImage
@@ -40,6 +41,7 @@ export default function ProfileCard({
             <CardDescription>{email}</CardDescription>
           </div>
         </div>
+        <Separator />
         <div>
           <h2>Points: {points}</h2>
           <h2>Role: {role}</h2>
