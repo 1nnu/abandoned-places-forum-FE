@@ -27,7 +27,6 @@ import { Input } from "../../../../ui/input";
 import Comment from "./Comment";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { XIcon } from "lucide-react";
-import { useAuth } from "../../../../../contexts/AuthContext";
 import emitter from "../../../../../emitter/eventEmitter";
 
 const CommentSchema = z.object({
@@ -48,9 +47,6 @@ const apiUrl = import.meta.env.VITE_API_URL;
 export default function CommentsDialog({ postId }: CommentsDialogProps) {
   const [comments, setComments] = useState<CommentProps[]>([]);
   const [showComments, setShowComments] = useState(false);
-  const { userId } = useAuth();
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
 
   const methods = useForm({
     resolver: zodResolver(CommentSchema),
@@ -72,6 +68,7 @@ export default function CommentsDialog({ postId }: CommentsDialogProps) {
 
   const fetchComments = async () => {
     try {
+      emitter.emit("startLoading");
       const userToken = localStorage.getItem("userToken");
 
       const response = await fetch(`${apiUrl}/api/feed/${postId}/comments`, {
@@ -85,13 +82,11 @@ export default function CommentsDialog({ postId }: CommentsDialogProps) {
       if (response.ok) {
         const commentsData = await response.json();
         setComments(commentsData);
-      } else {
-        setError("Failed to load comments");
       }
     } catch (error) {
-      setError("Error fetching comments");
+      console.error(error);
     } finally {
-      setLoading(false);
+      emitter.emit("stopLoading");
     }
   };
 
@@ -99,32 +94,31 @@ export default function CommentsDialog({ postId }: CommentsDialogProps) {
     fetchComments();
   }, [postId]);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
-
   const handleAddComment: SubmitHandler<FieldValues> = async (data) => {
     if (data.comment) {
       const newComment = data.comment;
       try {
+        emitter.emit("startLoading");
         const userToken = localStorage.getItem("userToken");
+        const userId = localStorage.getItem("userId");
 
         const response = await fetch(`${apiUrl}/api/feed/${postId}/comments`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${userToken}`,
             "Content-Type": "application/json",
-            "User-ID": userId,
           },
           body: JSON.stringify({
-            comment: newComment,
+            body: newComment,
             postId: postId,
-            userId: userId,
+            createdById: userId,
           }),
         });
 
         if (response.ok) {
           const commentData = await response.json();
           setComments((prevComments) => [...prevComments, commentData.body]);
+          methods.reset({ comment: "" });
         } else {
           console.error("Failed to add comment");
         }
@@ -133,6 +127,7 @@ export default function CommentsDialog({ postId }: CommentsDialogProps) {
       } finally {
         emitter.emit("refreshPostCard");
         fetchComments();
+        emitter.emit("stopLoading");
       }
     }
   };
@@ -158,7 +153,7 @@ export default function CommentsDialog({ postId }: CommentsDialogProps) {
                 <XIcon />
               </AlertDialogCancel>
             </div>
-            <AlertDialogDescription>
+            <AlertDialogDescription className="bg-slate-100 p-2 rounded-lg border border-slate-300">
               <div className="flex flex-col gap-y-2 h-[40vh] overflow-y-scroll">
                 {comments.length > 0 ? (
                   comments.map((comment, index) => (
@@ -188,6 +183,7 @@ export default function CommentsDialog({ postId }: CommentsDialogProps) {
                           className="w-full"
                           placeholder="Write your comment"
                           {...field}
+                          autoComplete="off"
                         />
                       </FormControl>
                       {errors.comment && <FormMessage></FormMessage>}

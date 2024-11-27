@@ -45,7 +45,7 @@ export default function NavMenu() {
   return (
     <div className="w-full h-20 bg-blue-600 rounded-b-sm flex items-center justify-center px-6">
       <div className="flex flex-row items-center justify-between w-full max-w-[1440px]">
-        <Link to={"booking"} className="font-bold text-2xl text-white">
+        <Link to={"/dashboard"} className="font-bold text-2xl text-white">
           Urbex
         </Link>
 
@@ -93,34 +93,46 @@ export default function NavMenu() {
         >
           <div
             id="mobile-menu"
-            className={`fixed top-0 left-0 w-full z-50 bg-blue-500 shadow-lg transform transition-transform duration-300 ease-in-out rounded-b-md ${
+            className={`fixed top-0 left-0 w-full z-50 bg-blue-600 justify-center items-center gap-y-6 shadow-lg transform transition-transform duration-300 ease-in-out rounded-b-md ${
               isMobileMenuOpen ? "translate-y-0" : "-translate-y-full"
             } p-4 flex flex-col gap-2`}
             onClick={(e) => e.stopPropagation()}
           >
             {isAuthenticated && (
               <>
-                <Link to={"dashboard"} onClick={toggleMobileMenu}>
-                  <Button className="bg-slate-50 hover:bg-slate-200 text-slate-800 w-full">
-                    Dashboard
-                  </Button>
+                <Link
+                  to={"/dashboard"}
+                  className="font-bold text-2xl text-white"
+                >
+                  Urbex
                 </Link>
-                <Link to={"feed"} onClick={toggleMobileMenu}>
-                  <Button className="bg-slate-50 hover:bg-slate-200 text-slate-800 w-full">
-                    Feed
-                  </Button>
+                <Link
+                  to={"dashboard"}
+                  onClick={toggleMobileMenu}
+                  className="text-slate-50 hover:text-slate-100"
+                >
+                  Dashboard
                 </Link>
-                <Link to={"profile"} onClick={toggleMobileMenu}>
-                  <Button className="bg-slate-50 hover:bg-slate-200 text-slate-800 w-full">
-                    Profile
-                  </Button>
+                <Link
+                  to={"feed"}
+                  onClick={toggleMobileMenu}
+                  className="text-slate-50 hover:text-slate-100"
+                >
+                  Feed
+                </Link>
+                <Link
+                  to={"profile"}
+                  onClick={toggleMobileMenu}
+                  className="text-slate-50 hover:text-slate-100"
+                >
+                  Profile
                 </Link>
                 <Button
                   onClick={() => {
                     handleLogout();
                     toggleMobileMenu();
                   }}
-                  className="bg-slate-50 hover:bg-slate-200 text-slate-800 w-full"
+                  className="bg-blue-50 hover:bg-blue-100 text-blue-600 w-fit"
                 >
                   Log out
                 </Button>
@@ -129,27 +141,24 @@ export default function NavMenu() {
           </div>
         </div>
 
-        <div className="hidden lg:flex gap-x-4 h-fit">
+        <div className="hidden lg:flex gap-x-6 h-fit items-center">
           {isAuthenticated && (
             <>
-              <Link to={"dashboard"}>
-                <Button className="bg-slate-50 hover:bg-slate-200 text-slate-800">
-                  Dashboard
-                </Button>
+              <Link
+                to={"dashboard"}
+                className="text-blue-50 hover:text-blue-100"
+              >
+                Dashboard
               </Link>
-              <Link to={"feed"}>
-                <Button className="bg-slate-50 hover:bg-slate-200 text-slate-800">
-                  Feed
-                </Button>
+              <Link to={"feed"} className="text-blue-50 hover:text-blue-100">
+                Feed
               </Link>
-              <Link to={"profile"}>
-                <Button className="bg-slate-50 hover:bg-slate-200 text-slate-800">
-                  Profile
-                </Button>
+              <Link to={"profile"} className="text-blue-50 hover:text-blue-100">
+                Profile
               </Link>
               <Button
                 onClick={handleLogout}
-                className="bg-slate-50 hover:bg-slate-200 text-slate-800"
+                className="bg-blue-50 hover:bg-blue-100 text-blue-600"
               >
                 Log out
               </Button>

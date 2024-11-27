@@ -29,6 +29,7 @@ const PostList: React.FC = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
+        emitter.emit("startLoading");
         const userToken = localStorage.getItem("userToken");
 
         const response = await fetch(`${apiUrl}/api/feed`, {
@@ -47,6 +48,7 @@ const PostList: React.FC = () => {
       } catch (error) {
         console.error("Error fetching posts:", error);
       } finally {
+        emitter.emit("stopLoading");
       }
     };
 

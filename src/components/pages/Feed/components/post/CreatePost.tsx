@@ -4,7 +4,6 @@ import { Input } from "../../../../ui/input";
 import { Textarea } from "../../../../ui/textarea";
 import { Card, CardContent, CardFooter, CardHeader } from "../../../../ui/card";
 import { CircleArrowDown } from "lucide-react";
-import { useAuth } from "../../../../../contexts/AuthContext";
 import emitter from "../../../../../emitter/eventEmitter";
 
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -12,11 +11,12 @@ const apiUrl = import.meta.env.VITE_API_URL;
 export default function CreatePost() {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
-  const { userId } = useAuth();
 
   const handleCreatePost = async (title: string, body: string) => {
     try {
+      emitter.emit("startLoading");
       const userToken = localStorage.getItem("userToken");
+      const userId = localStorage.getItem("userId");
 
       const response = await fetch(`${apiUrl}/api/feed/createPost`, {
         method: "POST",
@@ -37,6 +37,7 @@ export default function CreatePost() {
       console.error("Error creating post:", error);
     } finally {
       emitter.emit("refreshPostList");
+      emitter.emit("stopLoading");
     }
   };
 

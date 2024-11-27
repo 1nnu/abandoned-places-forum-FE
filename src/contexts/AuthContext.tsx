@@ -7,6 +7,8 @@ import {
 } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthService from "../auth/AuthService";
+import { jwtDecode } from "jwt-decode";
+import * as jwt_decode from "jwt-decode";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -25,6 +27,13 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+interface JwtPayload extends jwt_decode.JwtPayload {
+  userId: string;
+  username: string;
+  role: string;
+  points: number;
+}
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
@@ -48,22 +57,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = async (username: string, password: string) => {
     try {
       const response = await AuthService.login(username, password);
-      const {
-        token,
-        userId,
-        username: fetchedUsername,
-        role,
-        points,
-      } = response;
+      const { token } = response;
+
+      const decoded = jwtDecode<JwtPayload>(token);
 
       setIsAuthenticated(true);
       setJWToken(token);
-      setUserId(userId);
-      setUsername(fetchedUsername);
-      setRole(role);
-      setPoints(points);
+      setUserId(decoded.userId);
+      setUsername(decoded.username);
+      setRole(decoded.role);
+      setPoints(decoded.points);
 
       localStorage.setItem("userToken", token);
+      localStorage.setItem("userId", decoded.userId);
+      localStorage.setItem("username", decoded.username);
+      localStorage.setItem("role", decoded.role);
+      localStorage.setItem("points", decoded.points.toString());
 
       navigate("/dashboard");
     } catch (error) {
@@ -77,23 +86,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     password: string
   ) => {
     try {
-      const {
-        token,
-        userId,
-        username: fetchedUsername,
-        role,
-        points,
-      } = await AuthService.register(username, email, password);
+      const { token } = await AuthService.register(username, email, password);
+
+      const decoded = jwtDecode<JwtPayload>(token);
 
       setIsAuthenticated(true);
-
       setJWToken(token);
-      setUserId(userId);
-      setUsername(fetchedUsername);
-      setRole(role);
-      setPoints(points);
+      setUserId(decoded.userId);
+      setUsername(decoded.username);
+      setRole(decoded.role);
+      setPoints(decoded.points);
 
       localStorage.setItem("userToken", token);
+      localStorage.setItem("userId", decoded.userId);
+      localStorage.setItem("username", decoded.username);
+      localStorage.setItem("role", decoded.role);
+      localStorage.setItem("points", decoded.points.toString());
 
       navigate("/dashboard");
     } catch (error) {
@@ -111,6 +119,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setPoints(0);
     navigate("/");
     localStorage.removeItem("userToken");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("username");
+    localStorage.removeItem("role");
+    localStorage.removeItem("points");
     location.reload();
   };
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/pages/Auth/ProtectedRoute";
@@ -7,13 +7,31 @@ import LoginPage from "./components/pages/Auth/LoginPage";
 import NavMenu from "./components/shared/NavMenu";
 import FeedPage from "./components/pages/Feed/FeedPage";
 import ProfilePage from "./components/pages/Profile/ProfilePage";
+import LoadingSpinner from "./components/shared/LoadingSpinner";
+import emitter from "./emitter/eventEmitter";
 
 const App: React.FC = () => {
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const startLoading = () => setLoading(true);
+    const stopLoading = () => setLoading(false);
+
+    emitter.on("startLoading", startLoading);
+    emitter.on("stopLoading", stopLoading);
+
+    return () => {
+      emitter.off("startLoading", startLoading);
+      emitter.off("stopLoading", stopLoading);
+    };
+  }, []);
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
       <Router>
         <AuthProvider>
           <NavMenu />
+          {loading && <LoadingSpinner />}
           <Routes>
             <Route path="/" element={<LoginPage />} />
             <Route

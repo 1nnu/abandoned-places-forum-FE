@@ -1,4 +1,3 @@
-import { useAuth } from "../../../contexts/AuthContext";
 import ProfileCard from "./components/ProfileCard";
 import { useState, useEffect } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "../../ui/tabs";
@@ -13,6 +12,7 @@ import {
 import { Label } from "../../ui/label";
 import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
+import emitter from "../../../emitter/eventEmitter";
 
 interface UserProfile {
   username: string;
@@ -22,13 +22,15 @@ interface UserProfile {
 }
 
 export default function ProfilePage() {
-  const { userId } = useAuth();
   const [userData, setUserData] = useState<UserProfile | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const userId = localStorage.getItem("userId");
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
+        emitter.emit("startLoading");
         const userToken = localStorage.getItem("userToken");
 
         const response = await fetch(
@@ -47,10 +49,13 @@ export default function ProfilePage() {
         }
 
         const data = await response.json();
+        console.log(data);
         setUserData(data);
       } catch (error) {
         console.error("Error fetching user data:", error);
         setError("Failed to load user profile");
+      } finally {
+        emitter.emit("stopLoading");
       }
     };
 

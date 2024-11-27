@@ -3,8 +3,8 @@ import CommentsDialog from "../comment/CommentsDialog";
 import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
 import { useEffect, useState } from "react";
 import UpvoteButton from "../upvote/UpvoteButton";
-import { useAuth } from "../../../../../contexts/AuthContext";
 import emitter from "../../../../../emitter/eventEmitter";
+import AuthService from "../../../../../auth/AuthService";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -42,9 +42,13 @@ export default function PostCard({
 }: PostCardProps) {
   const [upvotes, setUpvotes] = useState<Upvote[]>([]);
   const [comments, setComments] = useState<Comment[]>([]);
-  const { userId } = useAuth();
   const [refresh, setRefresh] = useState(0);
   const [isUpvoted, setIsUpvoted] = useState(false);
+  const userId = localStorage.getItem("userId");
+
+  if (!userId) {
+    AuthService.logout();
+  }
 
   useEffect(() => {
     const handleIncrement = () => setRefresh((prev) => prev + 1);
@@ -55,6 +59,7 @@ export default function PostCard({
   }, []);
 
   useEffect(() => {
+    emitter.emit("startLoading");
     const fetchUpvotes = async () => {
       try {
         const userToken = localStorage.getItem("userToken");
@@ -80,6 +85,8 @@ export default function PostCard({
         setUpvotes(data);
       } catch (error) {
         console.error(error);
+      } finally {
+        emitter.emit("stopLoading");
       }
     };
 
@@ -107,7 +114,12 @@ export default function PostCard({
 
     fetchUpvotes();
     fetchComments();
+    emitter.emit("stopLoading");
   }, [id, refresh]);
+
+  if (!userId) {
+    return;
+  }
 
   return (
     <div className="flex flex-col gap-y-2">
