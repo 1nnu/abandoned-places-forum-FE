@@ -1,9 +1,8 @@
 import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
-import { useAuth } from "../../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 export default function ProfileCard() {
-  const { username } = useAuth();
+  const username = localStorage.getItem("username");
   const navigate = useNavigate();
 
   return (
