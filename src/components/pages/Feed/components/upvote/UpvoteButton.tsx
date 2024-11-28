@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Button } from "../../../../ui/button";
 import { HandMetalIcon } from "lucide-react";
 import emitter from "../../../../../emitter/eventEmitter";
@@ -16,21 +15,6 @@ export default function UpvoteButton({
   userId,
   isUpvoted,
 }: UpvoteButtonProps) {
-  useEffect(() => {
-    const checkIfLiked = async () => {
-      try {
-        const response = await fetch(
-          `${apiUrl}/api/feed/upvotes/byPost/${postId}`
-        );
-        if (!response.ok) throw new Error("Failed to fetch upvotes");
-      } catch (error) {
-        console.error("Error checking if liked:", error);
-      }
-    };
-
-    checkIfLiked();
-  }, [postId, userId]);
-
   const handleUpvote = async () => {
     try {
       const userToken = localStorage.getItem("userToken");
