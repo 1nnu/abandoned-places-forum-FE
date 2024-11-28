@@ -100,10 +100,7 @@ export default function NavMenu() {
           >
             {isAuthenticated && (
               <>
-                <Link
-                  to={"/dashboard"}
-                  className="font-bold text-2xl text-white"
-                >
+                <Link to={"/"} className="font-bold text-2xl text-white">
                   Urbex
                 </Link>
                 <Link
@@ -112,6 +109,13 @@ export default function NavMenu() {
                   className="text-slate-50 hover:text-slate-100"
                 >
                   Dashboard
+                </Link>
+                <Link
+                  to={"map"}
+                  onClick={toggleMobileMenu}
+                  className="text-slate-50 hover:text-slate-100"
+                >
+                  Map
                 </Link>
                 <Link
                   to={"feed"}
@@ -149,9 +153,9 @@ export default function NavMenu() {
                 className="text-blue-50 hover:text-blue-100"
               >
                 Dashboard
-                <Link to={"map"} className="text-blue-50 hover:text-blue-100">
-                  Map
-                </Link>
+              </Link>
+              <Link to={"map"} className="text-blue-50 hover:text-blue-100">
+                Map
               </Link>
               <Link to={"feed"} className="text-blue-50 hover:text-blue-100">
                 Feed
