@@ -53,7 +53,7 @@ export default function CreatePostDialog() {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button className="bg-blue-600 hover:bg-blue-700 w-full">
+        <Button className="bg-blue-600 hover:bg-blue-700 w-fit md:w-full">
           Create Post
         </Button>
       </AlertDialogTrigger>

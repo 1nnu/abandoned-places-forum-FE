@@ -85,7 +85,12 @@ export default function ChangeEmailForm() {
         </div>
       </CardContent>
       <CardFooter>
-        <Button onClick={handleUpdateEmail}>Update email</Button>
+        <Button
+          onClick={handleUpdateEmail}
+          className="bg-blue-600 hover:bg-blue-700"
+        >
+          Update email
+        </Button>
       </CardFooter>
     </Card>
   );

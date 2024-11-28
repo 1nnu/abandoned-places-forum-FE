@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import PostCard from "./PostCard";
-import CreatePost from "./CreatePost";
 import emitter from "../../../../../emitter/eventEmitter";
 
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -14,7 +13,7 @@ interface Post {
   createdAt: string;
 }
 
-const PostList: React.FC = () => {
+export default function PostList() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [refresh, setRefresh] = useState(0);
 
@@ -65,23 +64,18 @@ const PostList: React.FC = () => {
   };
 
   return (
-    <div className="p-4 w-full max-w-[800px]">
-      <div className="flex flex-col gap-y-4">
-        <CreatePost />
-        {posts.map((post, key) => (
-          <PostCard
-            key={key}
-            id={post.id}
-            title={post.title}
-            body={post.body}
-            locationId={post.locationId}
-            createdBy={post.createdByUsername}
-            creatadAt={formatDate(post.createdAt)}
-          />
-        ))}
-      </div>
+    <div className="flex flex-col gap-y-4">
+      {posts.map((post, key) => (
+        <PostCard
+          key={key}
+          id={post.id}
+          title={post.title}
+          body={post.body}
+          locationId={post.locationId}
+          createdBy={post.createdByUsername}
+          creatadAt={formatDate(post.createdAt)}
+        />
+      ))}
     </div>
   );
-};
-
-export default PostList;
+}

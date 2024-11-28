@@ -62,9 +62,7 @@ export default function ChangePasswordForm() {
     <Card>
       <CardHeader>
         <CardTitle>Password</CardTitle>
-        <CardDescription>
-          Change your password here. After saving, you'll be logged out.
-        </CardDescription>
+        <CardDescription>Change your password here.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-2">
         <div className="space-y-1">
@@ -89,7 +87,12 @@ export default function ChangePasswordForm() {
         </div>
       </CardContent>
       <CardFooter>
-        <Button onClick={handleUpdatePassword}>Save password</Button>
+        <Button
+          onClick={handleUpdatePassword}
+          className="bg-blue-600 hover:bg-blue-700"
+        >
+          Save password
+        </Button>
       </CardFooter>
     </Card>
   );

@@ -124,7 +124,7 @@ export default function PostCard({
   return (
     <div className="flex flex-col gap-y-2">
       <Card className="py-4 px-6 w-full flex flex-col gap-y-8">
-        <CardHeader className="p-0 flex flex-row justify-between items-center">
+        <CardHeader className="p-0 flex flex-row flex-wrap gap-x-4 justify-between items-center">
           <div className="flex gap-x-4 items-center">
             <Avatar className="rounded-full">
               <AvatarImage
@@ -140,7 +140,7 @@ export default function PostCard({
               {createdBy}
             </h2>
           </div>
-          <div className="flex flex-col font-sm text-slate-600 gap-y-2">
+          <div className="flex flex-col text-sm text-slate-600 gap-y-2">
             <p>{creatadAt}</p>
             <p>{locationId}</p>
           </div>
@@ -165,7 +165,7 @@ export default function PostCard({
             </div>
           )}
         </CardContent>
-        <div className="w-full flex justify-between gap-x-2 items-center">
+        <div className="w-full flex flex-row flex-wrap gap-y-4 justify-between gap-x-2 items-center">
           <div className="flex gap-x-4">
             <p className="text-sm text-slate-600 font-normal">
               {" "}

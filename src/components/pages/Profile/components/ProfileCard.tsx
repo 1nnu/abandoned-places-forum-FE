@@ -8,20 +8,65 @@ import {
 } from "../../../ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "../../../ui/avatar";
 import { Separator } from "../../../ui/separator";
+import PostList from "../../Feed/components/post/PostList";
+import { useEffect, useState } from "react";
+import emitter from "../../../../emitter/eventEmitter";
 
-interface ProfileCardProps {
+interface UserProfile {
   username: string;
   email: string;
   points: number;
   role: string;
 }
 
-export default function ProfileCard({
-  username,
-  email,
-  points,
-  role,
-}: ProfileCardProps) {
+export default function ProfileCard() {
+  const [userData, setUserData] = useState<UserProfile | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const userId = localStorage.getItem("userId");
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        emitter.emit("startLoading");
+        const userToken = localStorage.getItem("userToken");
+
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/profile/${userId}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${userToken}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+
+        const data = await response.json();
+        console.log(data);
+        setUserData(data);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        setError("Failed to load user profile");
+      } finally {
+        emitter.emit("stopLoading");
+      }
+    };
+
+    fetchUserData();
+  }, [userId]);
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
+  if (!userData) {
+    return;
+  }
   return (
     <Card className="">
       <CardHeader className="flex flex-col gap-y-4 justify-start items-start">
@@ -37,17 +82,20 @@ export default function ProfileCard({
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
-            <CardTitle>{username}</CardTitle>
-            <CardDescription>{email}</CardDescription>
+            <CardTitle>{userData.username}</CardTitle>
+            <CardDescription>{userData.email}</CardDescription>
           </div>
         </div>
         <Separator />
         <div>
-          <h2>Points: {points}</h2>
-          <h2>Role: {role}</h2>
+          <h2>Points: {userData.points}</h2>
+          <h2>Role: {userData.role}</h2>
         </div>
       </CardHeader>
-      <CardContent className="grid gap-4"></CardContent>
+      <CardContent className="grid gap-4">
+        <Separator />
+        <PostList />
+      </CardContent>
       <CardFooter></CardFooter>
     </Card>
   );

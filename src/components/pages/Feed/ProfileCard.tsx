@@ -7,7 +7,7 @@ export default function ProfileCard() {
 
   return (
     <div
-      className="flex gap-x-4 items-center hover:cursor-pointer hover:bg-slate-100 rounded-lg p-2"
+      className="flex gap-x-4 items-center hover:cursor-pointer hover:bg-slate-100 rounded-lg p-2 px-4 w-full"
       onClick={() => navigate("/profile")}
     >
       <Avatar className="rounded-full">

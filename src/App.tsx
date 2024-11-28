@@ -9,6 +9,7 @@ import FeedPage from "./components/pages/Feed/FeedPage";
 import ProfilePage from "./components/pages/Profile/ProfilePage";
 import LoadingSpinner from "./components/shared/LoadingSpinner";
 import emitter from "./emitter/eventEmitter";
+import Footer from "./components/shared/Footer";
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -60,6 +61,7 @@ const App: React.FC = () => {
             />
           </Routes>
         </AuthProvider>
+        <Footer />
       </Router>
     </div>
   );
