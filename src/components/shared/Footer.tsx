@@ -78,7 +78,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="mt-16 text-center text-slate-500 text-sm md:text-md">
-        © All rights reserved. OÜ SENKO
+        © All rights reserved.
       </div>
     </footer>
   );
