@@ -13,7 +13,6 @@ import {
 import { Button } from "../../../../ui/button";
 import { Input } from "../../../../ui/input";
 import { Textarea } from "../../../../ui/textarea";
-import { useAuth } from "../../../../../contexts/AuthContext";
 import emitter from "../../../../../emitter/eventEmitter";
 
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -21,13 +20,17 @@ const apiUrl = import.meta.env.VITE_API_URL;
 export default function CreatePostDialog() {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
-  const { userId } = useAuth();
 
   const handleCreatePost = async (title: string, body: string) => {
     try {
+      emitter.emit("startLoading");
+      const userToken = localStorage.getItem("userToken");
+      const userId = localStorage.getItem("userId");
+
       const response = await fetch(`${apiUrl}/api/feed/createPost`, {
         method: "POST",
         headers: {
+          Authorization: `Bearer ${userToken}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ userId, title, body }),
@@ -43,15 +46,17 @@ export default function CreatePostDialog() {
       console.error("Error creating post:", error);
     } finally {
       emitter.emit("refreshPostList");
+      emitter.emit("stopLoading");
     }
   };
 
   return (
     <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Button className="bg-blue-600 hover:bg-blue-700 w-full">
-          Create Post
-        </Button>
+      <AlertDialogTrigger
+        asChild
+        className="bg-blue-600 hover:bg-blue-700 w-fit md:w-full"
+      >
+        Create Post
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>

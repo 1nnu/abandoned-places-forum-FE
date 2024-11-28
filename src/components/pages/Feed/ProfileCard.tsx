@@ -1,10 +1,15 @@
 import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
-import { useAuth } from "../../../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function ProfileCard() {
-  const {username} = useAuth();
+  const username = localStorage.getItem("username");
+  const navigate = useNavigate();
+
   return (
-    <div className="flex gap-x-4 items-center">
+    <div
+      className="flex gap-x-4 items-center hover:cursor-pointer hover:bg-slate-100 rounded-lg p-2 px-4 w-full"
+      onClick={() => navigate("/profile")}
+    >
       <Avatar className="rounded-full">
         <AvatarImage
           src="https://github.com/shadcn.png"

@@ -1,33 +1,16 @@
-import { Button } from "../../ui/button";
 import CreatePostDialog from ".//components/post/CreatePostDialog";
 import ProfileCard from "./ProfileCard";
 
-interface SideMenuProps {
-  className?: string;
-}
-
-export default function SideMenu({ className }: SideMenuProps) {
+export default function SideMenu() {
   return (
     <aside
-      className={`w-1/4 max-w-xs p-4 bg-slate-50 border-r border-slate-300 min-w-[200px] ${className}`}
+      className={`md:w-1/4 md:max-w-xs p-4 bg-slate-50 md:border-r border-slate-300 min-w-[200px] w-full`}
     >
-      <nav className="mt-2 space-y-2">
-        <div className="mb-4">
+      <nav className="mt-2 gap-y-2 flex items-center gap-x-8 md:flex-col md:items-start justify-between w-full">
+        <div className="md:mb-4 w-fit md:w-full">
           <ProfileCard />
         </div>
         <CreatePostDialog />
-        <Button className="w-full bg-slate-50 hover:bg-slate-100 border border-blue-600 text-blue-600">
-          Posts
-        </Button>
-        <Button className="w-full bg-slate-50 hover:bg-slate-100 border border-blue-600 text-blue-600">
-          Users
-        </Button>
-        <Button className="w-full bg-slate-50 hover:bg-slate-100 border border-blue-600 text-blue-600">
-          Locations
-        </Button>
-        <Button className="w-full bg-slate-50 hover:bg-slate-100 border border-blue-600 text-blue-600">
-          Map
-        </Button>
       </nav>
     </aside>
   );

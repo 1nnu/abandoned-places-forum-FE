@@ -9,15 +9,24 @@ import {
 } from "../../../../ui/alert-dialog";
 import { Button } from "../../../../ui/button";
 import { MessageCircle, SendIcon } from "lucide-react";
-import { FormControl, FormMessage, FormItem, FormField } from "../../../../ui/form";
+import {
+  FormControl,
+  FormMessage,
+  FormItem,
+  FormField,
+} from "../../../../ui/form";
 import { z } from "zod";
-import { useForm, SubmitHandler, FieldValues, FormProvider } from "react-hook-form";
+import {
+  useForm,
+  SubmitHandler,
+  FieldValues,
+  FormProvider,
+} from "react-hook-form";
 import { useState, useEffect, useRef } from "react";
 import { Input } from "../../../../ui/input";
 import Comment from "./Comment";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { XIcon } from "lucide-react";
-import { useAuth } from "../../../../../contexts/AuthContext";
 import emitter from "../../../../../emitter/eventEmitter";
 
 const CommentSchema = z.object({
@@ -25,7 +34,7 @@ const CommentSchema = z.object({
 });
 
 interface CommentsDialogProps {
-  postId: number
+  postId: number;
 }
 
 interface CommentProps {
@@ -35,12 +44,9 @@ interface CommentProps {
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
-export default function CommentsDialog({postId} : CommentsDialogProps) {
+export default function CommentsDialog({ postId }: CommentsDialogProps) {
   const [comments, setComments] = useState<CommentProps[]>([]);
   const [showComments, setShowComments] = useState(false);
-  const { userId } = useAuth();
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
 
   const methods = useForm({
     resolver: zodResolver(CommentSchema),
@@ -62,18 +68,25 @@ export default function CommentsDialog({postId} : CommentsDialogProps) {
 
   const fetchComments = async () => {
     try {
-      const response = await fetch(`${apiUrl}/api/feed/${postId}/comments`);
-      
+      emitter.emit("startLoading");
+      const userToken = localStorage.getItem("userToken");
+
+      const response = await fetch(`${apiUrl}/api/feed/${postId}/comments`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          "Content-Type": "application/json",
+        },
+      });
+
       if (response.ok) {
         const commentsData = await response.json();
         setComments(commentsData);
-      } else {
-        setError('Failed to load comments');
       }
     } catch (error) {
-      setError('Error fetching comments');
+      console.error(error);
     } finally {
-      setLoading(false);
+      emitter.emit("stopLoading");
     }
   };
 
@@ -81,29 +94,31 @@ export default function CommentsDialog({postId} : CommentsDialogProps) {
     fetchComments();
   }, [postId]);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
-
   const handleAddComment: SubmitHandler<FieldValues> = async (data) => {
     if (data.comment) {
       const newComment = data.comment;
       try {
+        emitter.emit("startLoading");
+        const userToken = localStorage.getItem("userToken");
+        const userId = localStorage.getItem("userId");
+
         const response = await fetch(`${apiUrl}/api/feed/${postId}/comments`, {
           method: "POST",
           headers: {
+            Authorization: `Bearer ${userToken}`,
             "Content-Type": "application/json",
-            "User-ID": userId,
           },
           body: JSON.stringify({
-          comment: newComment,
-          postId: postId,
-          userId: userId 
-        }),
+            body: newComment,
+            postId: postId,
+            createdById: userId,
+          }),
         });
 
         if (response.ok) {
           const commentData = await response.json();
           setComments((prevComments) => [...prevComments, commentData.body]);
+          methods.reset({ comment: "" });
         } else {
           console.error("Failed to add comment");
         }
@@ -112,6 +127,7 @@ export default function CommentsDialog({postId} : CommentsDialogProps) {
       } finally {
         emitter.emit("refreshPostCard");
         fetchComments();
+        emitter.emit("stopLoading");
       }
     }
   };
@@ -119,15 +135,12 @@ export default function CommentsDialog({postId} : CommentsDialogProps) {
   return (
     <div>
       <AlertDialog>
-        <AlertDialogTrigger>
-          <Button
-            onClick={() => setShowComments(!showComments)}
-            className="border-blue-600 border text-blue-600 hover:border-blue-700 hover:text-blue-700"
-            variant="outline"
-          >
-            Comment
-            <MessageCircle />
-          </Button>
+        <AlertDialogTrigger
+          onClick={() => setShowComments(!showComments)}
+          className="border-blue-600 border text-blue-600 hover:border-blue-700 hover:text-blue-700 flex px-4 py-2 rounded-sm gap-x-2 text-sm font-medium h-10 items-center"
+        >
+          Comment
+          <MessageCircle className="w-4 h-4" />
         </AlertDialogTrigger>
         <AlertDialogContent className="w-[60vw]">
           <AlertDialogHeader>
@@ -137,11 +150,15 @@ export default function CommentsDialog({postId} : CommentsDialogProps) {
                 <XIcon />
               </AlertDialogCancel>
             </div>
-            <AlertDialogDescription>
+            <AlertDialogDescription className="bg-slate-100 p-2 rounded-lg border border-slate-300">
               <div className="flex flex-col gap-y-2 h-[40vh] overflow-y-scroll">
                 {comments.length > 0 ? (
                   comments.map((comment, index) => (
-                    <Comment name={comment.createdByUsername} comment={comment.body} key={index} />
+                    <Comment
+                      name={comment.createdByUsername}
+                      comment={comment.body}
+                      key={index}
+                    />
                   ))
                 ) : (
                   <div className="p-2 text-slate-500 italic">No comments</div>
@@ -163,6 +180,7 @@ export default function CommentsDialog({postId} : CommentsDialogProps) {
                           className="w-full"
                           placeholder="Write your comment"
                           {...field}
+                          autoComplete="off"
                         />
                       </FormControl>
                       {errors.comment && <FormMessage></FormMessage>}
