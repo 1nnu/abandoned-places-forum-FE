@@ -4,13 +4,13 @@ import {
   CardTitle,
   CardDescription,
   CardContent,
-  CardFooter,
 } from "../../../ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "../../../ui/avatar";
 import { Separator } from "../../../ui/separator";
-import PostList from "../../Feed/components/post/PostList";
 import { useEffect, useState } from "react";
 import emitter from "../../../../emitter/eventEmitter";
+import { Badge } from "../../../ui/badge";
+import PostList from "../../Feed/components/post/PostList";
 
 interface UserProfile {
   username: string;
@@ -68,35 +68,44 @@ export default function ProfileCard() {
     return;
   }
   return (
-    <Card className="">
-      <CardHeader className="flex flex-col gap-y-4 justify-start items-start">
-        <div className="flex gap-x-4 items-center">
-          <Avatar className="rounded-full">
+    <>
+      <Card className="shadow-md border border-slate-200 rounded-md">
+        <CardHeader className="flex flex-col items-center text-center gap-4">
+          <Avatar className="w-28 h-28">
             <AvatarImage
               src="https://github.com/shadcn.png"
-              alt="@shadcn"
-              className="w-28 rounded-full border-slate-300 border"
+              alt={userData.username}
+              className="rounded-full border border-slate-300"
             />
-            <AvatarFallback className="w-14 rounded-full border-slate-300 border">
-              CN
+            <AvatarFallback className="rounded-full bg-slate-100 text-slate-500">
+              {userData.username.slice(0, 2).toUpperCase()}
             </AvatarFallback>
           </Avatar>
-          <div className="flex flex-col">
-            <CardTitle>{userData.username}</CardTitle>
-            <CardDescription>{userData.email}</CardDescription>
+          <div>
+            <CardTitle className="text-xl font-semibold">
+              {userData.username}
+            </CardTitle>
+            <CardDescription className="text-sm text-slate-500">
+              {userData.email}
+            </CardDescription>
           </div>
-        </div>
+        </CardHeader>
         <Separator />
-        <div>
-          <h2>Points: {userData.points}</h2>
-          <h2>Role: {userData.role}</h2>
-        </div>
-      </CardHeader>
-      <CardContent className="grid gap-4">
-        <Separator />
+        <CardContent className="flex flex-col items-center gap-2 py-4 bg-slate-50">
+          <Badge
+            variant="default"
+            className="text-sm px-4 py-1 bg-blue-600 hover:bg-blue-700"
+          >
+            Role: {userData.role}
+          </Badge>
+          <p className="text-lg font-medium text-slate-800">
+            Points: {userData.points}
+          </p>
+        </CardContent>
+      </Card>
+      <div className="max-w-[600px] w-full mt-4">
         <PostList />
-      </CardContent>
-      <CardFooter></CardFooter>
-    </Card>
+      </div>
+    </>
   );
 }
