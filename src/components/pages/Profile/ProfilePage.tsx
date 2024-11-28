@@ -1,18 +1,9 @@
 import ProfileCard from "./components/ProfileCard";
 import { useState, useEffect } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "../../ui/tabs";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardFooter,
-} from "../../ui/card";
-import { Label } from "../../ui/label";
-import { Button } from "../../ui/button";
-import { Input } from "../../ui/input";
 import emitter from "../../../emitter/eventEmitter";
+import ChangeEmailForm from "./components/ChangeEmailForm";
+import ChangePasswordForm from "./components/ChangePasswordForm";
 
 interface UserProfile {
   username: string;
@@ -88,50 +79,10 @@ export default function ProfilePage() {
             />
           </TabsContent>
           <TabsContent value="email">
-            <Card>
-              <CardHeader>
-                <CardTitle>Password</CardTitle>
-                <CardDescription>
-                  Change your password here. After saving, you'll be logged out.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <div className="space-y-1">
-                  <Label htmlFor="current">Current password</Label>
-                  <Input id="current" type="password" />
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor="new">New password</Label>
-                  <Input id="new" type="password" />
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Button>Save password</Button>
-              </CardFooter>
-            </Card>
+            <ChangeEmailForm />
           </TabsContent>
           <TabsContent value="password">
-            <Card>
-              <CardHeader>
-                <CardTitle>Password</CardTitle>
-                <CardDescription>
-                  Change your password here. After saving, you'll be logged out.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <div className="space-y-1">
-                  <Label htmlFor="current">Current password</Label>
-                  <Input id="current" type="password" />
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor="new">New password</Label>
-                  <Input id="new" type="password" />
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Button>Save password</Button>
-              </CardFooter>
-            </Card>
+            <ChangePasswordForm />
           </TabsContent>
         </Tabs>
       </div>
