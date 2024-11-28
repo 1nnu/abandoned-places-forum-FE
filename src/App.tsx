@@ -10,6 +10,7 @@ import ProfilePage from "./components/pages/Profile/ProfilePage";
 import LoadingSpinner from "./components/shared/LoadingSpinner";
 import emitter from "./emitter/eventEmitter";
 import Footer from "./components/shared/Footer";
+import MapPage from "./components/pages/Map/MapPage.tsx";
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -48,6 +49,14 @@ const App: React.FC = () => {
               element={
                 <ProtectedRoute>
                   <FeedPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/map"
+              element={
+                <ProtectedRoute>
+                  <MapPage />
                 </ProtectedRoute>
               }
             />

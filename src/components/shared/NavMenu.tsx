@@ -43,7 +43,7 @@ export default function NavMenu() {
   }, [isMobileMenuOpen]);
 
   return (
-    <div className="w-full h-20 bg-blue-600 rounded-b-sm flex items-center justify-center px-6">
+    <div className="w-full h-20 bg-blue-600 rounded-b-sm flex items-center justify-center px-6 z-10">
       <div className="flex flex-row items-center justify-between w-full max-w-[1440px]">
         <Link to={"/dashboard"} className="font-bold text-2xl text-white">
           Urbex
@@ -149,6 +149,9 @@ export default function NavMenu() {
                 className="text-blue-50 hover:text-blue-100"
               >
                 Dashboard
+                <Link to={"map"} className="text-blue-50 hover:text-blue-100">
+                  Map
+                </Link>
               </Link>
               <Link to={"feed"} className="text-blue-50 hover:text-blue-100">
                 Feed
