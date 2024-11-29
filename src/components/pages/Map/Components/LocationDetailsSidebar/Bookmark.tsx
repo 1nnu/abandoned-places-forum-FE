@@ -31,7 +31,11 @@ export default function Bookmark({ locationId }: { locationId: string }) {
 
         const data = await response.json();
 
-        setIsBookmarked(data.length > 0);
+        if (data[0]?.locationId === locationId) {
+          setIsBookmarked(true);
+        } else {
+          setIsBookmarked(false);
+        }
       } catch (error) {
         console.error("Error checking bookmark", error);
       }
