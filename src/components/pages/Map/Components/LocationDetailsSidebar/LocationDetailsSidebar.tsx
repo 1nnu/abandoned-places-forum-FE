@@ -16,7 +16,7 @@ export default function LocationDetailsSidebar({
             <p>{selectedLocation.lat}</p>
             <p>{selectedLocation.lon}</p>
           </div>
-          <Bookmark locationId={selectedLocation.uuid} />
+          <Bookmark locationId={selectedLocation.id} />
         </div>
       ) : (
         <p>No location selected</p>
