@@ -1,5 +1,6 @@
 import { MapLocation } from "../MapView/map-utils.ts";
 import Bookmark from "./Bookmark.tsx";
+import LandBoardButton from "./LandBoardButton.tsx";
 
 export default function LocationDetailsSidebar({
   selectedLocation,
@@ -17,6 +18,7 @@ export default function LocationDetailsSidebar({
             <p>{selectedLocation.lon}</p>
           </div>
           <Bookmark locationId={selectedLocation.id} />
+          <LandBoardButton location={selectedLocation} />
         </div>
       ) : (
         <p>No location selected</p>
