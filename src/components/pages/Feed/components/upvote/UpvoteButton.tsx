@@ -37,7 +37,7 @@ export default function UpvoteButton({
     } catch (error) {
       console.error("Error posting upvote:", error);
     } finally {
-      emitter.emit("refreshPostCard");
+      emitter.emit("refreshPostList");
     }
   };
 

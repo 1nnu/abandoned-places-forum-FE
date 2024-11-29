@@ -2,7 +2,6 @@ import {
   AlertDialog,
   AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
@@ -24,10 +23,11 @@ import {
 } from "react-hook-form";
 import { useState, useEffect, useRef } from "react";
 import { Input } from "../../../../ui/input";
-import Comment from "./Comment";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { XIcon } from "lucide-react";
 import emitter from "../../../../../emitter/eventEmitter";
+import CommentsList from "./CommentsList";
+import { AlertDialogAction } from "@radix-ui/react-alert-dialog";
 
 const CommentSchema = z.object({
   comment: z.string().min(1, "Comment cannot be empty"),
@@ -66,34 +66,6 @@ export default function CommentsDialog({ postId }: CommentsDialogProps) {
     }
   }, [comments]);
 
-  const fetchComments = async () => {
-    try {
-      emitter.emit("startLoading");
-      const userToken = localStorage.getItem("userToken");
-
-      const response = await fetch(`${apiUrl}/api/feed/${postId}/comments`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.ok) {
-        const commentsData = await response.json();
-        setComments(commentsData);
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      emitter.emit("stopLoading");
-    }
-  };
-
-  useEffect(() => {
-    fetchComments();
-  }, [postId]);
-
   const handleAddComment: SubmitHandler<FieldValues> = async (data) => {
     if (data.comment) {
       const newComment = data.comment;
@@ -125,8 +97,8 @@ export default function CommentsDialog({ postId }: CommentsDialogProps) {
       } catch (error) {
         console.error("Error adding comment:", error);
       } finally {
-        emitter.emit("refreshPostCard");
-        fetchComments();
+        emitter.emit("refreshCommentList");
+        emitter.emit("refreshPostList");
         emitter.emit("stopLoading");
       }
     }
@@ -150,22 +122,9 @@ export default function CommentsDialog({ postId }: CommentsDialogProps) {
                 <XIcon />
               </AlertDialogCancel>
             </div>
-            <AlertDialogDescription className="bg-slate-100 p-2 rounded-lg border border-slate-300">
-              <div className="flex flex-col gap-y-2 h-[40vh] overflow-y-scroll">
-                {comments.length > 0 ? (
-                  comments.map((comment, index) => (
-                    <Comment
-                      name={comment.createdByUsername}
-                      comment={comment.body}
-                      key={index}
-                    />
-                  ))
-                ) : (
-                  <div className="p-2 text-slate-500 italic">No comments</div>
-                )}
-                <div ref={endOfCommentsRef} />
-              </div>
-            </AlertDialogDescription>
+            <div className="bg-slate-100 p-2 rounded-lg border border-slate-300">
+              <CommentsList postId={postId} />
+            </div>
           </AlertDialogHeader>
           <FormProvider {...methods}>
             <form onSubmit={handleSubmit(handleAddComment)}>
@@ -187,10 +146,15 @@ export default function CommentsDialog({ postId }: CommentsDialogProps) {
                     </FormItem>
                   )}
                 />
-                <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
-                  Submit
-                  <SendIcon />
-                </Button>
+                <AlertDialogAction>
+                  <Button
+                    type="submit"
+                    className="bg-blue-600 hover:bg-blue-700"
+                  >
+                    Submit
+                    <SendIcon />
+                  </Button>
+                </AlertDialogAction>
               </div>
             </form>
           </FormProvider>
