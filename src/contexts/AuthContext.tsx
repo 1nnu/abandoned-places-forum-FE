@@ -77,6 +77,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       localStorage.setItem("points", decoded.points.toString());
 
       navigate("/dashboard");
+
+      toast({
+        title: "Sucess!",
+        description: "User logged in successfully.",
+      });
     } catch (error) {
       if (error instanceof Error && "code" in error) {
         toast({
@@ -116,6 +121,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       localStorage.setItem("points", decoded.points.toString());
 
       navigate("/dashboard");
+
+      toast({
+        title: "Sucess!",
+        description: "User registered successfully.",
+      });
     } catch (error) {
       if (error instanceof Error && "code" in error) {
         toast({
@@ -146,6 +156,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem("role");
     localStorage.removeItem("points");
     location.reload();
+
+    toast({
+      title: "Sucess!",
+      description: "User logged out successfully.",
+    });
   };
 
   return (
