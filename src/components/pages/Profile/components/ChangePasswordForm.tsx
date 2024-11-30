@@ -11,16 +11,21 @@ import { Input } from "../../../ui/input";
 import { Button } from "../../../ui/button";
 import { useState } from "react";
 import emitter from "../../../../emitter/eventEmitter";
+import { useToast } from "../../../../hooks/use-toast";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
 export default function ChangePasswordForm() {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const { toast } = useToast();
 
   const handleUpdatePassword = async () => {
     if (!currentPassword || !newPassword) {
-      alert("Please fill in all fields.");
+      toast({
+        title: "Error!",
+        description: "Please fill in all fields.",
+      });
       return;
     }
 
@@ -52,8 +57,23 @@ export default function ChangePasswordForm() {
       if (!response.ok) {
         throw new Error("Failed to update password");
       }
+
+      toast({
+        title: "Success!",
+        description: "Password updated successfully.",
+      });
     } catch (error) {
-      console.error("Error updating password:", error);
+      if (error instanceof Error && "code" in error) {
+        toast({
+          title: "Error!",
+          description: error.message || "An unknown error occurred.",
+        });
+      } else {
+        toast({
+          title: "Error!",
+          description: "An unknown error occurred.",
+        });
+      }
     } finally {
       emitter.emit("stopLoading");
     }

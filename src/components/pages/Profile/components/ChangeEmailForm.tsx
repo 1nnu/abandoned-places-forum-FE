@@ -11,16 +11,22 @@ import { Input } from "../../../ui/input";
 import { Button } from "../../../ui/button";
 import emitter from "../../../../emitter/eventEmitter";
 import { useState } from "react";
+import { useToast } from "../../../../hooks/use-toast";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
 export default function ChangeEmailForm() {
   const [newEmail, setNewEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { toast } = useToast();
 
   const handleUpdateEmail = async () => {
     if (!newEmail || !password) {
-      alert("Please fill in all fields.");
+      toast({
+        title: "Error!",
+        description: "Please fill in all fields.",
+      });
+
       return;
     }
 
@@ -49,8 +55,23 @@ export default function ChangeEmailForm() {
       if (!response.ok) {
         throw new Error("Failed to update email");
       }
+
+      toast({
+        title: "Success!",
+        description: "Email updated successfully.",
+      });
     } catch (error) {
-      console.error("Error updating email:", error);
+      if (error instanceof Error && "code" in error) {
+        toast({
+          title: "Error!",
+          description: error.message || "An unknown error occurred.",
+        });
+      } else {
+        toast({
+          title: "Error!",
+          description: "An unknown error occurred.",
+        });
+      }
     } finally {
       emitter.emit("stopLoading");
     }
