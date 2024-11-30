@@ -1,6 +1,6 @@
 import Map from 'ol/Map.js';
 import { Feature, View } from "ol";
-import { useEffect, useRef } from "react";
+import {useEffect, useRef, useState} from "react";
 import { transform } from "ol/proj";
 import VectorSource from "ol/source/Vector";
 import VectorLayer from "ol/layer/Vector";
@@ -79,5 +79,51 @@ export default function MapView({ displayedLocations, onLocationSelection }: Map
         });
     }, [displayedLocations]);
 
-    return <div id="map-element" className="absolute top-0 left-0 h-screen w-screen" />;
+    return (
+        <div>
+            <div id="map-element" className="absolute top-0 left-0 h-screen w-screen"/>
+            <div
+                id="kaldfotoETAK"
+                style={{
+                    position: 'absolute',
+                    width: '60vw', // Adjust width as needed
+                    height: '60vh', // Adjust height as needed
+                    borderRadius: '10px', // Rounded corners for the container
+                    backgroundColor: '#fff',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)', // Soft shadow for a nice floating effect
+                    overflow: 'hidden',
+                    border: '10px solid #fff', // White border around the iframe container
+                    padding: '5px', // Padding for the container
+                    top: '50%', // Center vertically
+                    left: '50%', // Center horizontally
+                    transform: 'translate(-50%, -50%)',
+                }}
+            >
+                <iframe
+                    src="https://fotoladu.maaamet.ee/etak.php?B=59.556557865334916&L=26.647162879834188&fotoladu"
+                    style={{
+                        width: '100%',
+                        height: '100%',
+                        border: '2px solid #fff', // White border around the iframe itself
+                    }}
+                ></iframe>
+                <span
+                    style={{
+                        position: 'absolute',
+                        top: '5px',
+                        right: '10px',
+                        fontSize: '18px',
+                        display: 'block',
+                        cursor: 'pointer',
+                        color: '#564b4b',
+                        fontWeight: 'bold',
+                    }}
+                    /*onClick={hideIframe}*/
+                >
+                        X
+                    </span>
+            </div>
+        </div>
+
+    );
 }
