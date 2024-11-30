@@ -38,6 +38,9 @@ interface Post {
   locationId: string;
   createdByUsername: string;
   createdAt: string;
+  commentCount: number;
+  likeCount: number;
+  hasUpvoted: boolean;
 }
 
 interface PageResponse<T> {
@@ -107,7 +110,6 @@ export default function PostList() {
 
         data.content.sort((a, b) => b.id - a.id);
 
-        // Update state with the fetched data
         setPosts(data.content);
         setPagination({
           pageNumber: data.pageNumber,
@@ -278,6 +280,9 @@ export default function PostList() {
             locationId={post.locationId}
             createdBy={post.createdByUsername}
             creatadAt={formatDate(post.createdAt)}
+            commentCount={post.commentCount}
+            likeCount={post.likeCount}
+            hasUpvoted={post.hasUpvoted}
           />
         ))}
       </div>

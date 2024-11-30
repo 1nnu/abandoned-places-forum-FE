@@ -1,12 +1,8 @@
 import { Card, CardHeader, CardContent } from "../../../../ui/card";
 import CommentsDialog from "../comment/CommentsDialog";
 import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
-import { useEffect, useState } from "react";
 import UpvoteButton from "../upvote/UpvoteButton";
-import emitter from "../../../../../emitter/eventEmitter";
 import AuthService from "../../../../../auth/AuthService";
-
-const apiUrl = import.meta.env.VITE_API_URL;
 
 interface PostCardProps {
   id: number;
@@ -16,19 +12,9 @@ interface PostCardProps {
   createdBy: string;
   creatadAt: string;
   images?: string[];
-}
-
-interface Upvote {
-  id: number;
-  postId: number;
-  userId: string;
-}
-
-interface Comment {
-  id: number;
-  postId: number;
-  userId: string;
-  content: string;
+  commentCount: number;
+  likeCount: number;
+  hasUpvoted: boolean;
 }
 
 export default function PostCard({
@@ -39,83 +25,15 @@ export default function PostCard({
   createdBy,
   creatadAt,
   images = [],
+  commentCount,
+  likeCount,
+  hasUpvoted,
 }: PostCardProps) {
-  const [upvotes, setUpvotes] = useState<Upvote[]>([]);
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [refresh, setRefresh] = useState(0);
-  const [isUpvoted, setIsUpvoted] = useState(false);
   const userId = localStorage.getItem("userId");
 
   if (!userId) {
     AuthService.logout();
   }
-
-  useEffect(() => {
-    const handleIncrement = () => setRefresh((prev) => prev + 1);
-    emitter.on("refreshPostCard", handleIncrement);
-    return () => {
-      emitter.off("refreshPostCard", handleIncrement);
-    };
-  }, []);
-
-  useEffect(() => {
-    emitter.emit("startLoading");
-    const fetchUpvotes = async () => {
-      try {
-        const userToken = localStorage.getItem("userToken");
-
-        const response = await fetch(
-          `${apiUrl}/api/feed/upvotes/byPost/${id}`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${userToken}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        if (!response.ok) throw new Error("Failed to fetch upvotes");
-        const data: Upvote[] = await response.json();
-        const alreadyLiked = data.some(
-          (upvote: any) => upvote.userId === userId
-        );
-
-        setIsUpvoted(alreadyLiked);
-        setUpvotes(data);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        emitter.emit("stopLoading");
-      }
-    };
-
-    const fetchComments = async () => {
-      try {
-        const userToken = localStorage.getItem("userToken");
-
-        const response = await fetch(`${apiUrl}/api/feed/${id}/comments`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (!response.ok) throw new Error("Failed to fetch comments");
-
-        const data: Comment[] = await response.json();
-
-        setComments(data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchUpvotes();
-    fetchComments();
-    emitter.emit("stopLoading");
-  }, [id, refresh]);
 
   if (!userId) {
     return;
@@ -169,14 +87,14 @@ export default function PostCard({
           <div className="flex gap-x-4">
             <p className="text-sm text-slate-600 font-normal">
               {" "}
-              Likes: {upvotes.length}
+              Likes: {likeCount}
             </p>
             <p className="text-sm text-slate-600 font-normal">
-              Comments: {comments.length}
+              Comments: {commentCount}
             </p>
           </div>
           <div className="flex gap-x-2">
-            <UpvoteButton postId={id} userId={userId} isUpvoted={isUpvoted} />
+            <UpvoteButton postId={id} userId={userId} isUpvoted={hasUpvoted} />
             <CommentsDialog postId={id} />
           </div>
         </div>
