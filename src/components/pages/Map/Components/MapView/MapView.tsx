@@ -1,12 +1,13 @@
 import Map from 'ol/Map.js';
-import { Feature, View } from "ol";
+import {Feature, MapBrowserEvent, View} from "ol";
 import {useEffect, useRef, useState} from "react";
-import { transform } from "ol/proj";
+import {toLonLat, transform} from "ol/proj";
 import VectorSource from "ol/source/Vector";
 import VectorLayer from "ol/layer/Vector";
 import { Select } from "ol/interaction";
 import { BASE_MAP_LAYER, generateLocationFeature, MapLocation, MERCATOR, WGS84 } from "./map-utils.ts";
 import { LOCATION_LAYER_DEFAULT_STYLE, SELECTED_LOCATION_STYLE_RECTANGLE } from "./map-styles.ts";
+import LocationDetailsSidebar from "../LocationDetailsSidebar/LocationDetailsSidebar.tsx";
 
 interface MapViewProps {
     displayedLocations: MapLocation[];
@@ -41,6 +42,11 @@ export default function MapView({ displayedLocations, onLocationSelection }: Map
                     zoom: 8,
                 }),
                 controls: [],
+            });
+
+            map.on('dblclick', (event: MapBrowserEvent<PointerEvent>) => {
+                console.log(event);
+                setselectedCoords(toLonLat(event.coordinate).reverse());
             });
 
             const selectInteraction = new Select({
@@ -79,50 +85,61 @@ export default function MapView({ displayedLocations, onLocationSelection }: Map
         });
     }, [displayedLocations]);
 
+    const [selectedCoords, setselectedCoords] = useState<number[] | null>([59.556557865334914, 26.647162879834188]);
+    const [iframeUrl, setIframeUrl] = useState<string>("");
+
+    useEffect(() => {
+        if (selectedCoords != null) {
+            setIframeUrl(`https://fotoladu.maaamet.ee/etak.php?B=${selectedCoords[0]}&L=${selectedCoords[1]}&fotoladu`);
+        }
+    }, [selectedCoords]);
+
     return (
         <div>
             <div id="map-element" className="absolute top-0 left-0 h-screen w-screen"/>
-            <div
-                id="kaldfotoETAK"
-                style={{
-                    position: 'absolute',
-                    width: '60vw', // Adjust width as needed
-                    height: '60vh', // Adjust height as needed
-                    borderRadius: '10px', // Rounded corners for the container
-                    backgroundColor: '#fff',
-                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)', // Soft shadow for a nice floating effect
-                    overflow: 'hidden',
-                    border: '10px solid #fff', // White border around the iframe container
-                    padding: '5px', // Padding for the container
-                    top: '50%', // Center vertically
-                    left: '50%', // Center horizontally
-                    transform: 'translate(-50%, -50%)',
-                }}
-            >
-                <iframe
-                    src="https://fotoladu.maaamet.ee/etak.php?B=59.556557865334916&L=26.647162879834188&fotoladu"
-                    style={{
-                        width: '100%',
-                        height: '100%',
-                        border: '2px solid #fff', // White border around the iframe itself
-                    }}
-                ></iframe>
-                <span
+        {selectedCoords != null && (
+                <div
+                    id="kaldfotoETAK"
                     style={{
                         position: 'absolute',
-                        top: '5px',
-                        right: '10px',
-                        fontSize: '18px',
-                        display: 'block',
-                        cursor: 'pointer',
-                        color: '#564b4b',
-                        fontWeight: 'bold',
+                        width: '60vw', // Adjust width as needed
+                        height: '60vh', // Adjust height as needed
+                        borderRadius: '10px', // Rounded corners for the container
+                        backgroundColor: '#fff',
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)', // Soft shadow for a nice floating effect
+                        overflow: 'hidden',
+                        border: '10px solid #fff', // White border around the iframe container
+                        padding: '5px', // Padding for the container
+                        top: '50%', // Center vertically
+                        left: '50%', // Center horizontally
+                        transform: 'translate(-50%, -50%)',
                     }}
-                    /*onClick={hideIframe}*/
                 >
-                        X
-                    </span>
-            </div>
+                    <iframe
+                        src={iframeUrl}
+                        style={{
+                            width: '100%',
+                            height: '100%',
+                            border: '2px solid #fff', // White border around the iframe itself
+                        }}
+                    ></iframe>
+                    <span
+                        style={{
+                            position: 'absolute',
+                            top: '5px',
+                            right: '10px',
+                            fontSize: '18px',
+                            display: 'block',
+                            cursor: 'pointer',
+                            color: '#564b4b',
+                            fontWeight: 'bold',
+                        }}
+                        onClick={() => setselectedCoords(null)}
+                    >
+                            X
+                        </span>
+                </div>
+            )}
         </div>
 
     );
