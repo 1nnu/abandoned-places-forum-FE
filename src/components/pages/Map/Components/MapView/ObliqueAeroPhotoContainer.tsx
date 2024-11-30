@@ -2,9 +2,10 @@ import {useEffect, useState} from 'react';
 
 interface ObliqueAeroPhotoContainerProps {
     selectedCoords: number[] | null;
+    isSidebarOpen: boolean;
 }
 
-function ObliqueAeroPhotoContainer({ selectedCoords }: ObliqueAeroPhotoContainerProps) {
+function ObliqueAeroPhotoContainer({ selectedCoords, isSidebarOpen }: ObliqueAeroPhotoContainerProps) {
 
     const [iframeUrl, setIframeUrl] = useState<string>("");
 
@@ -23,7 +24,7 @@ function ObliqueAeroPhotoContainer({ selectedCoords }: ObliqueAeroPhotoContainer
                     id="kaldfotoETAK"
                     style={{
                         position: 'absolute',
-                        width: '70vw',
+                        width: isSidebarOpen ? '50vw' : '70vw',
                         height: '70vh',
                         borderRadius: '10px',
                         backgroundColor: '#fff',
@@ -31,8 +32,9 @@ function ObliqueAeroPhotoContainer({ selectedCoords }: ObliqueAeroPhotoContainer
                         border: '10px solid #fff',
                         padding: '5px',
                         top: '50%',
-                        left: '50%',
+                        left: isSidebarOpen ? 'calc(50% - 300px)' : '50%',
                         transform: 'translate(-50%, -50%)',
+                        transition: 'width 0.3s ease, left 0.3s ease, transform 0.3s ease',
                     }}
                 >
                     <iframe

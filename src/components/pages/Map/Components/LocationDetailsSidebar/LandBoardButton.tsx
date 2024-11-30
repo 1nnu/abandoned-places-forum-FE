@@ -11,7 +11,17 @@ function LandBoardButton({ location }: LandBoardButtonProps) {
     window.open(url, "_blank");
   };
 
-  return <button onClick={handleClick}>Maa-ameti kaldaerofoto</button>;
+  return (
+      <div>
+        <button
+            className="bg-green-700 text-white py-2 px-4 rounded-lg shadow-md hover:bg-green-600 transition-all"
+            onClick={handleClick}
+        >
+          Kaldaerofoto uues aknas
+        </button>
+      </div>
+
+  );
 }
 
 export default LandBoardButton;
