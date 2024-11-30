@@ -48,7 +48,7 @@ export default function ProfileCard() {
         }
 
         const data = await response.json();
-        console.log(data);
+
         setUserData(data);
       } catch (error) {
         if (error instanceof Error && "code" in error) {
