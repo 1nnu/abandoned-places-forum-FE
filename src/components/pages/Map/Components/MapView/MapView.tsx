@@ -1,13 +1,12 @@
 import Map from 'ol/Map.js';
+import {defaults as defaultInteractions, Select} from 'ol/interaction';
 import {Feature, MapBrowserEvent, View} from "ol";
 import {useEffect, useRef, useState} from "react";
-import {toLonLat, transform} from "ol/proj";
+import {toLonLat} from "ol/proj";
 import VectorSource from "ol/source/Vector";
 import VectorLayer from "ol/layer/Vector";
-import { Select } from "ol/interaction";
-import { BASE_MAP_LAYER, generateLocationFeature, MapLocation, MERCATOR, WGS84 } from "./map-utils.ts";
-import { LOCATION_LAYER_DEFAULT_STYLE, SELECTED_LOCATION_STYLE_RECTANGLE } from "./map-styles.ts";
-import LocationDetailsSidebar from "../LocationDetailsSidebar/LocationDetailsSidebar.tsx";
+import {BASE_MAP_LAYER, generateLocationFeature, INITIAL_MAP_VIEW_CENTRE_MERCATOR, MapLocation} from "./map-utils.ts";
+import {LOCATION_LAYER_DEFAULT_STYLE, SELECTED_LOCATION_STYLE_RECTANGLE} from "./map-styles.ts";
 
 interface MapViewProps {
     displayedLocations: MapLocation[];
@@ -38,14 +37,16 @@ export default function MapView({ displayedLocations, onLocationSelection }: Map
                 target: "map-element",
                 layers: [BASE_MAP_LAYER, privateLocationsLayer.current, publicLocationsLayer.current],
                 view: new View({
-                    center: transform([25.5, 58.8], WGS84, MERCATOR),
+                    center: INITIAL_MAP_VIEW_CENTRE_MERCATOR,
                     zoom: 8,
                 }),
                 controls: [],
+                interactions: defaultInteractions({
+                    doubleClickZoom: false,
+                }),
             });
 
             map.on('dblclick', (event: MapBrowserEvent<PointerEvent>) => {
-                console.log(event);
                 setselectedCoords(toLonLat(event.coordinate).reverse());
             });
 
@@ -85,7 +86,7 @@ export default function MapView({ displayedLocations, onLocationSelection }: Map
         });
     }, [displayedLocations]);
 
-    const [selectedCoords, setselectedCoords] = useState<number[] | null>([59.556557865334914, 26.647162879834188]);
+    const [selectedCoords, setselectedCoords] = useState<number[] | null>(null);
     const [iframeUrl, setIframeUrl] = useState<string>("");
 
     useEffect(() => {
@@ -98,48 +99,38 @@ export default function MapView({ displayedLocations, onLocationSelection }: Map
         <div>
             <div id="map-element" className="absolute top-0 left-0 h-screen w-screen"/>
         {selectedCoords != null && (
-                <div
-                    id="kaldfotoETAK"
-                    style={{
-                        position: 'absolute',
-                        width: '60vw', // Adjust width as needed
-                        height: '60vh', // Adjust height as needed
-                        borderRadius: '10px', // Rounded corners for the container
-                        backgroundColor: '#fff',
-                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)', // Soft shadow for a nice floating effect
-                        overflow: 'hidden',
-                        border: '10px solid #fff', // White border around the iframe container
-                        padding: '5px', // Padding for the container
-                        top: '50%', // Center vertically
-                        left: '50%', // Center horizontally
-                        transform: 'translate(-50%, -50%)',
-                    }}
+            <div
+                id="kaldfotoETAK"
+                style={{
+                    position: 'absolute',
+                    width: '60vw',
+                    height: '60vh',
+                    borderRadius: '10px',
+                    backgroundColor: '#fff',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                    border: '10px solid #fff',
+                    padding: '5px',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                }}
+            >
+                <iframe
+                    src={iframeUrl}
+                    className="w-full h-full border-2 border-white rounded-tl rounded-bl"
+                ></iframe>
+                <button
+                    className="
+                     absolute -top-6 -right-6 w-8 h-8
+                     bg-red-500 text-white font-bold rounded-full shadow-lg
+                     flex items-center justify-center
+                     cursor-pointer transition-transform transform hover:scale-110 z-50"
+                    onClick={() => setselectedCoords(null)}
                 >
-                    <iframe
-                        src={iframeUrl}
-                        style={{
-                            width: '100%',
-                            height: '100%',
-                            border: '2px solid #fff', // White border around the iframe itself
-                        }}
-                    ></iframe>
-                    <span
-                        style={{
-                            position: 'absolute',
-                            top: '5px',
-                            right: '10px',
-                            fontSize: '18px',
-                            display: 'block',
-                            cursor: 'pointer',
-                            color: '#564b4b',
-                            fontWeight: 'bold',
-                        }}
-                        onClick={() => setselectedCoords(null)}
-                    >
-                            X
-                        </span>
-                </div>
-            )}
+                    X
+                </button>
+            </div>
+        )}
         </div>
 
     );
