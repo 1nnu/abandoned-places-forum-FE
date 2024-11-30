@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import emitter from "../../../../emitter/eventEmitter";
 import { Badge } from "../../../ui/badge";
 import PostList from "../../Feed/components/post/PostList";
+import { useToast } from "../../../../hooks/use-toast";
 
 interface UserProfile {
   username: string;
@@ -21,7 +22,7 @@ interface UserProfile {
 
 export default function ProfileCard() {
   const [userData, setUserData] = useState<UserProfile | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
 
   const userId = localStorage.getItem("userId");
 
@@ -50,8 +51,17 @@ export default function ProfileCard() {
         console.log(data);
         setUserData(data);
       } catch (error) {
-        console.error("Error fetching user data:", error);
-        setError("Failed to load user profile");
+        if (error instanceof Error && "code" in error) {
+          toast({
+            title: "Error!",
+            description: error.message || "An unknown error occurred.",
+          });
+        } else {
+          toast({
+            title: "Error!",
+            description: "An unknown error occurred.",
+          });
+        }
       } finally {
         emitter.emit("stopLoading");
       }
@@ -59,10 +69,6 @@ export default function ProfileCard() {
 
     fetchUserData();
   }, [userId]);
-
-  if (error) {
-    return <div>{error}</div>;
-  }
 
   if (!userData) {
     return;
