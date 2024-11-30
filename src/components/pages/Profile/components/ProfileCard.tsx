@@ -10,8 +10,8 @@ import { Separator } from "../../../ui/separator";
 import { useEffect, useState } from "react";
 import emitter from "../../../../emitter/eventEmitter";
 import { Badge } from "../../../ui/badge";
-import PostList from "../../Feed/components/post/PostList";
 import { useToast } from "../../../../hooks/use-toast";
+import UsersPostList from "./UsersPostList";
 
 interface UserProfile {
   username: string;
@@ -110,7 +110,7 @@ export default function ProfileCard() {
         </CardContent>
       </Card>
       <div className="max-w-[600px] w-full mt-4">
-        <PostList />
+        <UsersPostList />
       </div>
     </>
   );
