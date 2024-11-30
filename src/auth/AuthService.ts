@@ -1,3 +1,5 @@
+import { useToast } from "../hooks/use-toast";
+
 const apiUrl = import.meta.env.VITE_API_URL;
 
 interface AuthResponse {
@@ -7,6 +9,8 @@ interface AuthResponse {
     role: string;
     points: number;
 }
+
+const { toast } = useToast();
 
 const AuthService = {
     login: async (username: string, password: string): Promise<AuthResponse> => {
