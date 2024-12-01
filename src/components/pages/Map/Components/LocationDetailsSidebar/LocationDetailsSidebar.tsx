@@ -19,23 +19,27 @@ export default function LocationDetailsSidebar({selectedLocation, applyObliqueAe
     <div className="p-4 h-full">
       <h2 className="text-lg font-bold text-white">Location Details</h2>
       {selectedLocation != null ? (
-        <div className="flex flex-col items-start pt-6 space-y-4">
-          <div className="text-white">
-            <p>{selectedLocation.name}</p>
-            <p>{selectedLocation.lat}</p>
-            <p>{selectedLocation.lon}</p>
-          </div>
+        <div className="pt-20">
           <Bookmark locationId={selectedLocation.id} />
-          <LandBoardButton location={selectedLocation} />
-          <button
-              className="bg-green-700 text-white py-2 px-4 rounded-lg shadow-md hover:bg-green-600 transition-all"
-              onClick={updateObliqueAeroPhotoCoords}
-          >
-            Kaldaerofoto samas aknas
-          </button>
+          <div className="flex flex-col items-center space-y-4">
+            <div className="text-white">
+              <p>{selectedLocation.name}</p>
+              <p>{selectedLocation.lat}</p>
+              <p>{selectedLocation.lon}</p>
+            </div>
+            <div className="flex row gap-4">
+              <button
+                  className="bg-green-700 text-white py-2 px-3 rounded-sm shadow-md hover:bg-green-600 transition-all flex items-center space-x-2 h-7"
+                  onClick={updateObliqueAeroPhotoCoords}
+              >
+                Kaldaerofoto
+              </button>
+              <LandBoardButton location={selectedLocation}/>
+            </div>
+          </div>
         </div>
       ) : (
-        <p>No location selected</p>
+          <p>No location selected</p>
       )}
     </div>
   );
