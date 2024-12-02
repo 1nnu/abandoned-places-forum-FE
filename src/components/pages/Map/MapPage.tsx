@@ -13,7 +13,7 @@ function MapPage() {
     const API_URL = import.meta.env.VITE_API_URL;
 
     const [isCursorMapPinMode, setIsCursorMapPinMode] = useState<boolean>(false);
-    const [newLocationCoords, setNewLocationCoords] = useState<number[] | null>(null);
+    const [newLocationCoords, setNewLocationCoords] = useState<number[]>([]);
     const handleNewLocationCoords = (mapClickCoords: number[]) => {
         setNewLocationCoords(mapClickCoords);
     };
