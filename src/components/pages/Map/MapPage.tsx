@@ -14,9 +14,6 @@ function MapPage() {
 
     const [isCursorMapPinMode, setIsCursorMapPinMode] = useState<boolean>(false);
     const [newLocationCoords, setNewLocationCoords] = useState<number[] | null>(null);
-    const toggleSetIsCursorMapPinMode = () => {
-        setIsCursorMapPinMode(prevState => !prevState);
-    };
     const handleNewLocationCoords = (mapClickCoords: number[]) => {
         setNewLocationCoords(mapClickCoords);
     };
@@ -30,9 +27,9 @@ function MapPage() {
 
     const [selectedLocation, setSelectedLocation] = useState<MapLocation | null>(null);
     const [locationsDisplayedOnMap, setLocationsDisplayedOnMap] = useState<MapLocation[]>([]);
-    const handleLocationSelection = (mapLocation: MapLocation | null) => {
+    const handleLocationSelectionEvent = (mapLocation: MapLocation | null) => {
         setSelectedLocation(mapLocation);
-        setSidebarContent(mapLocation ? "details" : null);
+        manageSidebarContent(mapLocation ? "details" : null);
     };
     const handleLocationFiltering = (filteredLocations: MapLocation[]) => {
         setLocationsDisplayedOnMap(filteredLocations);
@@ -41,11 +38,15 @@ function MapPage() {
 
     const [sidebarContent, setSidebarContent] = useState<SidebarContent>(null);
     const isSidebarOpen = sidebarContent !== null;
-    const toggleSidebar = (newContent: SidebarContent) => {
+    const manageSidebarContent = (newContent: SidebarContent) => {
         if (sidebarContent === newContent) {
             setSidebarContent(selectedLocation ? "details" : null);
+            setIsCursorMapPinMode(false);
         } else {
             setSidebarContent(newContent);
+            if (newContent != "newLocation") {
+                setIsCursorMapPinMode(false);
+            }
         }
     };
 
@@ -79,9 +80,8 @@ function MapPage() {
     return (
         <div className={isCursorMapPinMode ? 'cursor-map-pin' : ''}>
             <MapView
-
                 locationsDisplayedOnMap={locationsDisplayedOnMap}
-                onLocationSelection={handleLocationSelection}
+                onLocationSelectionEvent={handleLocationSelectionEvent}
                 applyNewLocationCoords={handleNewLocationCoords}
                 applyObliqueAeroPhotoCoords={handleObliqueAeroPhotoCoords}
             />
@@ -106,22 +106,22 @@ function MapPage() {
                 )}
                 {sidebarContent === "newLocation" && (
                     <NewLocationSidebar
-                        newLocationCoords={newLocationCoords}
-                        toggleIsSelectingNewLocationCoords={toggleSetIsCursorMapPinMode}
+                        newLocationCoordsProps={newLocationCoords}
+                        setParentMapPinCursorState={setIsCursorMapPinMode}
                     />
                 )}
             </div>
             <button
                 className="fixed top-28 right-4 bg-blue-500 text-white px-4 py-2 rounded shadow z-100 transition-all duration-500 ease-in-out"
                 style={{transform: isSidebarOpen ? "translateX(-500px)" : "translateX(0)"}}
-                onClick={ () => toggleSidebar("newLocation") }
+                onClick={ () => manageSidebarContent("newLocation") }
             >
                 +
             </button>
             <button
                 className="fixed top-44 right-4 bg-blue-500 text-white px-4 py-2 rounded shadow z-100 transition-all duration-500 ease-in-out"
                 style={{transform: isSidebarOpen ? "translateX(-500px)" : "translateX(0)"}}
-                onClick={ () => toggleSidebar("filtering") }
+                onClick={ () => manageSidebarContent("filtering") }
             >
                 Filter
             </button>

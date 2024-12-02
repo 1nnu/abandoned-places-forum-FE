@@ -1,33 +1,45 @@
 import {useEffect, useState} from "react";
 
 interface NewLocationSidebarProps {
-    newLocationCoords: number[];
-    toggleIsSelectingNewLocationCoords: () => boolean;
+    newLocationCoordsProps: number[] | null;
+    setParentMapPinCursorState: (isMapPinCursorActive: boolean) => void;
 }
 
-function NewLocationSidebar({newLocationCoords, toggleIsSelectingNewLocationCoords} : NewLocationSidebarProps) {
+function NewLocationSidebar({newLocationCoordsProps, setParentMapPinCursorState} : NewLocationSidebarProps) {
 
-    const [locationCoords, setLocationCoords] = useState<number[] | null>(null);
-    const [isSelecting, setIsSelecting] = useState<boolean>(false);
+    const [newLocationCoords, setNewLocationCoords] = useState<number[] | null>(null);
+    const [isCoordinateSelectionActive, setIsCoordinateSelectionActive] = useState<boolean>(false);
 
-    function toggleSelection() {
-        toggleIsSelectingNewLocationCoords();
-        setIsSelecting(prevState => !prevState);
+    function toggleCoordinateSelection() {
+        if (isCoordinateSelectionActive) {
+            setParentMapPinCursorState(false);
+            setIsCoordinateSelectionActive(false);
+        } else {
+            setParentMapPinCursorState(true);
+            setIsCoordinateSelectionActive(true);
+        }
     }
 
     useEffect(() => {
-        if (newLocationCoords && isSelecting) {
-            setLocationCoords(newLocationCoords);
-            setIsSelecting(false);
-            toggleIsSelectingNewLocationCoords();
+        if (isCoordinateSelectionActive && newLocationCoordsProps) {
+            setIsCoordinateSelectionActive(false);
+            setParentMapPinCursorState(false);
+            setNewLocationCoords(newLocationCoordsProps);
         }
-    }, [newLocationCoords]);
+    }, [newLocationCoordsProps]);
 
     return (
         <div className="p-4 pt-20 h-full">
-            <h2 className="text-lg font-bold text-white">Location Details</h2>
-            <div>Coords: {JSON.stringify(locationCoords)}</div>
-            <button onClick={toggleSelection}>Määra kaardil</button>
+            <h2 className="text-lg font-bold text-white">Create new private location</h2>
+            <div className="text-white bg-gray-800 p-2 rounded-lg mb-4">
+                Coords: {newLocationCoords ? JSON.stringify(newLocationCoords) : "No coordinates set"}
+            </div>
+            <button
+                onClick={toggleCoordinateSelection}
+                className="bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-all duration-300"
+            >
+                Määra kaardil
+            </button>
         </div>
     );
 }

@@ -10,12 +10,12 @@ import {LOCATION_LAYER_DEFAULT_STYLE, SELECTED_LOCATION_STYLE_RECTANGLE} from ".
 
 interface MapViewProps {
     locationsDisplayedOnMap: MapLocation[];
-    onLocationSelection: (mapLocation: MapLocation | null) => void;
+    onLocationSelectionEvent: (mapLocation: MapLocation | null) => void;
     applyNewLocationCoords: (mapClickCoords: number[]) => void;
     applyObliqueAeroPhotoCoords: (newObliqueAeroPhotoCoords: number[] | null) => void;
 }
 
-export default function MapView({ locationsDisplayedOnMap, onLocationSelection, applyNewLocationCoords,applyObliqueAeroPhotoCoords }: MapViewProps) {
+export default function MapView({ locationsDisplayedOnMap, onLocationSelectionEvent, applyNewLocationCoords,applyObliqueAeroPhotoCoords }: MapViewProps) {
     const mapRef = useRef<Map | null>(null);
     const publicLocationsVectorSource = useRef(new VectorSource<Feature>());
     const privateLocationsVectorSource = useRef(new VectorSource<Feature>());
@@ -51,7 +51,6 @@ export default function MapView({ locationsDisplayedOnMap, onLocationSelection, 
             map.on('dblclick', (event: MapBrowserEvent<PointerEvent>) => {
                 applyObliqueAeroPhotoCoords(toLonLat(event.coordinate).reverse());
             });
-
             map.on('click', (event: MapBrowserEvent<PointerEvent>) => {
                 applyNewLocationCoords(toLonLat(event.coordinate).reverse());
             });
@@ -61,9 +60,9 @@ export default function MapView({ locationsDisplayedOnMap, onLocationSelection, 
             });
             selectInteraction.on("select", (event) => {
                 if (event.selected.length !== 0) {
-                    onLocationSelection(event.selected[0].get("location"));
+                    onLocationSelectionEvent(event.selected[0].get("location"));
                 } else if (event.deselected.length !== 0) {
-                    onLocationSelection(null);
+                    onLocationSelectionEvent(null);
                 }
             });
             map.addInteraction(selectInteraction);
