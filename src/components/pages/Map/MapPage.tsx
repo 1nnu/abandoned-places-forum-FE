@@ -12,6 +12,16 @@ type SidebarContent = "details" | "filtering" | "newLocation" | null;
 function MapPage() {
     const API_URL = import.meta.env.VITE_API_URL;
 
+    const [isCursorMapPinMode, setIsCursorMapPinMode] = useState<boolean>(false);
+    const [newLocationCoords, setNewLocationCoords] = useState<number[] | null>(null);
+    const toggleSetIsCursorMapPinMode = () => {
+        setIsCursorMapPinMode(prevState => !prevState);
+    };
+    const handleNewLocationCoords = (mapClickCoords: number[]) => {
+        setNewLocationCoords(mapClickCoords);
+    };
+
+
     const [obliqueAeroPhotoCoords, setObliqueAeroPhotoCoords] = useState<number[] | null>(null);
     const handleObliqueAeroPhotoCoords = (newObliqueAeroPhotoCoords: number[] | null) => {
         setObliqueAeroPhotoCoords(newObliqueAeroPhotoCoords);
@@ -67,11 +77,12 @@ function MapPage() {
     }, []);
 
     return (
-        <div className="cursor-map-pin">
+        <div className={isCursorMapPinMode ? 'cursor-map-pin' : ''}>
             <MapView
-                className="cursor-map-pin"
+
                 locationsDisplayedOnMap={locationsDisplayedOnMap}
                 onLocationSelection={handleLocationSelection}
+                applyNewLocationCoords={handleNewLocationCoords}
                 applyObliqueAeroPhotoCoords={handleObliqueAeroPhotoCoords}
             />
             <ObliqueAeroPhotoContainer
@@ -79,7 +90,7 @@ function MapPage() {
                 isSidebarOpen={isSidebarOpen}
             />
             <div
-                className="cursor-map-pin fixed top-0 right-0 h-full bg-black bg-opacity-70 transition-all duration-500 ease-in-out flex justify-center items-center"
+                className="fixed top-0 right-0 h-full bg-black bg-opacity-70 transition-all duration-500 ease-in-out flex justify-center items-center"
                 style={{transform: isSidebarOpen ? "translateX(0)" : "translateX(100%)", width: "500px"}}
             >
                 {sidebarContent === "details" && (
@@ -89,10 +100,15 @@ function MapPage() {
                     />
                 )}
                 {sidebarContent === "filtering" && (
-                    <FilteringSidebar applyFilters={handleLocationFiltering}/>
+                    <FilteringSidebar
+                        applyFilters={handleLocationFiltering}
+                    />
                 )}
                 {sidebarContent === "newLocation" && (
-                    <NewLocationSidebar applyFilters={handleLocationFiltering}/>
+                    <NewLocationSidebar
+                        newLocationCoords={newLocationCoords}
+                        toggleIsSelectingNewLocationCoords={toggleSetIsCursorMapPinMode}
+                    />
                 )}
             </div>
             <button
