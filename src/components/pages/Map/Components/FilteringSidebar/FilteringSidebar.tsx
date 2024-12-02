@@ -3,10 +3,10 @@ import emitter from "../../../../../emitter/eventEmitter.ts";
 import { MapLocation } from "../MapView/map-utils.ts";
 
 interface FilteringSidebarProps {
-  onApplyFilters: (filteredLocations: MapLocation[]) => void;
+  applyFilters: (filteredLocations: MapLocation[]) => void;
 }
 
-function FilteringSidebar({ onApplyFilters }: FilteringSidebarProps) {
+function FilteringSidebar({ applyFilters }: FilteringSidebarProps) {
   const API_URL = import.meta.env.VITE_API_URL;
   const [categories, setCategories] = useState<{ id: number; name: string }[]>(
     []
@@ -108,7 +108,7 @@ function FilteringSidebar({ onApplyFilters }: FilteringSidebarProps) {
 
       const data = await response.json();
 
-      onApplyFilters(data);
+      applyFilters(data);
     } catch (error) {
       console.error("Error fetching:", error);
     } finally {

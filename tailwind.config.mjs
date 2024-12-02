@@ -23,7 +23,10 @@ module.exports = {
   				border: 'hsl(var(--sidebar-border))',
   				ring: 'hsl(var(--sidebar-ring))'
   			}
-  		}
+  		},
+		cursor: {
+			'map-pin': 'url(src/assets/icons8-map-pin-24.png) 12 20, auto',
+		},
   	}
   },
   plugins: [require("tailwindcss-animate")],

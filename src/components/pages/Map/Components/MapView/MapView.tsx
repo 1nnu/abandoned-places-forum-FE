@@ -51,6 +51,10 @@ export default function MapView({ locationsDisplayedOnMap, onLocationSelection, 
                 applyObliqueAeroPhotoCoords(toLonLat(event.coordinate).reverse());
             });
 
+            map.on('click', (event: MapBrowserEvent<PointerEvent>) => {
+                console.log(toLonLat(event.coordinate).reverse());
+            });
+
             const selectInteraction = new Select({
                 style: [SELECTED_LOCATION_STYLE_RECTANGLE, LOCATION_LAYER_DEFAULT_STYLE],
             });
