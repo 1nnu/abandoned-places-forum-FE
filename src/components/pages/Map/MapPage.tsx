@@ -28,9 +28,6 @@ function MapPage() {
 
     const [selectedLocation, setSelectedLocation] = useState<MapLocation | null>(null);
     const [locationsDisplayedOnMap, setLocationsDisplayedOnMap] = useState<MapLocation[]>([]);
-    const handleLocationSelectionEvent = (mapLocation: MapLocation | null) => {
-        setSelectedLocation(mapLocation);
-    };
     const handleLocationFiltering = (filteredLocations: MapLocation[]) => {
         setLocationsDisplayedOnMap(filteredLocations);
     };
@@ -41,7 +38,7 @@ function MapPage() {
     const manageSidebar = (newContent: SidebarContent) => {
         setIsCursorMapPinMode(false);
         if (sidebarContent === newContent) {
-            setSidebarContent(SidebarContent.DETAILS); // default value - sidebar opens if there is a selectedLocation
+            setSidebarContent(SidebarContent.DETAILS); // default value - sidebar is open if there is a selected location
         } else {
             setSidebarContent(newContent);
         }
@@ -78,7 +75,7 @@ function MapPage() {
         <div className={isCursorMapPinMode ? 'cursor-map-pin' : ''}>
             <MapView
                 locationsDisplayedOnMap={locationsDisplayedOnMap}
-                onLocationSelectionEvent={handleLocationSelectionEvent}
+                setSelectedLocationInParent={setSelectedLocation}
                 applyNewLocationCoords={handleNewLocationCoords}
                 applyObliqueAeroPhotoCoords={handleObliqueAeroPhotoCoords}
             />
@@ -104,7 +101,7 @@ function MapPage() {
                 {sidebarContent === SidebarContent.NEW_LOCATION && (
                     <NewLocationSidebar
                         newLocationCoordsProps={newLocationCoords}
-                        setParentMapPinCursorState={setIsCursorMapPinMode}
+                        setMapPinCursorModeInParent={setIsCursorMapPinMode}
                     />
                 )}
             </div>

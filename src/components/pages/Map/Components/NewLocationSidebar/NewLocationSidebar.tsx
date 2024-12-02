@@ -2,20 +2,20 @@ import {useEffect, useState} from "react";
 
 interface NewLocationSidebarProps {
     newLocationCoordsProps: number[] | null;
-    setParentMapPinCursorState: (isMapPinCursorActive: boolean) => void;
+    setMapPinCursorModeInParent: (isMapPinCursorActive: boolean) => void;
 }
 
-function NewLocationSidebar({newLocationCoordsProps, setParentMapPinCursorState} : NewLocationSidebarProps) {
+function NewLocationSidebar({newLocationCoordsProps, setMapPinCursorModeInParent} : NewLocationSidebarProps) {
 
     const [newLocationCoords, setNewLocationCoords] = useState<number[] | null>(null);
     const [isCoordinateSelectionActive, setIsCoordinateSelectionActive] = useState<boolean>(false);
 
     function toggleCoordinateSelection() {
         if (isCoordinateSelectionActive) {
-            setParentMapPinCursorState(false);
+            setMapPinCursorModeInParent(false);
             setIsCoordinateSelectionActive(false);
         } else {
-            setParentMapPinCursorState(true);
+            setMapPinCursorModeInParent(true);
             setIsCoordinateSelectionActive(true);
         }
     }
@@ -23,7 +23,7 @@ function NewLocationSidebar({newLocationCoordsProps, setParentMapPinCursorState}
     useEffect(() => {
         if (isCoordinateSelectionActive && newLocationCoordsProps) {
             setIsCoordinateSelectionActive(false);
-            setParentMapPinCursorState(false);
+            setMapPinCursorModeInParent(false);
             setNewLocationCoords(newLocationCoordsProps);
         }
     }, [newLocationCoordsProps]);

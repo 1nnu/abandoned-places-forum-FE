@@ -10,12 +10,12 @@ import {LOCATION_LAYER_DEFAULT_STYLE, SELECTED_LOCATION_STYLE_RECTANGLE} from ".
 
 interface MapViewProps {
     locationsDisplayedOnMap: MapLocation[];
-    onLocationSelectionEvent: (mapLocation: MapLocation | null) => void;
+    setSelectedLocationInParent: (mapLocation: MapLocation | null) => void;
     applyNewLocationCoords: (mapClickCoords: number[]) => void;
     applyObliqueAeroPhotoCoords: (newObliqueAeroPhotoCoords: number[] | null) => void;
 }
 
-export default function MapView({ locationsDisplayedOnMap, onLocationSelectionEvent, applyNewLocationCoords,applyObliqueAeroPhotoCoords }: MapViewProps) {
+export default function MapView({ locationsDisplayedOnMap, setSelectedLocationInParent, applyNewLocationCoords,applyObliqueAeroPhotoCoords }: MapViewProps) {
     const mapRef = useRef<Map | null>(null);
     const publicLocationsVectorSource = useRef(new VectorSource<Feature>());
     const privateLocationsVectorSource = useRef(new VectorSource<Feature>());
@@ -60,9 +60,9 @@ export default function MapView({ locationsDisplayedOnMap, onLocationSelectionEv
             });
             selectInteraction.on("select", (event) => {
                 if (event.selected.length !== 0) {
-                    onLocationSelectionEvent(event.selected[0].get("location"));
+                    setSelectedLocationInParent(event.selected[0].get("location"));
                 } else if (event.deselected.length !== 0) {
-                    onLocationSelectionEvent(null);
+                    setSelectedLocationInParent(null);
                 }
             });
             map.addInteraction(selectInteraction);
