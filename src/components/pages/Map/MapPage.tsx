@@ -44,7 +44,7 @@ function MapPage() {
             setIsCursorMapPinMode(false);
         } else {
             setSidebarContent(newContent);
-            if (newContent != "newLocation") {
+            if (newContent !== "newLocation") {
                 setIsCursorMapPinMode(false);
             }
         }
