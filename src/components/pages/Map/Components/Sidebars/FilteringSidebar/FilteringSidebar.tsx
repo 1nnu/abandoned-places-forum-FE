@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import emitter from "../../../../../emitter/eventEmitter.ts";
-import { MapLocation } from "../MapView/map-utils.ts";
+import emitter from "../../../../../../emitter/eventEmitter.ts";
+import { MapLocation } from "../../MapView/map-utils.ts";
 
 interface FilteringSidebarProps {
   applyFilters: (filteredLocations: MapLocation[]) => void;

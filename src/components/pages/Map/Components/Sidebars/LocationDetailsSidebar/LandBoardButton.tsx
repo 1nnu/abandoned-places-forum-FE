@@ -1,4 +1,4 @@
-import {MapLocation} from "../MapView/map-utils";
+import {MapLocation} from "../../MapView/map-utils.ts";
 
 interface LandBoardButtonProps {
     location: MapLocation;

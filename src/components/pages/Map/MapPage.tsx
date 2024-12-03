@@ -1,13 +1,19 @@
 import {useEffect, useState} from "react";
 import MapView from "./Components/MapView/MapView.tsx";
-import LocationDetailsSidebar from "./Components/LocationDetailsSidebar/LocationDetailsSidebar.tsx";
-import FilteringSidebar from "./Components/FilteringSidebar/FilteringSidebar.tsx";
+import LocationDetailsSidebar from "./Components/Sidebars/LocationDetailsSidebar/LocationDetailsSidebar.tsx";
+import FilteringSidebar from "./Components/Sidebars/FilteringSidebar/FilteringSidebar.tsx";
 import {MapLocation} from "./Components/MapView/map-utils.ts";
 import emitter from "../../../emitter/eventEmitter.ts";
 import ObliqueAeroPhotoContainer from "./Components/MapView/ObliqueAeroPhotoContainer.tsx";
-import NewLocationSidebar from "./Components/NewLocationSidebar/NewLocationSidebar.tsx";
+import NewLocationSidebar from "./Components/Sidebars/NewLocationSidebar/NewLocationSidebar.tsx";
+import NewLocationButton from "./Components/Sidebars/NewLocationButton.tsx";
+import FilteringButton from "./Components/Sidebars/FilteringButton.tsx";
 
-enum SidebarContent { DETAILS, FILTERING, NEW_LOCATION }
+export enum SidebarContent {
+    DETAILS,
+    FILTERING,
+    NEW_LOCATION
+}
 
 function MapPage() {
 
@@ -106,39 +112,11 @@ function MapPage() {
                     />
                 )}
             </div>
-            <button
-                className="fixed top-32 right-0 border-4 border-black w-20 h-16 flex items-center justify-center rounded-l-lg transition-transform duration-500 ease-in-out"
-                style={{
-                    backgroundColor: sidebarContent === SidebarContent.NEW_LOCATION ? "rgba(256, 256, 256, 0.7)" : "rgba(0, 0, 0, 0.7)",
-                    transform: isSidebarOpen ? "translateX(-500px)" : "translateX(0)",
-                    color:  sidebarContent === SidebarContent.NEW_LOCATION ? "black" : "white",
-                }}
-                onClick={() => manageSidebar(SidebarContent.NEW_LOCATION)}
-            >
-                <span className="text-2xl mb-1">+</span>
-                <img
-                    src={`https://img.icons8.com/?size=100&id=85353&format=png&color=${
-                        sidebarContent === SidebarContent.NEW_LOCATION ? "000000" : "FFFFFF"
-                    }`}
-                    className="w-8 h-8 transition-none"
-                    alt="img"
-                />
+            <button onClick={() => manageSidebar(SidebarContent.NEW_LOCATION)}>
+                <NewLocationButton sidebarContent={sidebarContent} isSidebarOpen={isSidebarOpen}/>
             </button>
-            <button
-                className="fixed top-56 right-0 border-4 border-black text-white w-20 h-16 flex items-center justify-center rounded-l-lg transition-transform duration-500 ease-in-out"
-                style={{
-                    backgroundColor: sidebarContent === SidebarContent.FILTERING ? "rgba(256, 256, 256, 0.7)" : "rgba(0, 0, 0, 0.7)",
-                    transform: isSidebarOpen ? "translateX(-500px)" : "translateX(0)"
-                }}
-                onClick={() => manageSidebar(SidebarContent.FILTERING)}
-            >
-                <img
-                    src={`https://img.icons8.com/?size=100&id=10752&format=png&color=${
-                        sidebarContent === SidebarContent.FILTERING ? "000000" : "FFFFFF"
-                    }`}
-                    className="w-7 h-7 transition-none"
-                    alt="img"
-                />
+            <button onClick={() => manageSidebar(SidebarContent.FILTERING)}>
+                <FilteringButton sidebarContent={sidebarContent} isSidebarOpen={isSidebarOpen}/>
             </button>
         </div>
     );

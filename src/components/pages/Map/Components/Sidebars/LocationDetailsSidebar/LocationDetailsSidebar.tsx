@@ -1,4 +1,4 @@
-import {MapLocation} from "../MapView/map-utils.ts";
+import {MapLocation} from "../../MapView/map-utils.ts";
 import Bookmark from "./Bookmark.tsx";
 import LandBoardButton from "./LandBoardButton.tsx";
 
