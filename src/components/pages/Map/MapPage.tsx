@@ -34,7 +34,8 @@ function MapPage() {
 
 
     const [sidebarContent, setSidebarContent] = useState<SidebarContent>(SidebarContent.DETAILS);
-    const isSidebarOpen = (sidebarContent === SidebarContent.DETAILS && selectedLocation !== null) || sidebarContent !== SidebarContent.DETAILS;
+    const isSidebarOpen =
+        (sidebarContent === SidebarContent.DETAILS && selectedLocation !== null) || sidebarContent !== SidebarContent.DETAILS;
     const manageSidebar = (newContent: SidebarContent) => {
         setIsCursorMapPinMode(false);
         if (sidebarContent === newContent) {
@@ -106,18 +107,38 @@ function MapPage() {
                 )}
             </div>
             <button
-                className="fixed top-28 right-4 bg-blue-500 text-white px-4 py-2 rounded shadow z-100 transition-all duration-500 ease-in-out"
-                style={{transform: isSidebarOpen ? "translateX(-500px)" : "translateX(0)"}}
-                onClick={ () => manageSidebar(SidebarContent.NEW_LOCATION) }
+                className="fixed top-32 right-0 border-4 border-black w-20 h-16 flex items-center justify-center rounded-l-lg transition-transform duration-500 ease-in-out"
+                style={{
+                    backgroundColor: sidebarContent === SidebarContent.NEW_LOCATION ? "rgba(256, 256, 256, 0.7)" : "rgba(0, 0, 0, 0.7)",
+                    transform: isSidebarOpen ? "translateX(-500px)" : "translateX(0)",
+                    color:  sidebarContent === SidebarContent.NEW_LOCATION ? "black" : "white",
+                }}
+                onClick={() => manageSidebar(SidebarContent.NEW_LOCATION)}
             >
-                +
+                <span className="text-2xl mb-1">+</span>
+                <img
+                    src={`https://img.icons8.com/?size=100&id=85353&format=png&color=${
+                        sidebarContent === SidebarContent.NEW_LOCATION ? "000000" : "FFFFFF"
+                    }`}
+                    className="w-8 h-8 transition-none"
+                    alt="img"
+                />
             </button>
             <button
-                className="fixed top-44 right-4 bg-blue-500 text-white px-4 py-2 rounded shadow z-100 transition-all duration-500 ease-in-out"
-                style={{transform: isSidebarOpen ? "translateX(-500px)" : "translateX(0)"}}
-                onClick={ () => manageSidebar(SidebarContent.FILTERING) }
+                className="fixed top-56 right-0 border-4 border-black text-white w-20 h-16 flex items-center justify-center rounded-l-lg transition-transform duration-500 ease-in-out"
+                style={{
+                    backgroundColor: sidebarContent === SidebarContent.FILTERING ? "rgba(256, 256, 256, 0.7)" : "rgba(0, 0, 0, 0.7)",
+                    transform: isSidebarOpen ? "translateX(-500px)" : "translateX(0)"
+                }}
+                onClick={() => manageSidebar(SidebarContent.FILTERING)}
             >
-                Filter
+                <img
+                    src={`https://img.icons8.com/?size=100&id=10752&format=png&color=${
+                        sidebarContent === SidebarContent.FILTERING ? "000000" : "FFFFFF"
+                    }`}
+                    className="w-7 h-7 transition-none"
+                    alt="img"
+                />
             </button>
         </div>
     );
