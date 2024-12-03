@@ -21,6 +21,20 @@ export function generateLocationFeature(location: MapLocation) {
 }
 
 
+export interface LocationStatus {
+  id: number;
+  name: string;
+  colorHex: string;
+}
+
+
+export interface LocationCondition {
+  id: number;
+  name: string;
+  colorHex: string;
+}
+
+
 export interface LocationCategory {
   id: number;
   name: string;

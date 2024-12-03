@@ -33,9 +33,14 @@ function MapPage() {
 
 
     const [selectedLocation, setSelectedLocation] = useState<MapLocation | null>(null);
+
+
     const [locationsDisplayedOnMap, setLocationsDisplayedOnMap] = useState<MapLocation[]>([]);
     const handleLocationFiltering = (filteredLocations: MapLocation[]) => {
         setLocationsDisplayedOnMap(filteredLocations);
+    };
+    const displayNewLocation = (createdLocation: MapLocation) => {
+        setLocationsDisplayedOnMap(prevLocations => [...prevLocations, createdLocation]);
     };
 
 
@@ -109,6 +114,7 @@ function MapPage() {
                     <NewLocationSidebar
                         newLocationCoordsProps={newLocationCoords}
                         setMapPinCursorModeInParent={setIsCursorMapPinMode}
+                        displayNewLocation={displayNewLocation}
                     />
                 )}
             </div>
