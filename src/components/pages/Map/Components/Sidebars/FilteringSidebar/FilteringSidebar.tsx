@@ -23,8 +23,6 @@ function FilteringSidebar({ applyFilters }: FilteringSidebarProps) {
   );
   const [selectedStatus, setSelectedStatus] = useState<number | null>(null);
 
-  const userId = localStorage.getItem("userId");
-
   const fetchLocationCategories = async () => {
     try {
       emitter.emit("startLoading");
@@ -98,7 +96,7 @@ function FilteringSidebar({ applyFilters }: FilteringSidebarProps) {
     try {
       emitter.emit("startLoading");
       const userToken = localStorage.getItem("userToken");
-
+      console.log(queryParams);
       const response = await fetch(`${API_URL}/api/locations?${queryParams}`, {
         method: "GET",
         headers: {
@@ -138,12 +136,8 @@ function FilteringSidebar({ applyFilters }: FilteringSidebarProps) {
   };
 
   const handleApplyFilters = async () => {
-    if (!userId) {
-      throw new Error("User is not authenticated!");
-    }
     try {
       const queryParams = new URLSearchParams();
-      queryParams.append("userId", "e71a1997-5f06-4b3b-b5cd-bbbcec65d68"); // TODO: change to userId variable, for testing now
 
       if (selectedCategories.length > 0) {
         queryParams.append("mainCategoryId", String(selectedCategories[0]));
@@ -163,7 +157,7 @@ function FilteringSidebar({ applyFilters }: FilteringSidebarProps) {
         queryParams.append("statusId", String(selectedStatus));
       }
 
-      fetchLocationsWithParams(queryParams);
+      await fetchLocationsWithParams(queryParams);
     } catch (error) {
       console.error("Error applying filters:", error);
     }
