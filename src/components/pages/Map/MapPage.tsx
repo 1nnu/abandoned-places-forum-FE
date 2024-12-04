@@ -3,7 +3,7 @@ import MapView from "./Components/MapView/MapView.tsx";
 import LocationDetailsSidebar from "./Components/Sidebars/LocationDetailsSidebar/LocationDetailsSidebar.tsx";
 import FilteringSidebar from "./Components/Sidebars/FilteringSidebar/FilteringSidebar.tsx";
 import emitter from "../../../emitter/eventEmitter.ts";
-import ObliqueAeroPhotoContainer from "./Components/ObliqueAerophoto/ObliqueAeroPhotoContainer.tsx";
+import ObliqueAeroPhotoContainer from "./Components/ObliqueAeroPhoto/ObliqueAeroPhotoContainer.tsx";
 import NewLocationSidebar from "./Components/Sidebars/NewLocationSidebar/NewLocationSidebar.tsx";
 import NewLocationButton from "./Components/Sidebars/NewLocationButton.tsx";
 import FilteringButton from "./Components/Sidebars/FilteringButton.tsx";
@@ -11,12 +11,12 @@ import {MapLocation, SidebarContent} from "./Components/utils.ts";
 
 
 function MapPage() {
-
+    // TODO move to utils / config?
     const API_URL = import.meta.env.VITE_API_URL;
 
     const [isCursorMapPinMode, setIsCursorMapPinMode] = useState<boolean>(false);
     const [newLocationCoords, setNewLocationCoords] = useState<number[]>([]);
-    const handleNewLocationCoords = (mapClickCoords: number[]) => {
+    const handleMapClickCoords = (mapClickCoords: number[]) => {
         setNewLocationCoords(mapClickCoords);
     };
 
@@ -52,6 +52,7 @@ function MapPage() {
     };
 
     useEffect(() => {
+        // TODO move to service
         const fetchLocations = async () => {
             try {
                 emitter.emit("startLoading");
@@ -83,15 +84,17 @@ function MapPage() {
             <MapView
                 locationsDisplayedOnMap={locationsDisplayedOnMap}
                 setSelectedLocationInParent={setSelectedLocation}
-                applyNewLocationCoords={handleNewLocationCoords}
+                applyNewLocationCoords={handleMapClickCoords}
                 applyObliqueAeroPhotoCoords={handleObliqueAeroPhotoCoords}
             />
             <ObliqueAeroPhotoContainer
                 selectedCoords={obliqueAeroPhotoCoords}
                 isSidebarOpen={isSidebarOpen}
             />
+            // TODO debug: opening newLocationSidebar or FilteringSidebar causes white flash on the whole screen
             <div
-                className="fixed top-0 right-0 h-full bg-black bg-opacity-75 transition-all duration-500 ease-in-out flex justify-center items-center z-40"
+                className="fixed top-0 right-0 h-full bg-black bg-opacity-75 z-40
+                 flex justify-center items-center transition-all duration-500 ease-in-out"
                 style={{transform: isSidebarOpen ? "translateX(0)" : "translateX(100%)", width: "500px"}}
             >
                 {sidebarContent === SidebarContent.DETAILS && (

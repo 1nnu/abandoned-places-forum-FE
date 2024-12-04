@@ -51,12 +51,14 @@ export default function MapView({ locationsDisplayedOnMap, setSelectedLocationIn
                 }),
             });
 
+
             map.on('dblclick', (event: MapBrowserEvent<PointerEvent>) => {
                 applyObliqueAeroPhotoCoords(toLonLat(event.coordinate).reverse());
             });
             map.on('click', (event: MapBrowserEvent<PointerEvent>) => {
                 applyNewLocationCoords(toLonLat(event.coordinate).reverse());
             });
+
 
             const selectInteraction = new Select({
                 style: [SELECTED_LOCATION_STYLE_RECTANGLE, LOCATION_LAYER_DEFAULT_STYLE],
@@ -69,6 +71,7 @@ export default function MapView({ locationsDisplayedOnMap, setSelectedLocationIn
                 }
             });
             map.addInteraction(selectInteraction);
+
 
             mapRef.current = map;
 

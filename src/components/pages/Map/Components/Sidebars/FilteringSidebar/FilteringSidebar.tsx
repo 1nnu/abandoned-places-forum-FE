@@ -7,6 +7,7 @@ interface FilteringSidebarProps {
 }
 
 function FilteringSidebar({ applyFilters }: FilteringSidebarProps) {
+  // TODO refactor this whole component
   const API_URL = import.meta.env.VITE_API_URL;
   const [categories, setCategories] = useState<{ id: number; name: string }[]>(
     []

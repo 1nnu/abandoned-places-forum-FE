@@ -7,21 +7,21 @@ interface ObliqueAeroPhotoContainerProps {
 
 function ObliqueAeroPhotoContainer({ selectedCoords, isSidebarOpen }: ObliqueAeroPhotoContainerProps) {
 
-    const [iframeUrl, setIframeUrl] = useState<string>("");
+    const [iframeUrl, setIframeUrl] = useState<string | null>(null);
 
     useEffect(() => {
         if (selectedCoords != null) {
             setIframeUrl(`https://fotoladu.maaamet.ee/etak.php?B=${selectedCoords[0]}&L=${selectedCoords[1]}&fotoladu`);
         } else {
-            setIframeUrl("");
+            setIframeUrl(null);
         }
     }, [selectedCoords]);
 
     return (
         <div>
-            {iframeUrl != "" && (
+            {iframeUrl != null && (
                 <div
-                    className="absolute p-1.5 bg-white rounded-lg z-50"
+                    className="absolute p-0.5 bg-white rounded-lg z-50"
                     style={{
                         width: isSidebarOpen ? '50vw' : '70vw',
                         height: '75vh',
@@ -42,7 +42,7 @@ function ObliqueAeroPhotoContainer({ selectedCoords, isSidebarOpen }: ObliqueAer
                         absolute -top-6 -right-6 w-8 h-8 bg-red-500 rounded-full shadow-lg
                          flex items-center justify-center text-white font-bold cursor-pointer
                           transition-transform transform hover:scale-110 z-50"
-                        onClick={() => setIframeUrl('')}
+                        onClick={() => setIframeUrl(null)}
                     >
                         X
                     </button>

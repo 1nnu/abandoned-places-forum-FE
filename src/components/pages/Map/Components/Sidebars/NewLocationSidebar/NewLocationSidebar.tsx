@@ -18,6 +18,7 @@ interface NewLocationSidebarProps {
 
 
 function NewLocationSidebar({newLocationCoordsProps, setMapPinCursorModeInParent, displayCreatedLocation} : NewLocationSidebarProps) {
+    // TODO move to config
     const API_URL = import.meta.env.VITE_API_URL;
 
 
@@ -44,6 +45,7 @@ function NewLocationSidebar({newLocationCoordsProps, setMapPinCursorModeInParent
     const [locationCategories, setLocationCategories] = useState<LocationAttributeFormOptions[]>([]);
     const [locationConditions, setLocationConditions] = useState<LocationAttributeFormOptions[]>([]);
     const [locationStatuses, setLocationStatuses] = useState<LocationAttributeFormOptions[]>([]);
+    // TODO move to separate service or create a Context for MapPage?
     const fetchLocationAttributes = async () => {
         try {
             emitter.emit("startLoading");
@@ -79,6 +81,9 @@ function NewLocationSidebar({newLocationCoordsProps, setMapPinCursorModeInParent
             emitter.emit("stopLoading");
         }
     };
+    useEffect(() => {
+        fetchLocationAttributes();
+    }, []);
 
 
     const [newLocationFormData , setNewLocationFormData] = useState<NewLocationFormData>({
@@ -96,7 +101,7 @@ function NewLocationSidebar({newLocationCoordsProps, setMapPinCursorModeInParent
             ...prevData,
             mainCategoryId: selectedOption ? selectedOption.value : null,
         }));
-        setNewLocationFormData((prevData) => ({
+        setNewLocationFormData((prevData) => ({  // remove duplicate subCategories
             ...prevData,
             subCategoryIds: prevData.subCategoryIds.filter(id => id !== (selectedOption?.value || null)),
         }));
@@ -121,6 +126,7 @@ function NewLocationSidebar({newLocationCoordsProps, setMapPinCursorModeInParent
         }));
     };
 
+
     // TODO - create separate service ?
     const createNewLocation = async () => {
         setIsCoordinateSelectionActive(false);
@@ -130,7 +136,7 @@ function NewLocationSidebar({newLocationCoordsProps, setMapPinCursorModeInParent
             || newLocationFormData.mainCategoryId == null
             || newLocationFormData.conditionId == null
             || newLocationFormData.statusId == null) {
-            alert("Fill all required fields."); // TODO toast
+            alert("Fill all required fields."); // TODO replace with toast
             return;
         }
 
@@ -169,12 +175,9 @@ function NewLocationSidebar({newLocationCoordsProps, setMapPinCursorModeInParent
         }
     };
 
-    useEffect(() => {
-        fetchLocationAttributes();
-    }, []);
-
 
     return (
+        // TODO improve scalability on "short" laptop screens
         <div className="flex flex-col p-12 pt-12 h-full w-full overflow-y-auto">
             <h2 className="text-2xl font-bold text-white">Lisa privaatsele kaardile</h2>
             <div className="flex flex-col gap-3 text-white pt-8 rounded-lg mb-5">
