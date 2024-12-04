@@ -1,6 +1,6 @@
-import {MapLocation} from "../../MapView/map-utils.ts";
 import Bookmark from "./Bookmark.tsx";
 import LandBoardButton from "./LandBoardButton.tsx";
+import {MapLocation} from "../../utils.ts";
 
 interface LocationDetailsSidebarProps {
   selectedLocation: MapLocation | null;

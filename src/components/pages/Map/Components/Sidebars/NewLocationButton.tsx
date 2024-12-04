@@ -1,7 +1,12 @@
-import {SidebarContent} from "../../MapPage.tsx";
+import {SidebarContent} from "../utils.ts";
+
+interface NewLocationButtonProps {
+    sidebarContent: SidebarContent;
+    isSidebarOpen: boolean;
+}
 
 
-function NewLocationButton({ sidebarContent, isSidebarOpen }) {
+function NewLocationButton({ sidebarContent, isSidebarOpen }: NewLocationButtonProps) {
     return (
         <div
             className="fixed top-32 right-0 border-4 border-black w-20 h-16 flex items-center justify-center rounded-l-lg transition-transform duration-500 ease-in-out"
@@ -13,7 +18,7 @@ function NewLocationButton({ sidebarContent, isSidebarOpen }) {
         >
             {/*Didn't find a suitable (free) icon*/}
             <img
-                src={`https://img.icons8.com/?size=100&id=85353&format=png&color=${sidebarContent === SidebarContent.NEW_LOCATION ? '000000' : 'FFFFFF'}`}
+                src={`https://img.icons8.com/?size=256&id=85353&format=png&color=${sidebarContent === SidebarContent.NEW_LOCATION ? '000000' : 'FFFFFF'}`}
                 className="w-8 h-8 transition-none"
                 alt="New Location Icon"
             />

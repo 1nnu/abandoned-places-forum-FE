@@ -21,7 +21,7 @@ function ObliqueAeroPhotoContainer({ selectedCoords, isSidebarOpen }: ObliqueAer
         <div>
             {iframeUrl != "" && (
                 <div
-                    className="absolute p-1.5 bg-white rounded-lg"
+                    className="absolute p-1.5 bg-white rounded-lg z-50"
                     style={{
                         width: isSidebarOpen ? '50vw' : '70vw',
                         height: '75vh',

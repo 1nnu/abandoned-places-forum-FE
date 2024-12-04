@@ -1,43 +1,19 @@
 import {useEffect, useState} from "react";
-import {LocationCategory, LocationCondition, LocationStatus, MapLocation} from "../../MapView/map-utils.ts";
-import Select from 'react-select';
+import Select, {MultiValue} from 'react-select';
 import emitter from "../../../../../../emitter/eventEmitter.ts";
+import {
+    LocationAttributeFormOptions,
+    LocationAttributes,
+    LocationCreateDto,
+    MapLocation,
+    NewLocationFormData
+} from "../../utils.ts";
 
-interface LocationAttributes {
-    categories: LocationCategory[];
-    conditions: LocationCondition[];
-    statuses: LocationStatus[];
-}
 
 interface NewLocationSidebarProps {
     newLocationCoordsProps: number[] | null;
     setMapPinCursorModeInParent: (isMapPinCursorActive: boolean) => void;
     displayCreatedLocation: (createdLocation: MapLocation) => void;
-}
-
-interface LocationCreateDto {
-    name: string;
-    lon: number;
-    lat: number;
-    mainCategoryId: number | null;
-    subCategoryIds: number[];
-    conditionId: number | null;
-    statusId: number | null;
-    additionalInformation: string;
-}
-
-interface NewLocationFormData {
-    name: string;
-    mainCategoryId: number | null;
-    subCategoryIds: number[];
-    conditionId: number | null;
-    statusId: number | null;
-    additionalInformation: string;
-}
-
-interface LocationAttributeFormOptions {
-    label: string,
-    value : number,
 }
 
 
@@ -115,7 +91,7 @@ function NewLocationSidebar({newLocationCoordsProps, setMapPinCursorModeInParent
     });
 
 
-    const handleMainCategoryChange = (selectedOption) => {
+    const handleMainCategoryChange = (selectedOption: LocationAttributeFormOptions | null) => {
         setNewLocationFormData((prevData) => ({
             ...prevData,
             mainCategoryId: selectedOption ? selectedOption.value : null,
@@ -125,27 +101,27 @@ function NewLocationSidebar({newLocationCoordsProps, setMapPinCursorModeInParent
             subCategoryIds: prevData.subCategoryIds.filter(id => id !== (selectedOption?.value || null)),
         }));
     };
-    const handleSubCategoryChange = (selectedOptions) => {
+    const handleSubCategoryChange = (selectedOptions: MultiValue<LocationAttributeFormOptions>) => {
         const selectedIds = selectedOptions.map((option) => option.value)
         setNewLocationFormData((prevData) => ({
             ...prevData,
             subCategoryIds: selectedIds,
         }));
     };
-    const handleConditionChange = (selectedOption) => {
+    const handleConditionChange = (selectedOption: LocationAttributeFormOptions | null) => {
         setNewLocationFormData((prevData) => ({
             ...prevData,
             conditionId: selectedOption ? selectedOption.value : null,
         }));
     };
-    const handleStatusChange = (selectedOption) => {
+    const handleStatusChange = (selectedOption: LocationAttributeFormOptions | null) => {
         setNewLocationFormData((prevData) => ({
             ...prevData,
             statusId: selectedOption ? selectedOption.value : null,
         }));
     };
 
-
+    // TODO - create separate service ?
     const createNewLocation = async () => {
         setIsCoordinateSelectionActive(false);
         setMapPinCursorModeInParent(false);
@@ -154,7 +130,7 @@ function NewLocationSidebar({newLocationCoordsProps, setMapPinCursorModeInParent
             || newLocationFormData.mainCategoryId == null
             || newLocationFormData.conditionId == null
             || newLocationFormData.statusId == null) {
-            alert("Fill all required fields.");
+            alert("Fill all required fields."); // TODO toast
             return;
         }
 
@@ -182,7 +158,7 @@ function NewLocationSidebar({newLocationCoordsProps, setMapPinCursorModeInParent
             if (response.ok) {
                 displayCreatedLocation(data);
             } else {
-                alert(data);
+                alert(data); // TODO toast
                 console.error("Error creating location:", data.toString());
             }
         } catch (error) {

@@ -1,7 +1,12 @@
-import {SidebarContent} from "../../MapPage.tsx";
+import {SidebarContent} from "../utils.ts";
+
+interface FilteringButtonProps {
+    sidebarContent: SidebarContent;
+    isSidebarOpen: boolean;
+}
 
 
-function FilteringButton({ sidebarContent, isSidebarOpen }) {
+function FilteringButton({ sidebarContent, isSidebarOpen }: FilteringButtonProps) {
     return (
         <div
             className="fixed top-56 right-0 border-4 border-black text-white w-20 h-16 flex items-center justify-center rounded-l-lg transition-transform duration-500 ease-in-out"

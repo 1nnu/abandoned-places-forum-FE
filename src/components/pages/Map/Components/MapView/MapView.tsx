@@ -5,8 +5,10 @@ import {useEffect, useRef} from "react";
 import {toLonLat} from "ol/proj";
 import VectorSource from "ol/source/Vector";
 import VectorLayer from "ol/layer/Vector";
-import {BASE_MAP_LAYER, generateLocationFeature, INITIAL_MAP_VIEW_CENTRE_MERCATOR, MapLocation} from "./map-utils.ts";
-import {LOCATION_LAYER_DEFAULT_STYLE, SELECTED_LOCATION_STYLE_RECTANGLE} from "./map-styles.ts";
+import {BASE_MAP_LAYER, generateLocationFeature, INITIAL_MAP_VIEW_CENTRE_MERCATOR} from "./mapUtils.ts";
+import {LOCATION_LAYER_DEFAULT_STYLE, SELECTED_LOCATION_STYLE_RECTANGLE} from "./mapStyles.ts";
+import {MapLocation} from "../utils.ts";
+
 
 interface MapViewProps {
     locationsDisplayedOnMap: MapLocation[];
@@ -14,6 +16,7 @@ interface MapViewProps {
     applyNewLocationCoords: (mapClickCoords: number[]) => void;
     applyObliqueAeroPhotoCoords: (newObliqueAeroPhotoCoords: number[] | null) => void;
 }
+
 
 export default function MapView({ locationsDisplayedOnMap, setSelectedLocationInParent, applyNewLocationCoords,applyObliqueAeroPhotoCoords }: MapViewProps) {
     const mapRef = useRef<Map | null>(null);

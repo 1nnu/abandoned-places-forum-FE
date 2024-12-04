@@ -2,18 +2,13 @@ import {useEffect, useState} from "react";
 import MapView from "./Components/MapView/MapView.tsx";
 import LocationDetailsSidebar from "./Components/Sidebars/LocationDetailsSidebar/LocationDetailsSidebar.tsx";
 import FilteringSidebar from "./Components/Sidebars/FilteringSidebar/FilteringSidebar.tsx";
-import {MapLocation} from "./Components/MapView/map-utils.ts";
 import emitter from "../../../emitter/eventEmitter.ts";
-import ObliqueAeroPhotoContainer from "./Components/MapView/ObliqueAeroPhotoContainer.tsx";
+import ObliqueAeroPhotoContainer from "./Components/ObliqueAerophoto/ObliqueAeroPhotoContainer.tsx";
 import NewLocationSidebar from "./Components/Sidebars/NewLocationSidebar/NewLocationSidebar.tsx";
 import NewLocationButton from "./Components/Sidebars/NewLocationButton.tsx";
 import FilteringButton from "./Components/Sidebars/FilteringButton.tsx";
+import {MapLocation, SidebarContent} from "./Components/utils.ts";
 
-export enum SidebarContent {
-    DETAILS,
-    FILTERING,
-    NEW_LOCATION
-}
 
 function MapPage() {
 
@@ -50,7 +45,7 @@ function MapPage() {
     const manageSidebar = (newContent: SidebarContent) => {
         setIsCursorMapPinMode(false);
         if (sidebarContent === newContent) {
-            setSidebarContent(SidebarContent.DETAILS); // default value - sidebar is open if there is a selected location
+            setSidebarContent(SidebarContent.DETAILS); // default value - sidebar is open only if selectedLocation != null
         } else {
             setSidebarContent(newContent);
         }
