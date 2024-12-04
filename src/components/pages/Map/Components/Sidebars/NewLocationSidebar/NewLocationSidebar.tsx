@@ -1,8 +1,6 @@
 import {useEffect, useState} from "react";
-import {LocationCategory, MapLocation} from "../../MapView/map-utils.ts";
-import {LocationCondition} from "../../MapView/map-utils.ts";
-import {LocationStatus} from "../../MapView/map-utils.ts";
-
+import {LocationCategory, LocationCondition, LocationStatus, MapLocation} from "../../MapView/map-utils.ts";
+import Select from 'react-select';
 import emitter from "../../../../../../emitter/eventEmitter.ts";
 
 interface LocationAttributes {
@@ -14,10 +12,31 @@ interface LocationAttributes {
 interface NewLocationSidebarProps {
     newLocationCoordsProps: number[] | null;
     setMapPinCursorModeInParent: (isMapPinCursorActive: boolean) => void;
-    displayNewLocation: (createdLocation: MapLocation) => void;
+    displayCreatedLocation: (createdLocation: MapLocation) => void;
 }
 
-function NewLocationSidebar({newLocationCoordsProps, setMapPinCursorModeInParent, displayNewLocation} : NewLocationSidebarProps) {
+interface LocationCreateDto {
+    name: string;
+    lon: number;
+    lat: number;
+    mainCategoryId: number | null;
+    subCategoryIds: number[];
+    conditionId: number | null;
+    statusId: number | null;
+    additionalInformation: string;
+}
+
+interface NewLocationFormData {
+    name: string;
+    mainCategoryId: number | null;
+    subCategoryIds: number[];
+    conditionId: number | null;
+    statusId: number | null;
+    additionalInformation: string;
+}
+
+
+function NewLocationSidebar({newLocationCoordsProps, setMapPinCursorModeInParent, displayCreatedLocation} : NewLocationSidebarProps) {
     const API_URL = import.meta.env.VITE_API_URL;
 
 
@@ -42,37 +61,8 @@ function NewLocationSidebar({newLocationCoordsProps, setMapPinCursorModeInParent
 
 
     const [locationCategories, setLocationCategories] = useState<LocationCategory[]>([]);
-    const [locationStatuses, setLocationStatuses] = useState<LocationStatus[]>([]);
     const [locationConditions, setLocationConditions] = useState<LocationCondition[]>([]);
-    const [newLocationFormData, setNewLocationFormData] = useState({
-        name: "",
-        mainCategoryId: "",
-        subCategoryIds: [],
-        conditionId: "",
-        statusId: "",
-        additionalInformation: "",
-        minRequiredPointsToView: "",
-    });
-
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        setNewLocationFormData((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }));
-    };
-
-    const handleSubCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const options = Array.from(e.target.selectedOptions, (option) => parseInt(option.value, 10));
-        setNewLocationFormData((prevData) => ({
-            ...prevData,
-            subCategoryIds: options,
-        }));
-    };
-
-
-    // Fetch dropdown menu content
+    const [locationStatuses, setLocationStatuses] = useState<LocationStatus[]>([]);
     const fetchLocationAttributes = async () => {
         try {
             emitter.emit("startLoading");
@@ -99,14 +89,69 @@ function NewLocationSidebar({newLocationCoordsProps, setMapPinCursorModeInParent
         }
     };
 
-    // Submit form data to create location
-    const handleCreateLocation = async () => {
-        if (!newLocationCoords) {
-            alert("Please select coordinates on the map.");
+
+    const [newLocationFormData , setNewLocationFormData] = useState<NewLocationFormData>({
+        name: "",
+        mainCategoryId: null,
+        subCategoryIds: [],
+        conditionId: null,
+        statusId: null,
+        additionalInformation: ""
+    });
+
+    const locationCategoryOptions = locationCategories.map((subCategory) => ({
+        value: subCategory.id,
+        label: subCategory.name,
+    }));
+    const conditionOptions = locationConditions.map((condition) => ({
+        value: condition.id,
+        label: condition.name,
+    }));
+    const statusOptions = locationStatuses.map((status) => ({
+        value: status.id,
+        label: status.name,
+    }));
+
+    const handleMainCategoryChange = (selectedOption) => {
+        setNewLocationFormData((prevData) => ({
+            ...prevData,
+            mainCategoryId: selectedOption ? selectedOption.value : null,
+        }));
+    };
+    const handleSubCategoryChange = (selectedOptions) => {
+        const selectedIds = selectedOptions.map((option) => option.value)
+        setNewLocationFormData((prevData) => ({
+            ...prevData,
+            subCategoryIds: selectedIds,
+        }));
+    };
+    const handleConditionChange = (selectedOption) => {
+        setNewLocationFormData((prevData) => ({
+            ...prevData,
+            conditionId: selectedOption ? selectedOption.value : null,
+        }));
+    };
+    const handleStatusChange = (selectedOption) => {
+        setNewLocationFormData((prevData) => ({
+            ...prevData,
+            statusId: selectedOption ? selectedOption.value : null,
+        }));
+    };
+
+
+    const createNewLocation = async () => {
+        setIsCoordinateSelectionActive(false);
+        setMapPinCursorModeInParent(false);
+
+        if (!newLocationCoords || newLocationFormData.name.length < 4
+            || newLocationFormData.mainCategoryId == null
+            || newLocationFormData.conditionId == null
+            || newLocationFormData.statusId == null) {
+            alert("Fill all required fields.");
             return;
         }
 
-        const createLocationPayload = {
+        const newLocationPayload: LocationCreateDto = {
             ...newLocationFormData,
             lat: newLocationCoords[0],
             lon: newLocationCoords[1],
@@ -122,22 +167,19 @@ function NewLocationSidebar({newLocationCoordsProps, setMapPinCursorModeInParent
                     Authorization: `Bearer ${userToken}`,
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(createLocationPayload),
+                body: JSON.stringify(newLocationPayload),
             });
 
-            const data = await response.json();
+            const data: MapLocation = await response.json();
 
-            if (response.ok || data !== null) {
-                displayNewLocation(data);
+            if (response.ok) {
+                displayCreatedLocation(data);
             } else {
-                const error = await response.json();
-                console.error("Error creating location:", error);
-                alert("Failed to create location.");
+                console.error("Error creating location:", data);
             }
         } catch (error) {
             console.error("Error creating location:", error);
-            alert("Failed to create location.");
-            emitter.emit("stopLoading");
+            alert("Failed to create location."); // TODO replace with toast
         } finally {
             emitter.emit("stopLoading");
         }
@@ -149,103 +191,108 @@ function NewLocationSidebar({newLocationCoordsProps, setMapPinCursorModeInParent
 
 
     return (
-        <div className="p-4 pt-20 h-full">
-            <h2 className="text-lg font-bold text-white">Create new private location</h2>
-            <div className="text-white bg-gray-800 p-2 rounded-lg mb-4">
-                Coords: {newLocationCoords ? JSON.stringify(newLocationCoords) : "No coordinates set"}
+        <div className="p-12 pt-28 h-full w-full">
+            <h2 className="text-xl font-bold text-white">Lisa privaatsele kaardile</h2>
+            <div className="flex flex-col gap-3 text-white pt-6 rounded-lg mb-4">
+                <div className="flex flex-col items-start gap-x-4 gap-y-2">
+                    <span>Asukoht: *</span>
+                    <span>
+                        {newLocationCoords ? (
+                            <>
+                                <span className="mr-3">{newLocationCoords[0].toFixed(6)}</span>
+                                <span>{newLocationCoords[1].toFixed(6)}</span>
+                            </>
+                        ) : (
+                            "-"
+                        )}
+                    </span>
+                </div>
+                <button
+                    onClick={toggleCoordinateSelection}
+                    className={`flex flex-row items-center text-white border-2 bg-black justify-center px-2 py-1 max-w-40 rounded transition-all duration-200 ${
+                        isCoordinateSelectionActive
+                            ? "border-white"
+                            : "border-black"
+                    }`}
+                >
+                    <span>Määra kaardil</span>
+                    <img
+                        src="https://img.icons8.com/?size=100&id=85353&format=png&color=FFFFFF"
+                        className="w-5 h-5 ml-1 transition-none"
+                        alt="New Location Icon"
+                    />
+                </button>
             </div>
-            <button
-                onClick={toggleCoordinateSelection}
-                className="bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-all duration-300"
-            >
-                Määra kaardil
-            </button>
-
-            <form>
+            <form className="text-white pt-4">
+                Nimi: *
                 <input
                     type="text"
                     name="name"
                     value={newLocationFormData.name}
-                    onChange={handleInputChange}
-                    placeholder="Name"
-                    className="w-full mb-4 p-2 rounded"
+                    onChange={(e) =>
+                        setNewLocationFormData((prevData): NewLocationFormData => ({
+                            ...prevData, name: e.target.value,
+                        }))
+                    }
+                    placeholder="Asukoht_1"
+                    className="w-full mb-4 p-2 rounded text-black"
                 />
                 {locationCategories && (
                     <>
-                        <select
-                            name="mainCategoryId"
-                            value={newLocationFormData.mainCategoryId}
-                            onChange={handleInputChange}
-                            className="w-full mb-4 p-2 rounded"
-                        >
-                            <option value="">Select Main Category</option>
-                            {locationCategories.map((category: LocationCategory) => (
-                                <option key={category.id} value={category.id}>
-                                    {category.name}
-                                </option>
-                            ))}
-                        </select>
-                        <select
-                            name="subCategoryIds"
-                            multiple
+                        Põhikategooria: *
+                        <Select
+                            options={locationCategoryOptions}
+                            value={locationCategoryOptions.find(option => option.value === newLocationFormData.mainCategoryId) || null}
+                            onChange={handleMainCategoryChange}
+                            className="text-black mb-4"
+                            placeholder=""
+                            isClearable
+                        />
+                        Alamkategooriad (max 5):
+                        <Select
+                            options={locationCategoryOptions}
+                            isMulti
+                            className="text-black mb-4"
                             onChange={handleSubCategoryChange}
-                            className="w-full mb-4 p-2 rounded"
-                        >
-                            {locationCategories.map((subCategory: LocationCategory) => (
-                                <option key={subCategory.id} value={subCategory.id}>
-                                    {subCategory.name}
-                                </option>
-                            ))}
-                        </select>
-                        <select
-                            name="conditionId"
-                            value={newLocationFormData.conditionId}
-                            onChange={handleInputChange}
-                            className="w-full mb-4 p-2 rounded"
-                        >
-                            <option value="">Select Condition</option>
-                            {locationConditions.map((condition: LocationCondition) => (
-                                <option key={condition.id} value={condition.id}>
-                                    {condition.name}
-                                </option>
-                            ))}
-                        </select>
-                        <select
-                            name="statusId"
-                            value={newLocationFormData.statusId}
-                            onChange={handleInputChange}
-                            className="w-full mb-4 p-2 rounded"
-                        >
-                            <option value="">Select Status</option>
-                            {locationStatuses.map((status: LocationStatus) => (
-                                <option key={status.id} value={status.id}>
-                                    {status.name}
-                                </option>
-                            ))}
-                        </select>
+                            placeholder=""
+                        />
+                        Seisukord: *
+                        <Select
+                            options={conditionOptions}
+                            value={conditionOptions.find(option => option.value === newLocationFormData.mainCategoryId) || null}
+                            onChange={handleConditionChange}
+                            className="text-black mb-4"
+                            placeholder=""
+                            isClearable
+                        />
+                        Ligipääsetavus: *
+                        <Select
+                            options={statusOptions}
+                            value={statusOptions.find(option => option.value === newLocationFormData.mainCategoryId) || null}
+                            onChange={handleStatusChange}
+                            className="text-black mb-4"
+                            placeholder=""
+                            isClearable
+                        />
                     </>
                 )}
+                Lisainfo:
                 <textarea
                     name="additionalInformation"
                     value={newLocationFormData.additionalInformation}
-                    onChange={handleInputChange}
-                    placeholder="Additional Information"
-                    className="w-full mb-4 p-2 rounded"
-                />
-                <input
-                    type="number"
-                    name="minRequiredPointsToView"
-                    value={newLocationFormData.minRequiredPointsToView}
-                    onChange={handleInputChange}
-                    placeholder="Minimum Points to View"
-                    className="w-full mb-4 p-2 rounded"
+                    onChange={(e) =>
+                        setNewLocationFormData((prevData): NewLocationFormData => ({
+                            ...prevData, additionalInformation: e.target.value,
+                        }))
+                    }
+                    className="w-full text-black mb-8 p-2 rounded"
                 />
             </form>
             <button
-                onClick={handleCreateLocation}
-                className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-all duration-300"
+                onClick={createNewLocation}
+                className="bg-black text-white px-4 py-1 rounded border-2 border-black hover:border-white"
             >
-                Apply
+                Lisa asukoht
             </button>
         </div>
     );

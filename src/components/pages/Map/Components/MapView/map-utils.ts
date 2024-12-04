@@ -48,7 +48,7 @@ export interface MapLocation {
   lon: number;
   lat: number;
   mainCategory: LocationCategory;
-  locationCategory: Array<LocationCategory>;
+  locationCategory: LocationCategory[];
   condition: string;
   status: string;
   additionalInformation: string;

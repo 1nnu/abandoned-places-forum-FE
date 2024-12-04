@@ -169,7 +169,7 @@ function FilteringSidebar({ applyFilters }: FilteringSidebarProps) {
   };
 
   return (
-    <div className="p-4 text-white grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="p-8 text-white grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <h2 className="text-lg font-bold mb-4 col-span-3">Filter Locations</h2>
 
       {/* Categories Section */}
