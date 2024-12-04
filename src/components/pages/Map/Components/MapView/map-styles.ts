@@ -3,8 +3,8 @@ import CircleStyle from "ol/style/Circle";
 
 export const LOCATION_LAYER_DEFAULT_STYLE = new Style({
     image: new Icon({
-        src: "https://img.icons8.com/?size=512w&id=7880&format=png",
-        scale: 0.06,
+        src: "https://img.icons8.com/?size=32&id=85353&format=png&color=2196f3",
+        scale: 1,
     }),
 });
 

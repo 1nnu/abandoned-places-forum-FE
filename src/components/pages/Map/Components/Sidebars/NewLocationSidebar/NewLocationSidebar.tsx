@@ -35,6 +35,11 @@ interface NewLocationFormData {
     additionalInformation: string;
 }
 
+interface LocationAttributeFormOptions {
+    label: string,
+    value : number,
+}
+
 
 function NewLocationSidebar({newLocationCoordsProps, setMapPinCursorModeInParent, displayCreatedLocation} : NewLocationSidebarProps) {
     const API_URL = import.meta.env.VITE_API_URL;
@@ -60,9 +65,9 @@ function NewLocationSidebar({newLocationCoordsProps, setMapPinCursorModeInParent
     }, [newLocationCoordsProps]);
 
 
-    const [locationCategories, setLocationCategories] = useState<LocationCategory[]>([]);
-    const [locationConditions, setLocationConditions] = useState<LocationCondition[]>([]);
-    const [locationStatuses, setLocationStatuses] = useState<LocationStatus[]>([]);
+    const [locationCategories, setLocationCategories] = useState<LocationAttributeFormOptions[]>([]);
+    const [locationConditions, setLocationConditions] = useState<LocationAttributeFormOptions[]>([]);
+    const [locationStatuses, setLocationStatuses] = useState<LocationAttributeFormOptions[]>([]);
     const fetchLocationAttributes = async () => {
         try {
             emitter.emit("startLoading");
@@ -78,9 +83,19 @@ function NewLocationSidebar({newLocationCoordsProps, setMapPinCursorModeInParent
 
             const data: LocationAttributes = await response.json();
 
-            setLocationCategories(data.categories);
-            setLocationConditions(data.conditions);
-            setLocationStatuses(data.statuses);
+            setLocationCategories(data.categories.map((category): LocationAttributeFormOptions => ({
+                value: category.id,
+                label: category.name,
+            })));
+            setLocationConditions(data.conditions.map((condition): LocationAttributeFormOptions => ({
+                value: condition.id,
+                label: condition.name,
+            })));
+            setLocationStatuses(data.statuses.map((status): LocationAttributeFormOptions => ({
+                value: status.id,
+                label: status.name,
+            })));
+
         } catch (error) {
             emitter.emit("stopLoading");
             console.error("Error fetching conditions:", error);
@@ -99,23 +114,15 @@ function NewLocationSidebar({newLocationCoordsProps, setMapPinCursorModeInParent
         additionalInformation: ""
     });
 
-    const locationCategoryOptions = locationCategories.map((subCategory) => ({
-        value: subCategory.id,
-        label: subCategory.name,
-    }));
-    const conditionOptions = locationConditions.map((condition) => ({
-        value: condition.id,
-        label: condition.name,
-    }));
-    const statusOptions = locationStatuses.map((status) => ({
-        value: status.id,
-        label: status.name,
-    }));
 
     const handleMainCategoryChange = (selectedOption) => {
         setNewLocationFormData((prevData) => ({
             ...prevData,
             mainCategoryId: selectedOption ? selectedOption.value : null,
+        }));
+        setNewLocationFormData((prevData) => ({
+            ...prevData,
+            subCategoryIds: prevData.subCategoryIds.filter(id => id !== (selectedOption?.value || null)),
         }));
     };
     const handleSubCategoryChange = (selectedOptions) => {
@@ -175,7 +182,8 @@ function NewLocationSidebar({newLocationCoordsProps, setMapPinCursorModeInParent
             if (response.ok) {
                 displayCreatedLocation(data);
             } else {
-                console.error("Error creating location:", data);
+                alert(data);
+                console.error("Error creating location:", data.toString());
             }
         } catch (error) {
             console.error("Error creating location:", error);
@@ -191,9 +199,9 @@ function NewLocationSidebar({newLocationCoordsProps, setMapPinCursorModeInParent
 
 
     return (
-        <div className="p-12 pt-28 h-full w-full">
-            <h2 className="text-xl font-bold text-white">Lisa privaatsele kaardile</h2>
-            <div className="flex flex-col gap-3 text-white pt-6 rounded-lg mb-4">
+        <div className="flex flex-col p-12 pt-12 h-full w-full overflow-y-auto">
+            <h2 className="text-2xl font-bold text-white">Lisa privaatsele kaardile</h2>
+            <div className="flex flex-col gap-3 text-white pt-8 rounded-lg mb-5">
                 <div className="flex flex-col items-start gap-x-4 gap-y-2">
                     <span>Asukoht: *</span>
                     <span>
@@ -235,43 +243,46 @@ function NewLocationSidebar({newLocationCoordsProps, setMapPinCursorModeInParent
                         }))
                     }
                     placeholder="Asukoht_1"
-                    className="w-full mb-4 p-2 rounded text-black"
+                    className="w-full mb-3 p-2 rounded text-black"
                 />
                 {locationCategories && (
                     <>
                         Põhikategooria: *
                         <Select
-                            options={locationCategoryOptions}
-                            value={locationCategoryOptions.find(option => option.value === newLocationFormData.mainCategoryId) || null}
+                            options={locationCategories}
+                            value={locationCategories.find(option => option.value === newLocationFormData.mainCategoryId) || null}
                             onChange={handleMainCategoryChange}
-                            className="text-black mb-4"
-                            placeholder=""
+                            className="text-black mb-3"
+                            placeholder="-"
                             isClearable
                         />
                         Alamkategooriad (max 5):
                         <Select
-                            options={locationCategoryOptions}
+                            options={locationCategories.filter(option => option.value !== newLocationFormData.mainCategoryId)}
+                            value={locationCategories.filter(option =>
+                                newLocationFormData.subCategoryIds.includes(option.value)
+                            )}
                             isMulti
-                            className="text-black mb-4"
+                            className="text-black mb-3"
                             onChange={handleSubCategoryChange}
                             placeholder=""
                         />
                         Seisukord: *
                         <Select
-                            options={conditionOptions}
-                            value={conditionOptions.find(option => option.value === newLocationFormData.mainCategoryId) || null}
+                            options={locationConditions}
+                            value={locationConditions.find(option => option.value === newLocationFormData.conditionId) || null}
                             onChange={handleConditionChange}
-                            className="text-black mb-4"
-                            placeholder=""
+                            className="text-black mb-3"
+                            placeholder="-"
                             isClearable
                         />
                         Ligipääsetavus: *
                         <Select
-                            options={statusOptions}
-                            value={statusOptions.find(option => option.value === newLocationFormData.mainCategoryId) || null}
+                            options={locationStatuses}
+                            value={locationStatuses.find(option => option.value === newLocationFormData.statusId) || null}
                             onChange={handleStatusChange}
-                            className="text-black mb-4"
-                            placeholder=""
+                            className="text-black mb-3"
+                            placeholder="-"
                             isClearable
                         />
                     </>
@@ -285,15 +296,17 @@ function NewLocationSidebar({newLocationCoordsProps, setMapPinCursorModeInParent
                             ...prevData, additionalInformation: e.target.value,
                         }))
                     }
-                    className="w-full text-black mb-8 p-2 rounded"
+                    className="w-full text-black mb-10 rounded h-12"
                 />
             </form>
-            <button
-                onClick={createNewLocation}
-                className="bg-black text-white px-4 py-1 rounded border-2 border-black hover:border-white"
-            >
-                Lisa asukoht
-            </button>
+            <div className="flex justify-center">
+                <button
+                    onClick={createNewLocation}
+                    className="w-full bg-black text-white px-4 py-1 rounded border-2 border-black hover:border-white"
+                >
+                    Lisa
+                </button>
+            </div>
         </div>
     );
 }

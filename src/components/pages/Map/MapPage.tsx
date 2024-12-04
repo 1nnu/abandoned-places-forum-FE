@@ -96,7 +96,7 @@ function MapPage() {
                 isSidebarOpen={isSidebarOpen}
             />
             <div
-                className="fixed top-0 right-0 h-full bg-black bg-opacity-80 transition-all duration-500 ease-in-out flex justify-center items-center"
+                className="fixed top-0 right-0 h-full bg-black bg-opacity-75 transition-all duration-500 ease-in-out flex justify-center items-center z-40"
                 style={{transform: isSidebarOpen ? "translateX(0)" : "translateX(100%)", width: "500px"}}
             >
                 {sidebarContent === SidebarContent.DETAILS && (
