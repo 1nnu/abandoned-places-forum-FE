@@ -1,19 +1,20 @@
 import Map from 'ol/Map.js';
-import { Feature, View } from "ol";
-import { useEffect, useRef } from "react";
-import { transform } from "ol/proj";
+import {defaults as defaultInteractions, Select} from 'ol/interaction';
+import {Feature, MapBrowserEvent, View} from "ol";
+import {useEffect, useRef} from "react";
+import {toLonLat} from "ol/proj";
 import VectorSource from "ol/source/Vector";
 import VectorLayer from "ol/layer/Vector";
-import { Select } from "ol/interaction";
-import { BASE_MAP_LAYER, generateLocationFeature, MapLocation, MERCATOR, WGS84 } from "./map-utils.ts";
-import { LOCATION_LAYER_DEFAULT_STYLE, SELECTED_LOCATION_STYLE_RECTANGLE } from "./map-styles.ts";
+import {BASE_MAP_LAYER, generateLocationFeature, INITIAL_MAP_VIEW_CENTRE_MERCATOR, MapLocation} from "./map-utils.ts";
+import {LOCATION_LAYER_DEFAULT_STYLE, SELECTED_LOCATION_STYLE_RECTANGLE} from "./map-styles.ts";
 
 interface MapViewProps {
-    displayedLocations: MapLocation[];
+    locationsDisplayedOnMap: MapLocation[];
     onLocationSelection: (mapLocation: MapLocation | null) => void;
+    applyObliqueAeroPhotoCoords: (newObliqueAeroPhotoCoords: number[] | null) => void;
 }
 
-export default function MapView({ displayedLocations, onLocationSelection }: MapViewProps) {
+export default function MapView({ locationsDisplayedOnMap, onLocationSelection, applyObliqueAeroPhotoCoords }: MapViewProps) {
     const mapRef = useRef<Map | null>(null);
     const publicLocationsVectorSource = useRef(new VectorSource<Feature>());
     const privateLocationsVectorSource = useRef(new VectorSource<Feature>());
@@ -37,10 +38,17 @@ export default function MapView({ displayedLocations, onLocationSelection }: Map
                 target: "map-element",
                 layers: [BASE_MAP_LAYER, privateLocationsLayer.current, publicLocationsLayer.current],
                 view: new View({
-                    center: transform([25.5, 58.8], WGS84, MERCATOR),
+                    center: INITIAL_MAP_VIEW_CENTRE_MERCATOR,
                     zoom: 8,
                 }),
                 controls: [],
+                interactions: defaultInteractions({
+                    doubleClickZoom: false,
+                }),
+            });
+
+            map.on('dblclick', (event: MapBrowserEvent<PointerEvent>) => {
+                applyObliqueAeroPhotoCoords(toLonLat(event.coordinate).reverse());
             });
 
             const selectInteraction = new Select({
@@ -69,7 +77,7 @@ export default function MapView({ displayedLocations, onLocationSelection }: Map
         publicLocationsVectorSource.current.clear();
         privateLocationsVectorSource.current.clear();
 
-        displayedLocations.forEach((location: MapLocation) => {
+        locationsDisplayedOnMap.forEach((location: MapLocation) => {
             const feature = generateLocationFeature(location);
             if (location.isPublic) {
                 publicLocationsVectorSource.current.addFeature(feature);
@@ -77,7 +85,11 @@ export default function MapView({ displayedLocations, onLocationSelection }: Map
                 privateLocationsVectorSource.current.addFeature(feature);
             }
         });
-    }, [displayedLocations]);
+    }, [locationsDisplayedOnMap]);
 
-    return <div id="map-element" className="absolute top-0 left-0 h-screen w-screen" />;
+    return (
+        <div>
+            <div id="map-element" className="absolute top-0 left-0 h-screen w-screen"/>
+        </div>
+    );
 }
