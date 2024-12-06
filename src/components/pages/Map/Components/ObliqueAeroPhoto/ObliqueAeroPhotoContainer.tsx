@@ -7,34 +7,30 @@ interface ObliqueAeroPhotoContainerProps {
 
 function ObliqueAeroPhotoContainer({ selectedCoords, isSidebarOpen }: ObliqueAeroPhotoContainerProps) {
 
-    const [iframeUrl, setIframeUrl] = useState<string>("");
+    const [iframeUrl, setIframeUrl] = useState<string | null>(null);
 
     useEffect(() => {
         if (selectedCoords != null) {
             setIframeUrl(`https://fotoladu.maaamet.ee/etak.php?B=${selectedCoords[0]}&L=${selectedCoords[1]}&fotoladu`);
         } else {
-            setIframeUrl("");
+            setIframeUrl(null);
         }
     }, [selectedCoords]);
 
     return (
         <div>
-            {iframeUrl != "" && (
+            {iframeUrl != null && (
                 <div
-                    id="kaldfotoETAK"
+                    className="absolute p-0.5 bg-white rounded-lg z-50"
                     style={{
-                        position: 'absolute',
                         width: isSidebarOpen ? '50vw' : '70vw',
-                        height: '70vh',
-                        borderRadius: '10px',
-                        backgroundColor: '#fff',
+                        height: '75vh',
                         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
                         border: '10px solid #fff',
-                        padding: '5px',
                         top: '50%',
                         left: isSidebarOpen ? 'calc(50% - 300px)' : '50%',
                         transform: 'translate(-50%, -50%)',
-                        transition: 'width 0.3s ease, left 0.3s ease, transform 0.3s ease',
+                        transition: 'width 0.5s ease, left 0.5s ease',
                     }}
                 >
                     <iframe
@@ -42,8 +38,11 @@ function ObliqueAeroPhotoContainer({ selectedCoords, isSidebarOpen }: ObliqueAer
                         className="w-full h-full border-2 border-white rounded-tl rounded-bl"
                     ></iframe>
                     <button
-                        className="absolute -top-6 -right-6 w-8 h-8 bg-red-500 text-white font-bold rounded-full shadow-lg flex items-center justify-center cursor-pointer transition-transform transform hover:scale-110 z-50"
-                        onClick={() => setIframeUrl('')}
+                        className="
+                        absolute -top-6 -right-6 w-8 h-8 bg-red-500 rounded-full shadow-lg
+                         flex items-center justify-center text-white font-bold cursor-pointer
+                          transition-transform transform hover:scale-110 z-50"
+                        onClick={() => setIframeUrl(null)}
                     >
                         X
                     </button>

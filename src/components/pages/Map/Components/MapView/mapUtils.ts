@@ -1,11 +1,13 @@
-import { Feature } from "ol";
-import { Point } from "ol/geom";
+import {Feature} from "ol";
+import {Point} from "ol/geom";
 import TileLayer from "ol/layer/Tile";
 import {fromLonLat, transform} from "ol/proj";
-import { OSM } from "ol/source";
+import {OSM} from "ol/source";
+import {MapLocation} from "../utils.ts";
 
 export const WGS84 = "EPSG:4326";
 export const MERCATOR = "EPSG:3857";
+
 export const INITIAL_MAP_VIEW_CENTRE_LON_LAT = [25.5, 58.8]
 export const INITIAL_MAP_VIEW_CENTRE_MERCATOR = transform(INITIAL_MAP_VIEW_CENTRE_LON_LAT, WGS84, MERCATOR);
 
@@ -21,24 +23,4 @@ export function generateLocationFeature(location: MapLocation) {
 }
 
 
-export interface LocationCategory {
-  id: number;
-  name: string;
-  colorHex: string;
-}
 
-export interface MapLocation {
-  id: string;
-  uuid: string;
-  name: string;
-  lon: number;
-  lat: number;
-  mainCategory: LocationCategory;
-  locationCategory: Array<LocationCategory>;
-  condition: string;
-  status: string;
-  additionalInformation: string;
-  minRequiredPointsToView: number;
-  isPublic: boolean;
-  isPendingPublicationApproval: boolean;
-}

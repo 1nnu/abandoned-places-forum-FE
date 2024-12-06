@@ -5,16 +5,20 @@ import {useEffect, useRef} from "react";
 import {toLonLat} from "ol/proj";
 import VectorSource from "ol/source/Vector";
 import VectorLayer from "ol/layer/Vector";
-import {BASE_MAP_LAYER, generateLocationFeature, INITIAL_MAP_VIEW_CENTRE_MERCATOR, MapLocation} from "./map-utils.ts";
-import {LOCATION_LAYER_DEFAULT_STYLE, SELECTED_LOCATION_STYLE_RECTANGLE} from "./map-styles.ts";
+import {BASE_MAP_LAYER, generateLocationFeature, INITIAL_MAP_VIEW_CENTRE_MERCATOR} from "./mapUtils.ts";
+import {LOCATION_LAYER_DEFAULT_STYLE, SELECTED_LOCATION_STYLE_RECTANGLE} from "./mapStyles.ts";
+import {MapLocation} from "../utils.ts";
+
 
 interface MapViewProps {
     locationsDisplayedOnMap: MapLocation[];
-    onLocationSelection: (mapLocation: MapLocation | null) => void;
+    setSelectedLocationInParent: (mapLocation: MapLocation | null) => void;
+    applyNewLocationCoords: (mapClickCoords: number[]) => void;
     applyObliqueAeroPhotoCoords: (newObliqueAeroPhotoCoords: number[] | null) => void;
 }
 
-export default function MapView({ locationsDisplayedOnMap, onLocationSelection, applyObliqueAeroPhotoCoords }: MapViewProps) {
+
+export default function MapView({ locationsDisplayedOnMap, setSelectedLocationInParent, applyNewLocationCoords,applyObliqueAeroPhotoCoords }: MapViewProps) {
     const mapRef = useRef<Map | null>(null);
     const publicLocationsVectorSource = useRef(new VectorSource<Feature>());
     const privateLocationsVectorSource = useRef(new VectorSource<Feature>());
@@ -47,21 +51,27 @@ export default function MapView({ locationsDisplayedOnMap, onLocationSelection, 
                 }),
             });
 
+
             map.on('dblclick', (event: MapBrowserEvent<PointerEvent>) => {
                 applyObliqueAeroPhotoCoords(toLonLat(event.coordinate).reverse());
             });
+            map.on('click', (event: MapBrowserEvent<PointerEvent>) => {
+                applyNewLocationCoords(toLonLat(event.coordinate).reverse());
+            });
+
 
             const selectInteraction = new Select({
                 style: [SELECTED_LOCATION_STYLE_RECTANGLE, LOCATION_LAYER_DEFAULT_STYLE],
             });
             selectInteraction.on("select", (event) => {
                 if (event.selected.length !== 0) {
-                    onLocationSelection(event.selected[0].get("location"));
+                    setSelectedLocationInParent(event.selected[0].get("location"));
                 } else if (event.deselected.length !== 0) {
-                    onLocationSelection(null);
+                    setSelectedLocationInParent(null);
                 }
             });
             map.addInteraction(selectInteraction);
+
 
             mapRef.current = map;
 

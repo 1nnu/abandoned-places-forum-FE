@@ -1,43 +1,64 @@
 import {useEffect, useState} from "react";
 import MapView from "./Components/MapView/MapView.tsx";
-import LocationDetailsSidebar from "./Components/LocationDetailsSidebar/LocationDetailsSidebar.tsx";
-import FilteringSidebar from "./Components/FilteringSidebar/FilteringSidebar.tsx";
-import {MapLocation} from "./Components/MapView/map-utils.ts";
+import LocationDetailsSidebar from "./Components/Sidebars/LocationDetailsSidebar/LocationDetailsSidebar.tsx";
+import FilteringSidebar from "./Components/Sidebars/FilteringSidebar/FilteringSidebar.tsx";
 import emitter from "../../../emitter/eventEmitter.ts";
-import ObliqueAeroPhotoContainer from "./Components/MapView/ObliqueAeroPhotoContainer.tsx";
+import ObliqueAeroPhotoContainer from "./Components/ObliqueAeroPhoto/ObliqueAeroPhotoContainer.tsx";
+import NewLocationSidebar from "./Components/Sidebars/NewLocationSidebar/NewLocationSidebar.tsx";
+import NewLocationButton from "./Components/Sidebars/NewLocationButton.tsx";
+import FilteringButton from "./Components/Sidebars/FilteringButton.tsx";
+import {MapLocation, SidebarContent} from "./Components/utils.ts";
 
-type SidebarContent = "details" | "filtering" | null;
 
 function MapPage() {
+    // TODO move to utils / config?
     const API_URL = import.meta.env.VITE_API_URL;
 
-    const [sidebarContent, setSidebarContent] = useState<SidebarContent>(null);
-    const [selectedLocation, setSelectedLocation] = useState<MapLocation | null>(null);
-    const [locationsDisplayedOnMap, setLocationsDisplayedOnMap] = useState<MapLocation[]>([]);
-    const [obliqueAeroPhotoCoords, setObliqueAeroPhotoCoords] = useState<number[] | null>(null);
-
-    const onApplyFilters = (filteredLocations: MapLocation[]) => {
-        setLocationsDisplayedOnMap(filteredLocations);
+    const [isCursorMapPinMode, setIsCursorMapPinMode] = useState<boolean>(false);
+    const [newLocationCoords, setNewLocationCoords] = useState<number[]>([]);
+    const handleMapClickCoords = (mapClickCoords: number[]) => {
+        setNewLocationCoords(mapClickCoords);
     };
-    const onApplyObliqueAeroPhotoCoords = (newObliqueAeroPhotoCoords: number[] | null) => {
+
+
+    const [obliqueAeroPhotoCoords, setObliqueAeroPhotoCoords] = useState<number[] | null>(null);
+    const handleObliqueAeroPhotoCoords = (newObliqueAeroPhotoCoords: number[] | null) => {
         setObliqueAeroPhotoCoords(newObliqueAeroPhotoCoords);
     };
 
-    const isSidebarOpen = sidebarContent !== null;
-    const openDetailsSidebar = (mapLocation: MapLocation | null) => {
-        setSelectedLocation(mapLocation);
-        setSidebarContent(mapLocation ? "details" : null);
+
+    const [selectedLocation, setSelectedLocation] = useState<MapLocation | null>(null);
+
+
+    const [locationsDisplayedOnMap, setLocationsDisplayedOnMap] = useState<MapLocation[]>([]);
+    const handleLocationFiltering = (filteredLocations: MapLocation[]) => {
+        setLocationsDisplayedOnMap(filteredLocations);
     };
-    const toggleFilteringMenu = () => {
-        if (sidebarContent === "filtering") {
-            setSidebarContent(null);
+    const displayNewLocation = (createdLocation: MapLocation) => {
+        setLocationsDisplayedOnMap(prevLocations => [...prevLocations, createdLocation]);
+    };
+    const stopDisplayingDeletedLocation = (deletedLocationId: string) => {
+        setSelectedLocation(null);
+        setLocationsDisplayedOnMap(prevLocations =>
+            prevLocations.filter(location => location.id !== deletedLocationId)
+        );
+    };
+
+
+    const [sidebarContent, setSidebarContent] = useState<SidebarContent>(SidebarContent.DETAILS);
+    const isSidebarOpen =
+        (sidebarContent === SidebarContent.DETAILS && selectedLocation !== null) || sidebarContent !== SidebarContent.DETAILS;
+    const manageSidebar = (newContent: SidebarContent) => {
+        setIsCursorMapPinMode(false);
+        if (sidebarContent === newContent) {
+            setSidebarContent(SidebarContent.DETAILS); // default value - sidebar is open only if selectedLocation != null
         } else {
-            setSidebarContent("filtering");
-            setSelectedLocation(null);
+            setSidebarContent(newContent);
         }
     };
 
     useEffect(() => {
+        // TODO move to service
         const fetchLocations = async () => {
             try {
                 emitter.emit("startLoading");
@@ -65,41 +86,48 @@ function MapPage() {
     }, []);
 
     return (
-        <div>
+        <div className={isCursorMapPinMode ? 'cursor-map-pin' : ''}>
             <MapView
                 locationsDisplayedOnMap={locationsDisplayedOnMap}
-                onLocationSelection={openDetailsSidebar}
-                applyObliqueAeroPhotoCoords={onApplyObliqueAeroPhotoCoords}
+                setSelectedLocationInParent={setSelectedLocation}
+                applyNewLocationCoords={handleMapClickCoords}
+                applyObliqueAeroPhotoCoords={handleObliqueAeroPhotoCoords}
             />
             <ObliqueAeroPhotoContainer
                 selectedCoords={obliqueAeroPhotoCoords}
                 isSidebarOpen={isSidebarOpen}
             />
+            // TODO debug: opening newLocationSidebar or FilteringSidebar causes white flash on the whole screen
             <div
-                className="fixed top-0 right-0 h-full bg-black bg-opacity-70 transition-all duration-500 ease-in-out flex justify-center items-center"
-                style={{
-                    transform: isSidebarOpen ? "translateX(0)" : "translateX(100%)",
-                    width: "500px",
-                }}
+                className="fixed top-0 right-0 h-full bg-black bg-opacity-75 z-40
+                 flex justify-center items-center transition-all duration-500 ease-in-out"
+                style={{transform: isSidebarOpen ? "translateX(0)" : "translateX(100%)", width: "500px"}}
             >
-                {sidebarContent === "details" && (
+                {sidebarContent === SidebarContent.DETAILS && (
                     <LocationDetailsSidebar
                         selectedLocation={selectedLocation}
-                        applyObliqueAeroPhotoCoords={onApplyObliqueAeroPhotoCoords}
+                        stopDisplayingDeletedLocation={stopDisplayingDeletedLocation}
+                        applyObliqueAeroPhotoCoords={handleObliqueAeroPhotoCoords}
                     />
                 )}
-                {sidebarContent === "filtering" && (
-                    <FilteringSidebar onApplyFilters={onApplyFilters}/>
+                {sidebarContent === SidebarContent.FILTERING && (
+                    <FilteringSidebar
+                        applyFilters={handleLocationFiltering}
+                    />
+                )}
+                {sidebarContent === SidebarContent.NEW_LOCATION && (
+                    <NewLocationSidebar
+                        newLocationCoordsProps={newLocationCoords}
+                        setMapPinCursorModeInParent={setIsCursorMapPinMode}
+                        displayCreatedLocation={displayNewLocation}
+                    />
                 )}
             </div>
-            <button
-                className="fixed top-28 right-4 bg-blue-500 text-white px-4 py-2 rounded shadow z-100 transition-all duration-500 ease-in-out"
-                style={{
-                    transform: isSidebarOpen ? "translateX(-500px)" : "translateX(0)",
-                }}
-                onClick={toggleFilteringMenu}
-            >
-                Filter
+            <button onClick={() => manageSidebar(SidebarContent.NEW_LOCATION)}>
+                <NewLocationButton sidebarContent={sidebarContent} isSidebarOpen={isSidebarOpen}/>
+            </button>
+            <button onClick={() => manageSidebar(SidebarContent.FILTERING)}>
+                <FilteringButton sidebarContent={sidebarContent} isSidebarOpen={isSidebarOpen}/>
             </button>
         </div>
     );

@@ -1,12 +1,13 @@
-import { useState, useEffect } from "react";
-import emitter from "../../../../../emitter/eventEmitter.ts";
-import { MapLocation } from "../MapView/map-utils.ts";
+import {useEffect, useState} from "react";
+import emitter from "../../../../../../emitter/eventEmitter.ts";
+import {MapLocation} from "../../utils.ts";
 
 interface FilteringSidebarProps {
-  onApplyFilters: (filteredLocations: MapLocation[]) => void;
+  applyFilters: (filteredLocations: MapLocation[]) => void;
 }
 
-function FilteringSidebar({ onApplyFilters }: FilteringSidebarProps) {
+function FilteringSidebar({ applyFilters }: FilteringSidebarProps) {
+  // TODO refactor this whole component
   const API_URL = import.meta.env.VITE_API_URL;
   const [categories, setCategories] = useState<{ id: number; name: string }[]>(
     []
@@ -21,8 +22,6 @@ function FilteringSidebar({ onApplyFilters }: FilteringSidebarProps) {
     null
   );
   const [selectedStatus, setSelectedStatus] = useState<number | null>(null);
-
-  const userId = localStorage.getItem("userId");
 
   const fetchLocationCategories = async () => {
     try {
@@ -97,7 +96,7 @@ function FilteringSidebar({ onApplyFilters }: FilteringSidebarProps) {
     try {
       emitter.emit("startLoading");
       const userToken = localStorage.getItem("userToken");
-
+      console.log(queryParams);
       const response = await fetch(`${API_URL}/api/locations?${queryParams}`, {
         method: "GET",
         headers: {
@@ -108,7 +107,7 @@ function FilteringSidebar({ onApplyFilters }: FilteringSidebarProps) {
 
       const data = await response.json();
 
-      onApplyFilters(data);
+      applyFilters(data);
     } catch (error) {
       console.error("Error fetching:", error);
     } finally {
@@ -137,12 +136,8 @@ function FilteringSidebar({ onApplyFilters }: FilteringSidebarProps) {
   };
 
   const handleApplyFilters = async () => {
-    if (!userId) {
-      throw new Error("User is not authenticated!");
-    }
     try {
       const queryParams = new URLSearchParams();
-      queryParams.append("userId", "e71a1997-5f06-4b3b-b5cd-bbbcec65d68"); // TODO: change to userId variable, for testing now
 
       if (selectedCategories.length > 0) {
         queryParams.append("mainCategoryId", String(selectedCategories[0]));
@@ -162,14 +157,14 @@ function FilteringSidebar({ onApplyFilters }: FilteringSidebarProps) {
         queryParams.append("statusId", String(selectedStatus));
       }
 
-      fetchLocationsWithParams(queryParams);
+      await fetchLocationsWithParams(queryParams);
     } catch (error) {
       console.error("Error applying filters:", error);
     }
   };
 
   return (
-    <div className="p-4 text-white grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="p-8 text-white grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <h2 className="text-lg font-bold mb-4 col-span-3">Filter Locations</h2>
 
       {/* Categories Section */}
