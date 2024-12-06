@@ -37,6 +37,12 @@ function MapPage() {
     const displayNewLocation = (createdLocation: MapLocation) => {
         setLocationsDisplayedOnMap(prevLocations => [...prevLocations, createdLocation]);
     };
+    const stopDisplayingDeletedLocation = (deletedLocationId: string) => {
+        setSelectedLocation(null);
+        setLocationsDisplayedOnMap(prevLocations =>
+            prevLocations.filter(location => location.id !== deletedLocationId)
+        );
+    };
 
 
     const [sidebarContent, setSidebarContent] = useState<SidebarContent>(SidebarContent.DETAILS);
@@ -100,6 +106,7 @@ function MapPage() {
                 {sidebarContent === SidebarContent.DETAILS && (
                     <LocationDetailsSidebar
                         selectedLocation={selectedLocation}
+                        stopDisplayingDeletedLocation={stopDisplayingDeletedLocation}
                         applyObliqueAeroPhotoCoords={handleObliqueAeroPhotoCoords}
                     />
                 )}

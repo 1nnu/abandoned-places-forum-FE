@@ -222,7 +222,7 @@ function NewLocationSidebar({newLocationCoordsProps, setMapPinCursorModeInParent
                         }))
                     }
                     placeholder="Asukoht_1"
-                    className="w-full mb-3 p-2 rounded text-black"
+                    className="w-full mb-3 p-2 rounded text-black h-9"
                 />
                 {locationCategories && (
                     <>
