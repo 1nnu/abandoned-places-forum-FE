@@ -35,6 +35,7 @@ function MapPage() {
         setLocationsDisplayedOnMap(filteredLocations);
     };
     const displayNewLocation = (createdLocation: MapLocation) => {
+        setNewLocationCoords([]);
         setLocationsDisplayedOnMap(prevLocations => [...prevLocations, createdLocation]);
     };
     const stopDisplayingDeletedLocation = (deletedLocationId: string) => {
@@ -52,6 +53,7 @@ function MapPage() {
         setIsCursorMapPinMode(false);
         if (sidebarContent === newContent) {
             setSidebarContent(SidebarContent.DETAILS); // default value - sidebar is open only if selectedLocation != null
+            setNewLocationCoords([]);
         } else {
             setSidebarContent(newContent);
         }
@@ -89,6 +91,8 @@ function MapPage() {
         <div className={isCursorMapPinMode ? 'cursor-map-pin' : ''}>
             <MapView
                 locationsDisplayedOnMap={locationsDisplayedOnMap}
+                newLocationInProgressCoords={newLocationCoords}
+                isCursorMapPinModeInParent={isCursorMapPinMode}
                 setSelectedLocationInParent={setSelectedLocation}
                 applyNewLocationCoords={handleMapClickCoords}
                 applyObliqueAeroPhotoCoords={handleObliqueAeroPhotoCoords}

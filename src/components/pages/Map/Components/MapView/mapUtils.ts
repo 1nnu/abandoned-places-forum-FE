@@ -22,5 +22,10 @@ export function generateLocationFeature(location: MapLocation) {
   });
 }
 
+export function generateLocationInProgressFeature(newLocationCoords: number[]) {
+return new Feature({
+  geometry: new Point(fromLonLat([newLocationCoords[1], newLocationCoords[0]])),
+});
+}
 
 

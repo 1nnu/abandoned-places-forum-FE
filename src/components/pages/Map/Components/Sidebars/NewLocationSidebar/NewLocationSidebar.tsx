@@ -182,7 +182,24 @@ function NewLocationSidebar({newLocationCoordsProps, setMapPinCursorModeInParent
             <h2 className="text-2xl font-bold text-white">Lisa privaatsele kaardile</h2>
             <div className="flex flex-col gap-3 text-white pt-8 rounded-lg mb-5">
                 <div className="flex flex-col items-start gap-x-4 gap-y-2">
-                    <span>Asukoht: *</span>
+                    <div className=" flex flex-row items-center gap-x-8">
+                        <span>Koordinaadid: *</span>
+                        <button
+                            onClick={toggleCoordinateSelection}
+                            className={`flex flex-row items-center text-white border-2 bg-black justify-center px-2 py-1 max-w-40 rounded transition-all duration-200 ${
+                                isCoordinateSelectionActive
+                                    ? "border-white cursor-map-pin"
+                                    : "border-black"
+                            }`}
+                        >
+                            <span>Määra kaardil</span>
+                            <img
+                                src="https://img.icons8.com/?size=100&id=85353&format=png&color=FFFFFF"
+                                className="w-5 h-5 ml-1 transition-none"
+                                alt="New Location Icon"
+                            />
+                        </button>
+                    </div>
                     <span>
                         {newLocationCoords ? (
                             <>
@@ -194,21 +211,6 @@ function NewLocationSidebar({newLocationCoordsProps, setMapPinCursorModeInParent
                         )}
                     </span>
                 </div>
-                <button
-                    onClick={toggleCoordinateSelection}
-                    className={`flex flex-row items-center text-white border-2 bg-black justify-center px-2 py-1 max-w-40 rounded transition-all duration-200 ${
-                        isCoordinateSelectionActive
-                            ? "border-white"
-                            : "border-black"
-                    }`}
-                >
-                    <span>Määra kaardil</span>
-                    <img
-                        src="https://img.icons8.com/?size=100&id=85353&format=png&color=FFFFFF"
-                        className="w-5 h-5 ml-1 transition-none"
-                        alt="New Location Icon"
-                    />
-                </button>
             </div>
             <form className="text-white pt-4">
                 Nimi: *

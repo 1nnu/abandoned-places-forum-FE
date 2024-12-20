@@ -8,6 +8,15 @@ export const LOCATION_LAYER_DEFAULT_STYLE = new Style({
     }),
 });
 
+
+export const NEW_LOCATION_IN_PROGRESS_STYLE = new Style({
+    image: new Icon({
+        src: "https://img.icons8.com/?size=128&id=85353&format=png&color=808080",
+        scale: 0.25,
+    }),
+});
+
+
 export const SELECTED_LOCATION_STYLE_RECTANGLE = new Style({
     image: new RegularShape({
         points: 4,
