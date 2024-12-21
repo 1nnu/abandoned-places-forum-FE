@@ -11,7 +11,7 @@ export const LOCATION_LAYER_DEFAULT_STYLE = new Style({
 
 export const NEW_LOCATION_IN_PROGRESS_STYLE = new Style({
     image: new Icon({
-        src: "https://img.icons8.com/?size=128&id=85353&format=png&color=808080",
+        src: "https://img.icons8.com/?size=128&id=85353&format=png&color=A9A9A9",
         scale: 0.25,
     }),
 });
@@ -32,6 +32,7 @@ export const SELECTED_LOCATION_STYLE_RECTANGLE = new Style({
         }),
     })
 });
+
 
 export const SELECTED_LOCATION_STYLE_CIRCLE = new Style({
     image: new CircleStyle({

@@ -17,7 +17,13 @@ function MapPage() {
     const [isCursorMapPinMode, setIsCursorMapPinMode] = useState<boolean>(false);
     const [newLocationCoords, setNewLocationCoords] = useState<number[]>([]);
     const handleMapClickCoords = (mapClickCoords: number[]) => {
-        setNewLocationCoords(mapClickCoords);
+        // Extra complexity to access the latest state of isCursorMapPinMode, because otherwise it would always be false (don't know why)
+        setIsCursorMapPinMode((prevIsCursorMapPinMode) => {
+            if (prevIsCursorMapPinMode) {
+                setNewLocationCoords(mapClickCoords);
+            }
+            return prevIsCursorMapPinMode;
+        });
     };
 
 
@@ -51,9 +57,9 @@ function MapPage() {
         (sidebarContent === SidebarContent.DETAILS && selectedLocation !== null) || sidebarContent !== SidebarContent.DETAILS;
     const manageSidebar = (newContent: SidebarContent) => {
         setIsCursorMapPinMode(false);
+        setNewLocationCoords([]);
         if (sidebarContent === newContent) {
             setSidebarContent(SidebarContent.DETAILS); // default value - sidebar is open only if selectedLocation != null
-            setNewLocationCoords([]);
         } else {
             setSidebarContent(newContent);
         }
@@ -92,10 +98,9 @@ function MapPage() {
             <MapView
                 locationsDisplayedOnMap={locationsDisplayedOnMap}
                 newLocationInProgressCoords={newLocationCoords}
-                isCursorMapPinModeInParent={isCursorMapPinMode}
                 setSelectedLocationInParent={setSelectedLocation}
-                applyNewLocationCoords={handleMapClickCoords}
-                applyObliqueAeroPhotoCoords={handleObliqueAeroPhotoCoords}
+                handleNewLocationCoords={handleMapClickCoords}
+                handleObliqueAeroPhotoCoords={handleObliqueAeroPhotoCoords}
             />
             <ObliqueAeroPhotoContainer
                 selectedCoords={obliqueAeroPhotoCoords}

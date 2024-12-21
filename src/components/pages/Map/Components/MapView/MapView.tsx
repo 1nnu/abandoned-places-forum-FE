@@ -1,122 +1,115 @@
 import Map from 'ol/Map.js';
 import {defaults as defaultInteractions, Select} from 'ol/interaction';
-import {Feature, MapBrowserEvent, View} from "ol";
-import {useEffect, useRef} from "react";
+import {Feature, MapBrowserEvent} from "ol";
+import {MutableRefObject, useEffect, useRef} from "react";
 import {toLonLat} from "ol/proj";
 import VectorSource from "ol/source/Vector";
-import VectorLayer from "ol/layer/Vector";
 import {
     BASE_MAP_LAYER,
+    DEFAULT_INITIAL_VIEW, DEFAULT_SELECT_INTERACTION,
     generateLocationFeature,
-    generateLocationInProgressFeature,
-    INITIAL_MAP_VIEW_CENTRE_MERCATOR
+    generateLocationInProgressFeature
 } from "./mapUtils.ts";
-import {
-    LOCATION_LAYER_DEFAULT_STYLE,
-    NEW_LOCATION_IN_PROGRESS_STYLE,
-    SELECTED_LOCATION_STYLE_RECTANGLE
-} from "./mapStyles.ts";
 import {MapLocation} from "../utils.ts";
+import {
+    createNewInProgressLocationLayer,
+    createPrivateLocationsLayer,
+    createPublicLocationsLayer,
+    createSelectedLocationsLayer
+} from "./mapLayers.ts";
+import VectorLayer from "ol/layer/Vector";
+import {SelectEvent} from "ol/interaction/Select";
 
 
 interface MapViewProps {
     locationsDisplayedOnMap: MapLocation[];
     newLocationInProgressCoords: number[];
-    isCursorMapPinModeInParent: boolean;
     setSelectedLocationInParent: (mapLocation: MapLocation | null) => void;
-    applyNewLocationCoords: (mapClickCoords: number[]) => void;
-    applyObliqueAeroPhotoCoords: (newObliqueAeroPhotoCoords: number[] | null) => void;
+    handleNewLocationCoords: (mapClickCoords: number[]) => void;
+    handleObliqueAeroPhotoCoords: (newObliqueAeroPhotoCoords: number[] | null) => void;
 }
-
 
 function MapView({
                      locationsDisplayedOnMap,
                      newLocationInProgressCoords,
-                     isCursorMapPinModeInParent,
                      setSelectedLocationInParent,
-                     applyNewLocationCoords,
-                     applyObliqueAeroPhotoCoords
+                     handleNewLocationCoords,
+                     handleObliqueAeroPhotoCoords
                  }: MapViewProps) {
-    const mapRef = useRef<Map | null>(null);
-    const publicLocationsVectorSource = useRef(new VectorSource<Feature>());
-    const privateLocationsVectorSource = useRef(new VectorSource<Feature>());
-    const newLocationInProgressVectorSource = useRef(new VectorSource<Feature>());
 
+    const mapRef: MutableRefObject<Map | null> = useRef<Map | null>(null);
 
-    const isCursorMapPinModeInParentRef = useRef(isCursorMapPinModeInParent);
-    useEffect(() => {
-        isCursorMapPinModeInParentRef.current = isCursorMapPinModeInParent;
-    }, [isCursorMapPinModeInParent]);
+    const publicLocationsVectorSource: MutableRefObject<VectorSource> = useRef(new VectorSource());
+    const privateLocationsVectorSource: MutableRefObject<VectorSource> = useRef(new VectorSource());
+    const newLocationInProgressVectorSource: MutableRefObject<VectorSource> = useRef(new VectorSource());
+    const selectedLocationsVectorSource: MutableRefObject<VectorSource> = useRef(new VectorSource());
 
-
-    const publicLocationsLayer = useRef(
-        new VectorLayer({
-            source: publicLocationsVectorSource.current,
-            style: LOCATION_LAYER_DEFAULT_STYLE,
-        })
+    const publicLocationsLayer: MutableRefObject<VectorLayer> = useRef(
+        createPublicLocationsLayer(publicLocationsVectorSource.current)
     );
-    const privateLocationsLayer = useRef(
-        new VectorLayer({
-            source: privateLocationsVectorSource.current,
-            style: LOCATION_LAYER_DEFAULT_STYLE,
-        })
+    const privateLocationsLayer: MutableRefObject<VectorLayer> = useRef(
+        createPrivateLocationsLayer(privateLocationsVectorSource.current)
     );
-    const newInProgressLocationVectorLayer = useRef(
-        new VectorLayer({
-            source: newLocationInProgressVectorSource.current,
-            style: NEW_LOCATION_IN_PROGRESS_STYLE,
-        })
+    const newLocationInProgressLayer: MutableRefObject<VectorLayer> = useRef(
+        createNewInProgressLocationLayer(newLocationInProgressVectorSource.current)
     );
+    const selectedLocationsVectorLayer: MutableRefObject<VectorLayer> = useRef(
+        createSelectedLocationsLayer(selectedLocationsVectorSource.current)
+    );
+
+    const selectInteraction: Select = DEFAULT_SELECT_INTERACTION;
+
+
+    function handleMapSelectEvent(event: SelectEvent) {
+        const selectedFeatures: Feature[] = event.selected;
+
+        selectedLocationsVectorSource.current.clear();
+        setSelectedLocationInParent(null);
+
+        if (selectedFeatures.length && !selectedFeatures[0]?.get("isNewLocationInProgress")) {
+            selectedLocationsVectorSource.current.addFeature(selectedFeatures[0]);
+            setSelectedLocationInParent(selectedFeatures[0].get("location"));
+        }
+    }
+    selectInteraction.on("select", handleMapSelectEvent);
+
+
+    function initMap(): Map {
+        const map = new Map({
+            target: "map-element",
+            layers: [
+                BASE_MAP_LAYER,
+                selectedLocationsVectorLayer.current,
+                privateLocationsLayer.current,
+                publicLocationsLayer.current,
+                newLocationInProgressLayer.current
+            ],
+            view: DEFAULT_INITIAL_VIEW,
+            controls: [],
+            interactions: defaultInteractions({
+                doubleClickZoom: false,
+            }),
+        });
+
+        map.on('dblclick', (event: MapBrowserEvent<PointerEvent>) => {
+            handleObliqueAeroPhotoCoords(toLonLat(event.coordinate).reverse());
+        });
+        map.on('click', (event: MapBrowserEvent<PointerEvent>) => {
+            handleNewLocationCoords(toLonLat(event.coordinate).reverse());
+        });
+
+        map.addInteraction(selectInteraction);
+
+        return map;
+    }
+
 
     useEffect(() => {
         if (!mapRef.current) {
-            const map = new Map({
-                target: "map-element",
-                layers: [
-                    BASE_MAP_LAYER,
-                    privateLocationsLayer.current,
-                    publicLocationsLayer.current,
-                    newInProgressLocationVectorLayer.current
-                ],
-                view: new View({
-                    center: INITIAL_MAP_VIEW_CENTRE_MERCATOR,
-                    zoom: 8,
-                }),
-                controls: [],
-                interactions: defaultInteractions({
-                    doubleClickZoom: false,
-                }),
-            });
-
-
-            map.on('dblclick', (event: MapBrowserEvent<PointerEvent>) => {
-                applyObliqueAeroPhotoCoords(toLonLat(event.coordinate).reverse());
-            });
-            map.on('click', (event: MapBrowserEvent<PointerEvent>) => {
-                if (isCursorMapPinModeInParentRef.current) {
-                    applyNewLocationCoords(toLonLat(event.coordinate).reverse());
-                }
-            });
-
-
-            const selectInteraction = new Select({
-                style: [SELECTED_LOCATION_STYLE_RECTANGLE, LOCATION_LAYER_DEFAULT_STYLE],
-            });
-            selectInteraction.on("select", (event) => {
-                console.log(selectInteraction.getFeatures())
-                if (event.selected.length !== 0) {
-                    setSelectedLocationInParent(event.selected[0].get("location"));
-                } else if (event.deselected.length !== 0) {
-                    setSelectedLocationInParent(null);
-                }
-            });
-            map.addInteraction(selectInteraction);
-
-
-            mapRef.current = map;
+            mapRef.current = initMap();
 
             return () => {
-                map.setTarget();
+                mapRef.current?.setTarget();
                 mapRef.current = null;
             };
         }
@@ -137,12 +130,15 @@ function MapView({
         });
     }, [locationsDisplayedOnMap]);
 
+
     useEffect(() => {
         newLocationInProgressVectorSource.current.clear();
-        if (newLocationInProgressCoords.length != 0) {
+
+        if (newLocationInProgressCoords.length !== 0) {
             newLocationInProgressVectorSource.current.addFeature(generateLocationInProgressFeature(newLocationInProgressCoords));
         }
     }, [newLocationInProgressCoords]);
+
 
     return (
         <div>
