@@ -12,7 +12,7 @@ import {fetchAllAvailableLocations} from "../../../service/LocationService.ts";
 
 function MapPage() {
 
-    const [selectedLocation, setSelectedLocation] = useState<MapLocation | null>(null);
+    const [globalSelectedLocation, setGlobalSelectedLocation] = useState<MapLocation | null>(null);
 
 
     const [obliqueAeroPhotoCoords, setObliqueAeroPhotoCoords] = useState<number[] | null>(null);
@@ -26,11 +26,15 @@ function MapPage() {
     function handleLocationFiltering(filteredLocations: MapLocation[]) {
         setLocationsDisplayedOnMap(filteredLocations);
     }
-    function displayNewLocation(createdLocation: MapLocation) {
+    function displayNewLocation(createdLocation: MapLocation, selectOnMap: boolean) {
+        if (selectOnMap) {
+            setGlobalSelectedLocation(createdLocation);
+            setSidebarContent(SidebarContent.DETAILS);
+        }
         setLocationsDisplayedOnMap(prevLocations => [...prevLocations, createdLocation]);
     }
     function stopDisplayingDeletedLocation(deletedLocationId: string) {
-        setSelectedLocation(null);
+        setGlobalSelectedLocation(null);
         setLocationsDisplayedOnMap(prevLocations =>
             prevLocations.filter(location => location.id !== deletedLocationId)
         );
@@ -39,7 +43,7 @@ function MapPage() {
 
     const [sidebarContent, setSidebarContent] = useState<SidebarContent>(SidebarContent.DETAILS);
     const isSidebarOpen =
-        (sidebarContent === SidebarContent.DETAILS && selectedLocation !== null) || sidebarContent !== SidebarContent.DETAILS;
+        (sidebarContent === SidebarContent.DETAILS && globalSelectedLocation !== null) || sidebarContent !== SidebarContent.DETAILS;
     function manageSidebar(newContent: SidebarContent) {
         setGlobalCoordinateSelectionMode(false);
         if (sidebarContent === newContent) {
@@ -66,7 +70,8 @@ function MapPage() {
                 setGlobalMapClickCoords={setGlobalMapClickCoords}
                 globalCoordinateSelectionMode={globalCoordinateSelectionMode}
                 locationsDisplayedOnMap={locationsDisplayedOnMap}
-                setSelectedLocationInParent={setSelectedLocation}
+                globalSelectedLocation={globalSelectedLocation}
+                setGlobalSelectedLocation={setGlobalSelectedLocation}
                 setObliqueAeroPhotoCoords={setObliqueAeroPhotoCoords}
                 sideBarContent={sidebarContent}
             />
@@ -81,7 +86,7 @@ function MapPage() {
             >
                 {sidebarContent === SidebarContent.DETAILS && (
                     <LocationDetailsSidebar
-                        selectedLocation={selectedLocation}
+                        globalSelectedLocation={globalSelectedLocation}
                         stopDisplayingDeletedLocation={stopDisplayingDeletedLocation}
                         setObliqueAeroPhotoCoords={setObliqueAeroPhotoCoords}
                     />

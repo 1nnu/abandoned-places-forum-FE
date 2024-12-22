@@ -21,7 +21,7 @@ interface NewLocationSidebarProps {
     globalCoordinateSelectionMode: boolean;
     setGlobalCoordinateSelectionMode: (isMapPinCursorActive: boolean) => void;
     globalMapClickCoords: number[] | null;
-    displayCreatedLocation: (createdLocation: MapLocation) => void;
+    displayCreatedLocation: (createdLocation: MapLocation, selectOnMap: boolean) => void;
 }
 
 function NewLocationSidebar({
@@ -67,9 +67,9 @@ function NewLocationSidebar({
         }
 
         createLocation(newLocationFormData as LocationCreateDto)
-            .then((data: MapLocation | null) => {
-                if (data) {
-                    displayCreatedLocation(data);
+            .then((newLocation: MapLocation | null) => {
+                if (newLocation) {
+                    displayCreatedLocation(newLocation, true);
                     resetFormData();
                 }
             });

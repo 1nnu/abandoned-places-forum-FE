@@ -22,22 +22,24 @@ import {SelectEvent} from "ol/interaction/Select";
 
 
 interface MapViewProps {
-    globalMapClickCoords: number[]| null;
+    globalMapClickCoords: number[] | null;
     setGlobalMapClickCoords: (mapClickCoords: number[]) => void;
-    locationsDisplayedOnMap: MapLocation[];
     globalCoordinateSelectionMode: boolean;
-    setSelectedLocationInParent: (mapLocation: MapLocation | null) => void;
+    globalSelectedLocation: MapLocation | null;
+    setGlobalSelectedLocation: (mapLocation: MapLocation | null) => void;
     setObliqueAeroPhotoCoords: (newObliqueAeroPhotoCoords: number[] | null) => void;
+    locationsDisplayedOnMap: MapLocation[];
     sideBarContent: SidebarContent;
 }
 
 function MapView({
-                     locationsDisplayedOnMap,
                      globalMapClickCoords,
-                     setSelectedLocationInParent,
                      setGlobalMapClickCoords,
-                     setObliqueAeroPhotoCoords,
                      globalCoordinateSelectionMode,
+                     globalSelectedLocation,
+                     setGlobalSelectedLocation,
+                     setObliqueAeroPhotoCoords,
+                     locationsDisplayedOnMap,
                      sideBarContent,
                  }: MapViewProps) {
 
@@ -62,19 +64,18 @@ function MapView({
     );
 
 
-    function handleMapSelectEvent(event: SelectEvent) {
+    function handleSelectEvent(event: SelectEvent) {
         const selectedFeatures: Feature[] = event.selected;
 
-        selectedLocationsVectorSource.current.clear();
-        setSelectedLocationInParent(null);
-
         if (selectedFeatures.length && !selectedFeatures[0]?.get("isNewLocationInProgress")) {
-            selectedLocationsVectorSource.current.addFeature(selectedFeatures[0]);
-            setSelectedLocationInParent(selectedFeatures[0].get("location"));
+            setGlobalSelectedLocation(selectedFeatures[0].get("location"));
+        } else {
+            setGlobalSelectedLocation(null);
         }
     }
+
     const selectInteraction: Select = DEFAULT_SELECT_INTERACTION;
-    selectInteraction.on("select", handleMapSelectEvent);
+    selectInteraction.on("select", handleSelectEvent);
 
 
     function initMap(): Map {
@@ -131,6 +132,7 @@ function MapView({
         }
     }, []);
 
+
     useEffect(() => {
         publicLocationsVectorSource.current.clear();
         privateLocationsVectorSource.current.clear();
@@ -139,6 +141,13 @@ function MapView({
 
         displayLocationsOnMap(locationsDisplayedOnMap);
     }, [locationsDisplayedOnMap]);
+
+    useEffect(() => {
+        selectedLocationsVectorSource.current.clear();
+        if (globalSelectedLocation !== null) {
+            selectedLocationsVectorSource.current.addFeature(generateLocationFeature(globalSelectedLocation));
+        }
+    }, [globalSelectedLocation]);
 
     useEffect(() => {
         if (sideBarContent !== SidebarContent.ADD_NEW_LOCATION) {
