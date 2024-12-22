@@ -69,6 +69,14 @@ export interface NewLocationFormData {
     additionalInformation: string;
 }
 
+
+export interface LocationAttributesState {
+    categories: LocationAttributeFormOptions[];
+    conditions: LocationAttributeFormOptions[];
+    statuses: LocationAttributeFormOptions[];
+}
+
+
 export interface LocationAttributeFormOptions {
     label: string,
     value : number,

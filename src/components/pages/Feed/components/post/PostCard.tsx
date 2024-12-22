@@ -2,7 +2,7 @@ import { Card, CardHeader, CardContent } from "../../../../ui/card";
 import CommentsDialog from "../comment/CommentsDialog";
 import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
 import UpvoteButton from "../upvote/UpvoteButton";
-import AuthService from "../../../../../auth/AuthService";
+import AuthService from "../../../../../service/AuthService";
 
 interface PostCardProps {
   id: number;

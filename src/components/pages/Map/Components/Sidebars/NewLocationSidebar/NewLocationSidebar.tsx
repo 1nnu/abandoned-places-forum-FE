@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import Select, {MultiValue} from 'react-select';
 import emitter from "../../../../../../emitter/eventEmitter.ts";
 import {
@@ -6,9 +6,10 @@ import {
     LocationAttributes,
     LocationCreateDto,
     MapLocation,
-    NewLocationFormData
+    NewLocationFormData,
+    LocationAttributesState,
 } from "../../utils.ts";
-
+import {createLocation, fetchLocationAttributes} from "../../../../../../service/LocationService.ts";
 
 interface NewLocationSidebarProps {
     newLocationCoordsProps: number[] | null;
@@ -16,23 +17,36 @@ interface NewLocationSidebarProps {
     displayCreatedLocation: (createdLocation: MapLocation) => void;
 }
 
+const DEFAULT_NAME = "Asukoht_1";
 
-function NewLocationSidebar({newLocationCoordsProps, setMapPinCursorModeInParent, displayCreatedLocation} : NewLocationSidebarProps) {
-    // TODO move to config
-    const API_URL = import.meta.env.VITE_API_URL;
+const DEFAULT_CATEGORY_ID = 0;
+const DEFAULT_CONDITION_ID = 0;
+const DEFAULT_STATUS_ID = 0;
 
+const DEFAULT_FORM_DATA: NewLocationFormData = {
+    name: DEFAULT_NAME,
+    mainCategoryId: null,
+    subCategoryIds: [],
+    conditionId: null,
+    statusId: null,
+    additionalInformation: ""
+};
+
+
+function NewLocationSidebar({
+                                newLocationCoordsProps,
+                                setMapPinCursorModeInParent,
+                                displayCreatedLocation
+                            }: NewLocationSidebarProps) {
 
     const [newLocationCoords, setNewLocationCoords] = useState<number[] | null>(null);
     const [isCoordinateSelectionActive, setIsCoordinateSelectionActive] = useState<boolean>(false);
+
     function toggleCoordinateSelection() {
-        if (isCoordinateSelectionActive) {
-            setMapPinCursorModeInParent(false);
-            setIsCoordinateSelectionActive(false);
-        } else {
-            setMapPinCursorModeInParent(true);
-            setIsCoordinateSelectionActive(true);
-        }
+        setIsCoordinateSelectionActive(!isCoordinateSelectionActive);
+        setMapPinCursorModeInParent(!isCoordinateSelectionActive);
     }
+
     useEffect(() => {
         if (isCoordinateSelectionActive && newLocationCoordsProps) {
             setIsCoordinateSelectionActive(false);
@@ -42,58 +56,65 @@ function NewLocationSidebar({newLocationCoordsProps, setMapPinCursorModeInParent
     }, [newLocationCoordsProps]);
 
 
-    const [locationCategories, setLocationCategories] = useState<LocationAttributeFormOptions[]>([]);
-    const [locationConditions, setLocationConditions] = useState<LocationAttributeFormOptions[]>([]);
-    const [locationStatuses, setLocationStatuses] = useState<LocationAttributeFormOptions[]>([]);
-    // TODO move to separate service or create a Context for MapPage?
-    const fetchLocationAttributes = async () => {
-        try {
+    const [locationAttributes, setLocationAttributes] = useState<LocationAttributesState>({
+        categories: [] as LocationAttributeFormOptions[],
+        conditions: [] as LocationAttributeFormOptions[],
+        statuses: [] as LocationAttributeFormOptions[]
+    });
+    const mapLocationAttributes = (data: LocationAttributes) => ({
+        categories: data.categories.map((category): LocationAttributeFormOptions => ({
+            value: category.id,
+            label: category.name
+        })),
+        conditions: data.conditions.map((condition): LocationAttributeFormOptions => ({
+            value: condition.id,
+            label: condition.name
+        })),
+        statuses: data.statuses.map((status): LocationAttributeFormOptions => ({
+            value: status.id,
+            label: status.name
+        }))
+    });
+    useEffect(() => {
+        function loadLocationAttributes() {
             emitter.emit("startLoading");
-            const userToken = localStorage.getItem("userToken");
-
-            const response = await fetch(`${API_URL}/api/locations/attributes`, {
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${userToken}`,
-                    "Content-Type": "application/json",
-                },
+            fetchLocationAttributes().then((data: LocationAttributes) => {
+                if (data) {
+                    setLocationAttributes(mapLocationAttributes(data));
+                }
             });
+        }
+        loadLocationAttributes();
+    }, []);
+    useEffect(() => {
+        if (locationAttributes.categories.length > 0) {
+            setDefaultFormData();
+        }
+    }, [locationAttributes]);
 
-            const data: LocationAttributes = await response.json();
 
-            setLocationCategories(data.categories.map((category): LocationAttributeFormOptions => ({
-                value: category.id,
-                label: category.name,
-            })));
-            setLocationConditions(data.conditions.map((condition): LocationAttributeFormOptions => ({
-                value: condition.id,
-                label: condition.name,
-            })));
-            setLocationStatuses(data.statuses.map((status): LocationAttributeFormOptions => ({
-                value: status.id,
-                label: status.name,
-            })));
+    const [newLocationFormData, setNewLocationFormData] = useState<NewLocationFormData>(DEFAULT_FORM_DATA);
 
-        } catch (error) {
-            emitter.emit("stopLoading");
-            console.error("Error fetching conditions:", error);
-        } finally {
-            emitter.emit("stopLoading");
+    function setDefaultFormData() {
+        handleMainCategoryChange(locationAttributes.categories[DEFAULT_CATEGORY_ID])
+        handleConditionChange(locationAttributes.conditions[DEFAULT_CONDITION_ID])
+        handleStatusChange(locationAttributes.statuses[DEFAULT_STATUS_ID])
+    }
+
+    function resetFormData() {
+        setNewLocationCoords(null);
+        setNewLocationFormData(DEFAULT_FORM_DATA);
+    }
+
+
+    const nameInputRef = useRef<HTMLInputElement>({} as HTMLInputElement);
+
+    const autoSelectFormDefaultName = () => {
+        if (nameInputRef.current && nameInputRef.current?.value === DEFAULT_NAME) {
+            nameInputRef.current?.focus();
+            nameInputRef.current?.setSelectionRange(0, nameInputRef.current.value.length);
         }
     };
-    useEffect(() => {
-        fetchLocationAttributes();
-    }, []);
-
-
-    const [newLocationFormData , setNewLocationFormData] = useState<NewLocationFormData>({
-        name: "",
-        mainCategoryId: null,
-        subCategoryIds: [],
-        conditionId: null,
-        statusId: null,
-        additionalInformation: ""
-    });
 
 
     const handleMainCategoryChange = (selectedOption: LocationAttributeFormOptions | null) => {
@@ -101,7 +122,8 @@ function NewLocationSidebar({newLocationCoordsProps, setMapPinCursorModeInParent
             ...prevData,
             mainCategoryId: selectedOption ? selectedOption.value : null,
         }));
-        setNewLocationFormData((prevData) => ({  // remove duplicate subCategories
+        // remove duplicate subCategories
+        setNewLocationFormData((prevData) => ({
             ...prevData,
             subCategoryIds: prevData.subCategoryIds.filter(id => id !== (selectedOption?.value || null)),
         }));
@@ -127,70 +149,72 @@ function NewLocationSidebar({newLocationCoordsProps, setMapPinCursorModeInParent
     };
 
 
-    // TODO - create separate service ?
-    const createNewLocation = async () => {
-        setIsCoordinateSelectionActive(false);
-        setMapPinCursorModeInParent(false);
+    function isFormDataValid(): string | null {
+        if (!newLocationCoords) return "Coordinates are required.";
+        if (newLocationFormData.name.length < 4) return "Name must be at least 4 characters long.";
+        if (newLocationFormData.mainCategoryId == null) return "Main category is required.";
+        if (newLocationFormData.conditionId == null) return "Condition is required.";
+        if (newLocationFormData.statusId == null) return "Status is required.";
+        return null;
+    }
 
-        if (!newLocationCoords || newLocationFormData.name.length < 4
-            || newLocationFormData.mainCategoryId == null
-            || newLocationFormData.conditionId == null
-            || newLocationFormData.statusId == null) {
-            alert("Fill all required fields."); // TODO replace with toast
-            return;
-        }
-
-        const newLocationPayload: LocationCreateDto = {
+    function createNewLocationPayload(): LocationCreateDto {
+        return {
             ...newLocationFormData,
             lat: newLocationCoords[0],
             lon: newLocationCoords[1],
         };
+    }
 
-        try {
-            emitter.emit("startLoading");
-            const userToken = localStorage.getItem("userToken");
 
-            const response = await fetch(`${API_URL}/api/locations`, {
-                method: "POST",
-                headers: {
-                    Authorization: `Bearer ${userToken}`,
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(newLocationPayload),
-            });
+    const createNewLocation = async () => {
+        setIsCoordinateSelectionActive(false);
+        setMapPinCursorModeInParent(false);
 
-            const data: MapLocation = await response.json();
-
-            if (response.ok) {
-                displayCreatedLocation(data);
-            } else {
-                alert(data); // TODO toast
-                console.error("Error creating location:", data.toString());
-            }
-        } catch (error) {
-            console.error("Error creating location:", error);
-            alert("Failed to create location."); // TODO replace with toast
-        } finally {
-            emitter.emit("stopLoading");
+        const validationError = isFormDataValid();
+        if (validationError) {
+            alert(validationError);
+            return;
         }
+
+        const newLocationPayload = createNewLocationPayload();
+        createLocation(newLocationPayload).then((data: MapLocation | null) => {
+            if (data) {
+                displayCreatedLocation(data);
+                resetFormData();
+                setDefaultFormData();
+            }
+        });
     };
 
 
     return (
         // TODO improve scalability on "short" laptop screens
-        <div className="flex flex-col p-12 pt-12 h-full w-full overflow-y-auto">
+        // TODO split into smaller components
+        <div className="flex flex-col p-12 h-full w-full overflow-y-auto">
             <h2 className="text-2xl font-bold text-white">Lisa privaatsele kaardile</h2>
-            <div className="flex flex-col gap-3 text-white pt-8 rounded-lg mb-5">
-                <div className="flex flex-col items-start gap-x-4 gap-y-2">
-                    <div className=" flex flex-row items-center gap-x-8">
-                        <span>Koordinaadid: *</span>
+            <div className="flex flex-col gap-3 text-white pt-8 rounded-lg mb-2">
+                <div className="flex flex-col gap-2">
+                    <span>Koordinaadid: *</span>
+                    <div className="flex items-center gap-x-8">
+                        <span>
+                            {newLocationCoords ? (
+                                <>
+                                    <span className="mr-3">{newLocationCoords[0].toFixed(6)}</span>
+                                    <span>{newLocationCoords[1].toFixed(6)}</span>
+                                </>
+                            ) : (
+                                "B: - L: -"
+                            )}
+                        </span>
                         <button
                             onClick={toggleCoordinateSelection}
-                            className={`flex flex-row items-center text-white border-2 bg-black justify-center px-2 py-1 max-w-40 rounded transition-all duration-200 ${
-                                isCoordinateSelectionActive
-                                    ? "border-white cursor-map-pin"
-                                    : "border-black"
-                            }`}
+                            className={`flex flex-row items-center text-white border-2 bg-black justify-center px-2 py-1
+                             max-w-40 rounded transition-all duration-200
+                             ${isCoordinateSelectionActive
+                                ? "border-white cursor-map-pin"
+                                : "border-black"}
+                             `}
                         >
                             <span>Määra kaardil</span>
                             <img
@@ -200,16 +224,6 @@ function NewLocationSidebar({newLocationCoordsProps, setMapPinCursorModeInParent
                             />
                         </button>
                     </div>
-                    <span>
-                        {newLocationCoords ? (
-                            <>
-                                <span className="mr-3">{newLocationCoords[0].toFixed(6)}</span>
-                                <span>{newLocationCoords[1].toFixed(6)}</span>
-                            </>
-                        ) : (
-                            "-"
-                        )}
-                    </span>
                 </div>
             </div>
             <form className="text-white pt-4">
@@ -223,15 +237,17 @@ function NewLocationSidebar({newLocationCoordsProps, setMapPinCursorModeInParent
                             ...prevData, name: e.target.value,
                         }))
                     }
-                    placeholder="Asukoht_1"
                     className="w-full mb-3 p-2 rounded text-black h-9"
+                    ref={nameInputRef}
+                    onClick={autoSelectFormDefaultName}
                 />
-                {locationCategories && (
+                {locationAttributes.categories && (
                     <>
                         Põhikategooria: *
                         <Select
-                            options={locationCategories}
-                            value={locationCategories.find(option => option.value === newLocationFormData.mainCategoryId) || null}
+                            options={locationAttributes.categories}
+                            value={locationAttributes.categories.find(option =>
+                                option.value === newLocationFormData.mainCategoryId) || null}
                             onChange={handleMainCategoryChange}
                             className="text-black mb-3"
                             placeholder="-"
@@ -239,8 +255,9 @@ function NewLocationSidebar({newLocationCoordsProps, setMapPinCursorModeInParent
                         />
                         Alamkategooriad (max 5):
                         <Select
-                            options={locationCategories.filter(option => option.value !== newLocationFormData.mainCategoryId)}
-                            value={locationCategories.filter(option =>
+                            options={locationAttributes.categories.filter(option =>
+                                option.value !== newLocationFormData.mainCategoryId)}
+                            value={locationAttributes.categories.filter(option =>
                                 newLocationFormData.subCategoryIds.includes(option.value)
                             )}
                             isMulti
@@ -250,8 +267,9 @@ function NewLocationSidebar({newLocationCoordsProps, setMapPinCursorModeInParent
                         />
                         Seisukord: *
                         <Select
-                            options={locationConditions}
-                            value={locationConditions.find(option => option.value === newLocationFormData.conditionId) || null}
+                            options={locationAttributes.conditions}
+                            value={locationAttributes.conditions.find(option =>
+                                option.value === newLocationFormData.conditionId) || null}
                             onChange={handleConditionChange}
                             className="text-black mb-3"
                             placeholder="-"
@@ -259,8 +277,9 @@ function NewLocationSidebar({newLocationCoordsProps, setMapPinCursorModeInParent
                         />
                         Ligipääsetavus: *
                         <Select
-                            options={locationStatuses}
-                            value={locationStatuses.find(option => option.value === newLocationFormData.statusId) || null}
+                            options={locationAttributes.statuses}
+                            value={locationAttributes.statuses.find(option =>
+                                option.value === newLocationFormData.statusId) || null}
                             onChange={handleStatusChange}
                             className="text-black mb-3"
                             placeholder="-"
@@ -277,7 +296,7 @@ function NewLocationSidebar({newLocationCoordsProps, setMapPinCursorModeInParent
                             ...prevData, additionalInformation: e.target.value,
                         }))
                     }
-                    className="w-full text-black mb-10 rounded h-12"
+                    className="w-full text-black mb-10 rounded h-12 p-0.5 overflow-auto"
                 />
             </form>
             <div className="flex justify-center">
