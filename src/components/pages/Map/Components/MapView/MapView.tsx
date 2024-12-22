@@ -10,7 +10,7 @@ import {
     generateLocationFeature,
     generateLocationInProgressFeature
 } from "./mapUtils.ts";
-import {MapLocation} from "../utils.ts";
+import {MapLocation, SidebarContent} from "../utils.ts";
 import {
     createNewInProgressLocationLayer,
     createPrivateLocationsLayer,
@@ -22,19 +22,23 @@ import {SelectEvent} from "ol/interaction/Select";
 
 
 interface MapViewProps {
+    globalMapClickCoords: number[]| null;
+    setGlobalMapClickCoords: (mapClickCoords: number[]) => void;
     locationsDisplayedOnMap: MapLocation[];
-    newLocationInProgressCoords: number[];
+    globalCoordinateSelectionMode: boolean;
     setSelectedLocationInParent: (mapLocation: MapLocation | null) => void;
-    handleNewLocationCoords: (mapClickCoords: number[]) => void;
-    handleObliqueAeroPhotoCoords: (newObliqueAeroPhotoCoords: number[] | null) => void;
+    setObliqueAeroPhotoCoords: (newObliqueAeroPhotoCoords: number[] | null) => void;
+    sideBarContent: SidebarContent;
 }
 
 function MapView({
                      locationsDisplayedOnMap,
-                     newLocationInProgressCoords,
+                     globalMapClickCoords,
                      setSelectedLocationInParent,
-                     handleNewLocationCoords,
-                     handleObliqueAeroPhotoCoords
+                     setGlobalMapClickCoords,
+                     setObliqueAeroPhotoCoords,
+                     globalCoordinateSelectionMode,
+                     sideBarContent,
                  }: MapViewProps) {
 
     const mapRef: MutableRefObject<Map | null> = useRef<Map | null>(null);
@@ -57,8 +61,6 @@ function MapView({
         createSelectedLocationsLayer(selectedLocationsVectorSource.current)
     );
 
-    const selectInteraction: Select = DEFAULT_SELECT_INTERACTION;
-
 
     function handleMapSelectEvent(event: SelectEvent) {
         const selectedFeatures: Feature[] = event.selected;
@@ -71,6 +73,7 @@ function MapView({
             setSelectedLocationInParent(selectedFeatures[0].get("location"));
         }
     }
+    const selectInteraction: Select = DEFAULT_SELECT_INTERACTION;
     selectInteraction.on("select", handleMapSelectEvent);
 
 
@@ -79,9 +82,9 @@ function MapView({
             target: "map-element",
             layers: [
                 BASE_MAP_LAYER,
-                selectedLocationsVectorLayer.current,
                 privateLocationsLayer.current,
                 publicLocationsLayer.current,
+                selectedLocationsVectorLayer.current,
                 newLocationInProgressLayer.current
             ],
             view: DEFAULT_INITIAL_VIEW,
@@ -92,15 +95,28 @@ function MapView({
         });
 
         map.on('dblclick', (event: MapBrowserEvent<PointerEvent>) => {
-            handleObliqueAeroPhotoCoords(toLonLat(event.coordinate).reverse());
+            setObliqueAeroPhotoCoords(toLonLat(event.coordinate).reverse());
         });
         map.on('click', (event: MapBrowserEvent<PointerEvent>) => {
-            handleNewLocationCoords(toLonLat(event.coordinate).reverse());
+            setGlobalMapClickCoords(toLonLat(event.coordinate).reverse());
+            setObliqueAeroPhotoCoords(null);
         });
 
         map.addInteraction(selectInteraction);
 
         return map;
+    }
+
+
+    function displayLocationsOnMap(locationsDisplayedOnMap: MapLocation[]) {
+        locationsDisplayedOnMap.forEach((mapLocation: MapLocation) => {
+            const feature = generateLocationFeature(mapLocation);
+            if (mapLocation.isPublic) {
+                publicLocationsVectorSource.current.addFeature(feature);
+            } else {
+                privateLocationsVectorSource.current.addFeature(feature);
+            }
+        });
     }
 
 
@@ -115,29 +131,27 @@ function MapView({
         }
     }, []);
 
-
     useEffect(() => {
         publicLocationsVectorSource.current.clear();
         privateLocationsVectorSource.current.clear();
-
-        locationsDisplayedOnMap.forEach((location: MapLocation) => {
-            const feature = generateLocationFeature(location);
-            if (location.isPublic) {
-                publicLocationsVectorSource.current.addFeature(feature);
-            } else {
-                privateLocationsVectorSource.current.addFeature(feature);
-            }
-        });
-    }, [locationsDisplayedOnMap]);
-
-
-    useEffect(() => {
+        selectedLocationsVectorSource.current.clear();
         newLocationInProgressVectorSource.current.clear();
 
-        if (newLocationInProgressCoords.length !== 0) {
-            newLocationInProgressVectorSource.current.addFeature(generateLocationInProgressFeature(newLocationInProgressCoords));
+        displayLocationsOnMap(locationsDisplayedOnMap);
+    }, [locationsDisplayedOnMap]);
+
+    useEffect(() => {
+        if (sideBarContent !== SidebarContent.ADD_NEW_LOCATION) {
+            newLocationInProgressVectorSource.current.clear();
         }
-    }, [newLocationInProgressCoords]);
+    }, [sideBarContent]);
+
+    useEffect(() => {
+        if (globalMapClickCoords !== null && globalCoordinateSelectionMode) {
+            newLocationInProgressVectorSource.current.clear();
+            newLocationInProgressVectorSource.current.addFeature(generateLocationInProgressFeature(globalMapClickCoords));
+        }
+    }, [globalMapClickCoords]);
 
 
     return (

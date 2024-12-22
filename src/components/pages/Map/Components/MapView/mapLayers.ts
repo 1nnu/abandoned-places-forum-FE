@@ -28,5 +28,5 @@ export const createNewInProgressLocationLayer = (source: VectorSource) =>
 export const createSelectedLocationsLayer = (source: VectorSource) =>
     new VectorLayer({
         source,
-        style: SELECTED_LOCATION_STYLE_RECTANGLE,
+        style: [SELECTED_LOCATION_STYLE_RECTANGLE, LOCATION_LAYER_DEFAULT_STYLE]
     });

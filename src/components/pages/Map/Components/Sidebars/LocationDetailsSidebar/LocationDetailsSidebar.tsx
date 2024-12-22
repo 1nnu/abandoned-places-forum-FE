@@ -6,19 +6,19 @@ import emitter from "../../../../../../emitter/eventEmitter.ts";
 interface LocationDetailsSidebarProps {
   selectedLocation: MapLocation | null;
   stopDisplayingDeletedLocation: (deletedLocationId: string) => void;
-  applyObliqueAeroPhotoCoords: (newObliqueAeroPhotoCoords: number[] | null) => void;
+  setObliqueAeroPhotoCoords: (newObliqueAeroPhotoCoords: number[] | null) => void;
 }
 
-function LocationDetailsSidebar({selectedLocation, stopDisplayingDeletedLocation, applyObliqueAeroPhotoCoords}: LocationDetailsSidebarProps) {
+function LocationDetailsSidebar({selectedLocation, stopDisplayingDeletedLocation, setObliqueAeroPhotoCoords}: LocationDetailsSidebarProps) {
 
   const API_URL = import.meta.env.VITE_API_URL;
 
 
-  const showObliqueAeroPhoto = () => {
+  function showObliqueAeroPhoto() {
     if (selectedLocation) {
-      applyObliqueAeroPhotoCoords([selectedLocation.lat, selectedLocation.lon]);
+      setObliqueAeroPhotoCoords([selectedLocation.lat, selectedLocation.lon]);
     }
-  };
+  }
 
 
   const deleteSelectedLocation = async () => {

@@ -2,10 +2,9 @@
 
 export enum SidebarContent {
     DETAILS,
-    FILTERING,
-    NEW_LOCATION
+    FILTER,
+    ADD_NEW_LOCATION
 }
-
 
 export interface MapLocation {
     id: string;
@@ -47,7 +46,6 @@ export interface LocationStatus {
     colorHex: string;
 }
 
-
 export interface LocationCreateDto {
     name: string;
     lon: number;
@@ -59,7 +57,6 @@ export interface LocationCreateDto {
     additionalInformation: string;
 }
 
-
 export interface NewLocationFormData {
     name: string;
     mainCategoryId: number | null;
@@ -67,17 +64,17 @@ export interface NewLocationFormData {
     conditionId: number | null;
     statusId: number | null;
     additionalInformation: string;
+    lon: number | null;
+    lat: number | null;
 }
 
-
-export interface LocationAttributesState {
-    categories: LocationAttributeFormOptions[];
-    conditions: LocationAttributeFormOptions[];
-    statuses: LocationAttributeFormOptions[];
+export interface LocationAttributesFormOptions {
+    categories: FormOption[];
+    conditions: FormOption[];
+    statuses: FormOption[];
 }
 
-
-export interface LocationAttributeFormOptions {
+export interface FormOption {
     label: string,
     value : number,
 }
