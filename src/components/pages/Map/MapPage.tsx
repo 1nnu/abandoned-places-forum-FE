@@ -9,6 +9,7 @@ import FilteringButton from "./Components/Sidebars/Buttons/FilteringButton.tsx";
 import {MapLocation, SidebarContent} from "./Components/utils.ts";
 import {fetchAllAvailableLocations} from "../../../service/LocationService.ts";
 
+export const SIDEBAR_TRANSITION_DURATION = 300;
 
 function MapPage() {
 
@@ -81,8 +82,11 @@ function MapPage() {
             />
             <div
                 className="fixed top-0 right-0 h-full bg-black bg-opacity-75 z-40
-                 flex justify-center items-center transition-all duration-500 ease-in-out"
-                style={{transform: isSidebarOpen ? "translateX(0)" : "translateX(100%)", width: "500px"}}
+                 flex justify-center items-center transition-all ease-in-out w-[500px]"
+                style={{
+                    transform: isSidebarOpen ? "translateX(0)" : "translateX(100%)",
+                    transitionDuration: `${SIDEBAR_TRANSITION_DURATION}ms`,
+                }}
             >
                 {sidebarContent === SidebarContent.DETAILS && (
                     <LocationDetailsSidebar

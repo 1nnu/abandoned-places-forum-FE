@@ -15,6 +15,7 @@ import AdditionalInfoInput from "./Form/AdditionalInfoInput.tsx";
 import CategoriesInput from "./Form/CategoriesInput.tsx";
 import ConditionInput from "./Form/ConditionInput.tsx";
 import StatusInput from "./Form/StatusInput.tsx";
+import AutoSelectionButton from "./AutoSelectionButton/AutoSelectionButton.tsx";
 
 
 interface NewLocationSidebarProps {
@@ -30,6 +31,9 @@ function NewLocationSidebar({
                                 globalMapClickCoords,
                                 displayCreatedLocation
                             }: NewLocationSidebarProps) {
+
+    const [selectLocationAfterCreating, setSelectLocationAfterCreating] = useState<boolean>(true);
+
 
     const [newLocationFormData, setNewLocationFormData] = useState<NewLocationFormData>(DEFAULT_FORM_DATA);
     function resetFormData() {
@@ -69,7 +73,7 @@ function NewLocationSidebar({
         createLocation(newLocationFormData as LocationCreateDto)
             .then((newLocation: MapLocation | null) => {
                 if (newLocation) {
-                    displayCreatedLocation(newLocation, true);
+                    displayCreatedLocation(newLocation, selectLocationAfterCreating);
                     resetFormData();
                 }
             });
@@ -120,6 +124,12 @@ function NewLocationSidebar({
                 >
                     Lisa
                 </button>
+            </div>
+            <div className={"pt-2"}>
+                <AutoSelectionButton
+                    selectLocationAfterCreating={selectLocationAfterCreating}
+                    setSelectLocationAfterCreating={setSelectLocationAfterCreating}
+                />
             </div>
         </div>
     );

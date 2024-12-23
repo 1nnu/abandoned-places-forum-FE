@@ -1,4 +1,5 @@
 import {SidebarContent} from "../../utils.ts";
+import {SIDEBAR_TRANSITION_DURATION} from "../../../MapPage.tsx";
 
 interface FilteringButtonProps {
     sidebarContent: SidebarContent;
@@ -9,10 +10,12 @@ interface FilteringButtonProps {
 function FilteringButton({ sidebarContent, isSidebarOpen }: FilteringButtonProps) {
     return (
         <div
-            className="fixed top-56 right-0 border-4 border-black text-white w-20 h-16 flex items-center justify-center rounded-l-lg transition-transform duration-500 ease-in-out"
+            className="fixed top-56 right-0 border-4 border-black text-white w-20 h-16 flex items-center justify-center
+             rounded-l-lg transition-transform ease-in-out"
             style={{
                 backgroundColor: sidebarContent === SidebarContent.FILTER ? "rgba(256, 256, 256, 0.7)" : "rgba(0, 0, 0, 0.75)",
-                transform: isSidebarOpen ? "translateX(-500px)" : "translateX(0)"
+                transform: isSidebarOpen ? "translateX(-500px)" : "translateX(0)",
+                transitionDuration: `${SIDEBAR_TRANSITION_DURATION}ms`,
             }}
         >
             <img
