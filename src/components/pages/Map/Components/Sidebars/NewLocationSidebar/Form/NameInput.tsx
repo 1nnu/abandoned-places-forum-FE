@@ -4,7 +4,7 @@ import {DEFAULT_LOCATION_NAME} from "../newLocationSidebarUtils.ts";
 
 interface NameInputProps {
     newLocationFormData: NewLocationFormData;
-    setNewLocationFormData: (newData: (prevData) => NewLocationFormData) => void;
+    setNewLocationFormData: (newData: (prevData: NewLocationFormData) => NewLocationFormData) => void;
 }
 
 function NameInput({newLocationFormData, setNewLocationFormData}: NameInputProps) {

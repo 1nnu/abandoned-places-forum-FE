@@ -3,7 +3,7 @@ import {NewLocationFormData} from "../../../utils.ts";
 
 interface LocationNameFieldProps {
     newLocationFormData: NewLocationFormData;
-    setNewLocationFormData: (newData: (prevData) => NewLocationFormData) => void;
+    setNewLocationFormData: (newData: (prevData: NewLocationFormData) => NewLocationFormData) => void;
 }
 
 function AdditionalInformationInput({newLocationFormData, setNewLocationFormData}: LocationNameFieldProps) {

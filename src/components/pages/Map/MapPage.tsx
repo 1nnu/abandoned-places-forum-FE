@@ -53,6 +53,12 @@ function MapPage() {
             setSidebarContent(newContent);
         }
     }
+    function closeSidebar() {
+        if (sidebarContent === SidebarContent.DETAILS) {
+            setGlobalSelectedLocation(null);
+        }
+        manageSidebar(SidebarContent.DETAILS);
+    }
 
 
     useEffect(() => {
@@ -70,9 +76,11 @@ function MapPage() {
                 globalMapClickCoords={globalMapClickCoords}
                 setGlobalMapClickCoords={setGlobalMapClickCoords}
                 globalCoordinateSelectionMode={globalCoordinateSelectionMode}
-                locationsDisplayedOnMap={locationsDisplayedOnMap}
+
                 globalSelectedLocation={globalSelectedLocation}
                 setGlobalSelectedLocation={setGlobalSelectedLocation}
+                locationsDisplayedOnMap={locationsDisplayedOnMap}
+
                 setObliqueAeroPhotoCoords={setObliqueAeroPhotoCoords}
                 sideBarContent={sidebarContent}
             />
@@ -88,6 +96,13 @@ function MapPage() {
                     transitionDuration: `${SIDEBAR_TRANSITION_DURATION}ms`,
                 }}
             >
+                <button
+                    className="absolute top-8 right-12 w-8 h-8 flex items-center justify-center text-white text-2xl pb-1.5
+               rounded-full shadow-lg font-bold cursor-pointer transition-transform transform
+               hover:scale-110 hover:bg-white hover:bg-opacity-20"
+                    onClick={closeSidebar}>
+                    x
+                </button>
                 {sidebarContent === SidebarContent.DETAILS && (
                     <LocationDetailsSidebar
                         globalSelectedLocation={globalSelectedLocation}

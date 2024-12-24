@@ -29,7 +29,7 @@ export const fetchAllAvailableLocations = async () => {
 
         return response.json();
 
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error creating location:", error.message || error);
         alert(error.message || "Failed to create new location"); // TODO replace with toast
 
@@ -60,7 +60,7 @@ export const fetchLocationAttributes = async (): Promise<LocationAttributes | nu
         }
 
         return await response.json();
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error creating location:", error.message || error);
         alert(error.message || "Failed to fetch location attributes"); // TODO replace with toast
 
@@ -103,7 +103,7 @@ export const createLocation = async (newLocationPayload: LocationCreateDto): Pro
         }
 
         return await response.json();
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error creating location:", error.message || error);
         alert(error.message || "Failed to create new location"); // TODO replace with toast
 

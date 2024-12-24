@@ -6,7 +6,7 @@ interface CoordinateSelectorProps {
     setGlobalCoordinateSelectionMode: (newMode: boolean) => void;
     globalMapClickCoords: number[] | null;
     newLocationFormData: NewLocationFormData;
-    setNewLocationFormData: (newData: (prevData) => NewLocationFormData) => void;
+    setNewLocationFormData: (newData: (prevData: NewLocationFormData) => NewLocationFormData) => void;
 }
 
 function CoordinateSelector({

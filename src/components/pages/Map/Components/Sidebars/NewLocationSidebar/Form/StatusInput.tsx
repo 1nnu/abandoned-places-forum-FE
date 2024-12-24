@@ -4,7 +4,7 @@ import {FormOption, LocationAttributesFormOptions, NewLocationFormData} from "..
 
 interface CategoriesInputProps {
     newLocationFormData: NewLocationFormData;
-    setNewLocationFormData: (newData: (prevData) => NewLocationFormData) => void;
+    setNewLocationFormData: (newData: (prevData: NewLocationFormData) => NewLocationFormData) => void;
     locationAttributesFormOptions: LocationAttributesFormOptions
 }
 

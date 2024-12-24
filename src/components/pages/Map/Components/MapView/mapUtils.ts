@@ -5,6 +5,7 @@ import {fromLonLat, transform} from "ol/proj";
 import {OSM} from "ol/source";
 import {MapLocation} from "../utils.ts";
 import {Select} from "ol/interaction";
+import {generateColoredLocationStyle, SELECTED_LOCATION_STYLE_RECTANGLE} from "./mapStyles.ts";
 
 export const WGS84 = "EPSG:4326";
 export const MERCATOR = "EPSG:3857";
@@ -25,13 +26,32 @@ export const DEFAULT_SELECT_INTERACTION: Select = new Select({
   style: null,
 });
 
-export function generateLocationFeature(location: MapLocation) {
-  return new Feature({
-    geometry: new Point(fromLonLat([location.lon, location.lat])),
-    location: location,
+export function generateLocationFeature(mapLocation: MapLocation): Feature<Point> {
+  const feature = new Feature({
+    geometry: new Point(fromLonLat([mapLocation.lon, mapLocation.lat])),
+    location: mapLocation,
     isNewLocationInProgress: false,
   });
+
+  feature.setStyle(generateColoredLocationStyle(mapLocation.mainCategory.colorHex));
+  return feature;
 }
+
+
+export function generateSelectedFeature(mapLocation: MapLocation): Feature<Point> {
+  const feature = new Feature({
+    geometry: new Point(fromLonLat([mapLocation.lon, mapLocation.lat])),
+    location: mapLocation,
+    isNewLocationInProgress: false,
+  });
+
+  const coloredMapPinStyle = generateColoredLocationStyle(mapLocation.mainCategory.colorHex);
+  const styles = [SELECTED_LOCATION_STYLE_RECTANGLE, coloredMapPinStyle];
+  feature.setStyle(styles);
+
+  return feature;
+}
+
 
 export function generateLocationInProgressFeature(newLocationCoords: number[]) {
   return new Feature({
@@ -39,5 +59,3 @@ export function generateLocationInProgressFeature(newLocationCoords: number[]) {
     isNewLocationInProgress: true,
   });
 }
-
-

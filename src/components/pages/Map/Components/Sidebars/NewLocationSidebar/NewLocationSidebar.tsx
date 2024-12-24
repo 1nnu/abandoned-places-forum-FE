@@ -15,7 +15,7 @@ import AdditionalInfoInput from "./Form/AdditionalInfoInput.tsx";
 import CategoriesInput from "./Form/CategoriesInput.tsx";
 import ConditionInput from "./Form/ConditionInput.tsx";
 import StatusInput from "./Form/StatusInput.tsx";
-import AutoSelectionButton from "./AutoSelectionButton/AutoSelectionButton.tsx";
+import AutoSelectionCheckbox from "./AutoSelectionButton/AutoSelectionButton.tsx";
 
 
 interface NewLocationSidebarProps {
@@ -49,7 +49,7 @@ function NewLocationSidebar({
         });
     useEffect(() => {
         function loadLocationAttributes() {
-            fetchLocationAttributes().then((locationAttributes: LocationAttributes) => {
+            fetchLocationAttributes().then((locationAttributes: LocationAttributes | null) => {
 
                 if (locationAttributes) {
                     setLocationAttributesFormOptions(createFormOptions(locationAttributes));
@@ -125,8 +125,8 @@ function NewLocationSidebar({
                     Lisa
                 </button>
             </div>
-            <div className={"pt-2"}>
-                <AutoSelectionButton
+            <div className="pt-2">
+                <AutoSelectionCheckbox
                     selectLocationAfterCreating={selectLocationAfterCreating}
                     setSelectLocationAfterCreating={setSelectLocationAfterCreating}
                 />

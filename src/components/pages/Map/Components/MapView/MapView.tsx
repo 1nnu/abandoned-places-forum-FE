@@ -6,9 +6,11 @@ import {toLonLat} from "ol/proj";
 import VectorSource from "ol/source/Vector";
 import {
     BASE_MAP_LAYER,
-    DEFAULT_INITIAL_VIEW, DEFAULT_SELECT_INTERACTION,
+    DEFAULT_INITIAL_VIEW,
+    DEFAULT_SELECT_INTERACTION,
     generateLocationFeature,
-    generateLocationInProgressFeature
+    generateLocationInProgressFeature,
+    generateSelectedFeature
 } from "./mapUtils.ts";
 import {MapLocation, SidebarContent} from "../utils.ts";
 import {
@@ -145,7 +147,9 @@ function MapView({
     useEffect(() => {
         selectedLocationsVectorSource.current.clear();
         if (globalSelectedLocation !== null) {
-            selectedLocationsVectorSource.current.addFeature(generateLocationFeature(globalSelectedLocation));
+            const feature = generateSelectedFeature(globalSelectedLocation);
+            selectInteraction.getFeatures().push(feature);
+            selectedLocationsVectorSource.current.addFeature(feature);
         }
     }, [globalSelectedLocation]);
 
