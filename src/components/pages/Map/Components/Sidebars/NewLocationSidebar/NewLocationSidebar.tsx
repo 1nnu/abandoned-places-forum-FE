@@ -7,7 +7,7 @@ import {
     MapLocation,
     NewLocationFormData,
 } from "../../utils.ts";
-import {createLocation, fetchLocationAttributes, isFormDataValid} from "../../../../../../service/LocationService.ts";
+import LocationService from "../../../../../../service/LocationService.ts";
 import CoordinateSelector from "./CoordinateSelector/CoordinateSelector.tsx";
 import NameInput from "./Form/NameInput.tsx";
 import {createFormOptions, DEFAULT_FORM_DATA} from "./newLocationSidebarUtils.ts";
@@ -48,29 +48,24 @@ function NewLocationSidebar({
             statuses: [] as FormOption[]
         });
     useEffect(() => {
-        function loadLocationAttributes() {
-            fetchLocationAttributes().then((locationAttributes: LocationAttributes | null) => {
-
-                if (locationAttributes) {
-                    setLocationAttributesFormOptions(createFormOptions(locationAttributes));
-                }
-            });
-        }
-
-        loadLocationAttributes();
+        LocationService.fetchLocationAttributes().then((locationAttributes: LocationAttributes | null) => {
+            if (locationAttributes) {
+                setLocationAttributesFormOptions(createFormOptions(locationAttributes));
+            }
+        });
     }, []);
 
 
     function createNewLocation(){
         setGlobalCoordinateSelectionMode(false);
 
-        const validationError = isFormDataValid(newLocationFormData);
+        const validationError = LocationService.isFormDataValid(newLocationFormData);
         if (validationError) {
             alert(validationError);
             return;
         }
 
-        createLocation(newLocationFormData as LocationCreateDto)
+        LocationService.createLocation(newLocationFormData as LocationCreateDto)
             .then((newLocation: MapLocation | null) => {
                 if (newLocation) {
                     displayCreatedLocation(newLocation, selectLocationAfterCreating);
@@ -81,7 +76,7 @@ function NewLocationSidebar({
 
 
     return (
-        <div className="flex flex-col p-12 h-full w-full overflow-y-auto">
+        <div className="flex flex-col p-8 h-full w-full overflow-y-auto">
             <h2 className="text-2xl font-bold text-white">Lisa privaatsele kaardile</h2>
             <div className="flex flex-col gap-3 text-white pt-8 rounded-lg mb-2">
                 <CoordinateSelector

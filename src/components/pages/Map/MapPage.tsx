@@ -7,7 +7,7 @@ import NewLocationSidebar from "./Components/Sidebars/NewLocationSidebar/NewLoca
 import NewLocationButton from "./Components/Sidebars/Buttons/NewLocationButton.tsx";
 import FilteringButton from "./Components/Sidebars/Buttons/FilteringButton.tsx";
 import {MapLocation, SidebarContent} from "./Components/utils.ts";
-import {fetchAllAvailableLocations} from "../../../service/LocationService.ts";
+import LocationService from "../../../service/LocationService.ts";
 
 export const SIDEBAR_TRANSITION_DURATION = 300;
 
@@ -62,7 +62,7 @@ function MapPage() {
 
 
     useEffect(() => {
-        fetchAllAvailableLocations().then((locations: MapLocation[] | null) => {
+        LocationService.fetchAllAvailableLocations().then((locations: MapLocation[] | null) => {
             if (locations) {
                 setLocationsDisplayedOnMap(locations);
             }
@@ -97,9 +97,9 @@ function MapPage() {
                 }}
             >
                 <button
-                    className="absolute top-8 right-12 w-8 h-8 flex items-center justify-center text-white text-2xl pb-1.5
-               rounded-full shadow-lg font-bold cursor-pointer transition-transform transform
-               hover:scale-110 hover:bg-white hover:bg-opacity-20"
+                    className="absolute top-8 right-12 w-8 h-8 flex items-center justify-center text-white text-2xl
+                        pb-1.5 rounded-full shadow-lg font-bold cursor-pointer transition-transform transform
+                        hover:scale-110 hover:bg-white hover:bg-opacity-20"
                     onClick={closeSidebar}>
                     x
                 </button>
@@ -124,12 +124,16 @@ function MapPage() {
                     />
                 )}
             </div>
-            <button onClick={() => manageSidebar(SidebarContent.ADD_NEW_LOCATION)}>
-                <NewLocationButton sidebarContent={sidebarContent} isSidebarOpen={isSidebarOpen}/>
-            </button>
-            <button onClick={() => manageSidebar(SidebarContent.FILTER)}>
-                <FilteringButton sidebarContent={sidebarContent} isSidebarOpen={isSidebarOpen}/>
-            </button>
+            <NewLocationButton
+                sidebarContent={sidebarContent}
+                isSidebarOpen={isSidebarOpen}
+                manageSidebar={manageSidebar}
+            />
+            <FilteringButton
+                sidebarContent={sidebarContent}
+                isSidebarOpen={isSidebarOpen}
+                manageSidebar={manageSidebar}
+            />
         </div>
     );
 }

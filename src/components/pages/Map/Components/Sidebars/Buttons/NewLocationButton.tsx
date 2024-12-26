@@ -4,12 +4,15 @@ import {SIDEBAR_TRANSITION_DURATION} from "../../../MapPage.tsx";
 interface NewLocationButtonProps {
     sidebarContent: SidebarContent;
     isSidebarOpen: boolean;
+    manageSidebar: (newContent: SidebarContent) => void;
 }
 
 
-function NewLocationButton({ sidebarContent, isSidebarOpen }: NewLocationButtonProps) {
+function NewLocationButton({ sidebarContent, isSidebarOpen, manageSidebar }: NewLocationButtonProps) {
     return (
-        <button>
+        <button
+            onClick={() => manageSidebar(SidebarContent.ADD_NEW_LOCATION)}
+        >
             <div
                 className="fixed top-32 right-0 border-4 border-black w-20 h-16 flex items-center justify-center
              rounded-l-lg transition-transform ease-in-out"

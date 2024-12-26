@@ -26,7 +26,7 @@ function NameInput({newLocationFormData, setNewLocationFormData}: NameInputProps
 
 
     return (
-        <div className="mb-3">
+        <div className="">
             <label htmlFor="location-name" className="block">
                 Nimi: *
             </label>

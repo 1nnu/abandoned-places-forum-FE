@@ -47,6 +47,8 @@ function MapView({
 
     const mapRef: MutableRefObject<Map | null> = useRef<Map | null>(null);
 
+    const selectInteraction: Select = DEFAULT_SELECT_INTERACTION;
+
     const publicLocationsVectorSource: MutableRefObject<VectorSource> = useRef(new VectorSource());
     const privateLocationsVectorSource: MutableRefObject<VectorSource> = useRef(new VectorSource());
     const newLocationInProgressVectorSource: MutableRefObject<VectorSource> = useRef(new VectorSource());
@@ -76,13 +78,10 @@ function MapView({
         }
     }
 
-    const selectInteraction: Select = DEFAULT_SELECT_INTERACTION;
-    selectInteraction.on("select", handleSelectEvent);
-
 
     function initMap(): Map {
         const map = new Map({
-            target: "map-element",
+            target: "map-container",
             layers: [
                 BASE_MAP_LAYER,
                 privateLocationsLayer.current,
@@ -104,6 +103,7 @@ function MapView({
             setGlobalMapClickCoords(toLonLat(event.coordinate).reverse());
             setObliqueAeroPhotoCoords(null);
         });
+        selectInteraction.on("select", handleSelectEvent);
 
         map.addInteraction(selectInteraction);
 
@@ -169,7 +169,7 @@ function MapView({
 
     return (
         <div>
-            <div id="map-element" className="absolute top-0 left-0 h-screen w-screen"/>
+            <div id="map-container" className="absolute top-0 left-0 h-screen w-screen"/>
         </div>
     );
 }
