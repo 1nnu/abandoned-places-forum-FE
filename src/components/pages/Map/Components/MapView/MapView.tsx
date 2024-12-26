@@ -21,6 +21,7 @@ import {
 } from "./mapLayers.ts";
 import VectorLayer from "ol/layer/Vector";
 import {SelectEvent} from "ol/interaction/Select";
+import LocationLayerSelector from "./LayerControls/LocationLayerSelector.tsx";
 
 
 interface MapViewProps {
@@ -146,6 +147,7 @@ function MapView({
 
     useEffect(() => {
         selectedLocationsVectorSource.current.clear();
+        selectInteraction.getFeatures().clear();
         if (globalSelectedLocation !== null) {
             const feature = generateSelectedFeature(globalSelectedLocation);
             selectInteraction.getFeatures().push(feature);
@@ -170,6 +172,12 @@ function MapView({
     return (
         <div>
             <div id="map-container" className="absolute top-0 left-0 h-screen w-screen"/>
+            <LocationLayerSelector
+                publicLayer={publicLocationsLayer}
+                privateLayer={privateLocationsLayer}
+                globalSelectedLocation={globalSelectedLocation}
+                setGlobalSelectedLocation={setGlobalSelectedLocation}
+            />
         </div>
     );
 }
