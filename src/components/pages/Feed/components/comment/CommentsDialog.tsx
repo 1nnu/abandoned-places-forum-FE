@@ -114,7 +114,7 @@ export default function CommentsDialog({ postId }: CommentsDialogProps) {
           Comment
           <MessageCircle className="w-4 h-4" />
         </AlertDialogTrigger>
-        <AlertDialogContent className="w-[60vw]">
+        <AlertDialogContent className="w-[60vw] bg-slate-50">
           <AlertDialogHeader>
             <div className="w-full flex justify-between">
               <AlertDialogTitle className="text-3xl">Comments</AlertDialogTitle>
@@ -122,7 +122,7 @@ export default function CommentsDialog({ postId }: CommentsDialogProps) {
                 <XIcon />
               </AlertDialogCancel>
             </div>
-            <div className="bg-slate-100 p-2 rounded-lg border border-slate-300">
+            <div className="bg-white p-2 rounded-lg border border-slate-300">
               <CommentsList postId={postId} />
             </div>
           </AlertDialogHeader>

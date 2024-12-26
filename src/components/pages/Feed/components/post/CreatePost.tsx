@@ -5,12 +5,20 @@ import { Textarea } from "../../../../ui/textarea";
 import { Card, CardContent, CardFooter, CardHeader } from "../../../../ui/card";
 import { CircleArrowDown } from "lucide-react";
 import emitter from "../../../../../emitter/eventEmitter";
+import AddLocationDialog from "./AddLocationDialog";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
 export default function CreatePost() {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
+  const [selectedLocation, setSelectedLocation] = useState<
+    number[] | undefined
+  >(undefined);
+
+  const handleSetSelectedLocation = (location: number[]) => {
+    setSelectedLocation(location);
+  };
 
   const handleCreatePost = async (title: string, body: string) => {
     try {
@@ -24,7 +32,7 @@ export default function CreatePost() {
           Authorization: `Bearer ${userToken}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ userId, title, body }),
+        body: JSON.stringify({ userId, title, body, locationId: "121313" }),
       });
 
       if (!response.ok) {
@@ -42,7 +50,7 @@ export default function CreatePost() {
   };
 
   return (
-    <Card>
+    <Card className="">
       <CardHeader className="flex flex-col gap-y-2">
         <h2 className="text-3xl font-semibold">Create New Post</h2>
         <p className="text-sm text-gray-600 mb-4">
@@ -66,6 +74,7 @@ export default function CreatePost() {
       </CardContent>
       <CardFooter>
         <div className="flex justify-end w-full gap-x-2">
+          <AddLocationDialog setSelectedLocation={handleSetSelectedLocation} />
           <Button
             className="bg-blue-600 hover:bg-blue-700 text-white"
             onClick={() => handleCreatePost(title, body)}

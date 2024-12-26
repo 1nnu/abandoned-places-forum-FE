@@ -7,27 +7,21 @@ import VectorSource from "ol/source/Vector";
 import VectorLayer from "ol/layer/Vector";
 import {
   BASE_MAP_LAYER,
-  generateLocationFeature,
   INITIAL_MAP_VIEW_CENTRE_MERCATOR,
-} from "./mapUtils.ts";
+} from "../../../Map/Components/MapView/mapUtils.ts";
 import {
   LOCATION_LAYER_DEFAULT_STYLE,
   SELECTED_LOCATION_STYLE_RECTANGLE,
-} from "./mapStyles.ts";
-import { MapLocation } from "../utils.ts";
+} from "../../../Map/Components/MapView/mapStyles.ts";
 
 interface MapViewProps {
-  locationsDisplayedOnMap: MapLocation[];
-  setSelectedLocationInParent: (mapLocation: MapLocation | null) => void;
   applyNewLocationCoords: (mapClickCoords: number[]) => void;
   applyObliqueAeroPhotoCoords: (
     newObliqueAeroPhotoCoords: number[] | null
   ) => void;
 }
 
-export default function MapView({
-  locationsDisplayedOnMap,
-  setSelectedLocationInParent,
+export default function MapAddLocation({
   applyNewLocationCoords,
   applyObliqueAeroPhotoCoords,
 }: MapViewProps) {
@@ -80,13 +74,7 @@ export default function MapView({
           LOCATION_LAYER_DEFAULT_STYLE,
         ],
       });
-      selectInteraction.on("select", (event) => {
-        if (event.selected.length !== 0) {
-          setSelectedLocationInParent(event.selected[0].get("location"));
-        } else if (event.deselected.length !== 0) {
-          setSelectedLocationInParent(null);
-        }
-      });
+
       map.addInteraction(selectInteraction);
 
       mapRef.current = map;
@@ -98,26 +86,10 @@ export default function MapView({
     }
   }, []);
 
-  useEffect(() => {
-    publicLocationsVectorSource.current.clear();
-    privateLocationsVectorSource.current.clear();
-
-    locationsDisplayedOnMap.forEach((location: MapLocation) => {
-      const feature = generateLocationFeature(location);
-      if (location.isPublic) {
-        publicLocationsVectorSource.current.addFeature(feature);
-      } else {
-        privateLocationsVectorSource.current.addFeature(feature);
-      }
-    });
-  }, [locationsDisplayedOnMap]);
-
   return (
-    <div>
-      <div
-        id="map-element"
-        className="absolute top-0 left-0 h-screen w-screen"
-      />
-    </div>
+    <div
+      id="map-element"
+      className="w-full h-full rounded-md overflow-hidden border border-slate-300"
+    />
   );
 }
