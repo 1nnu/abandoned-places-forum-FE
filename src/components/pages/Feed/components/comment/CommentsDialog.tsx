@@ -109,12 +109,12 @@ export default function CommentsDialog({ postId }: CommentsDialogProps) {
       <AlertDialog>
         <AlertDialogTrigger
           onClick={() => setShowComments(!showComments)}
-          className="border-blue-600 border text-blue-600 hover:border-blue-700 hover:text-blue-700 flex px-4 py-2 rounded-sm gap-x-2 text-sm font-medium h-10 items-center"
+          className="border-blue-600 border text-blue-600 hover:border-blue-700 hover:text-blue-700 hover:bg-blue-50 flex px-4 py-2 rounded-sm gap-x-2 text-sm font-medium h-10 items-center"
         >
           Comment
           <MessageCircle className="w-4 h-4" />
         </AlertDialogTrigger>
-        <AlertDialogContent className="w-[60vw]">
+        <AlertDialogContent className="w-[60vw] bg-slate-50">
           <AlertDialogHeader>
             <div className="w-full flex justify-between">
               <AlertDialogTitle className="text-3xl">Comments</AlertDialogTitle>
@@ -122,7 +122,7 @@ export default function CommentsDialog({ postId }: CommentsDialogProps) {
                 <XIcon />
               </AlertDialogCancel>
             </div>
-            <div className="bg-slate-100 p-2 rounded-lg border border-slate-300">
+            <div className="bg-white p-2 rounded-lg border border-slate-300">
               <CommentsList postId={postId} />
             </div>
           </AlertDialogHeader>

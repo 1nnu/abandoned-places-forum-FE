@@ -3,6 +3,12 @@ import CommentsDialog from "../comment/CommentsDialog";
 import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
 import UpvoteButton from "../upvote/UpvoteButton";
 import AuthService from "../../../../../service/AuthService";
+import { useEffect, useState } from "react";
+import { MapLocation } from "../../../Map/Components/utils.ts";
+import emitter from "../../../../../emitter/eventEmitter.ts";
+import AeroPhoto from "./AeroPhoto.tsx";
+import { Link } from "react-router-dom";
+import { Button } from "../../../../ui/button.tsx";
 
 interface PostCardProps {
   id: number;
@@ -17,6 +23,8 @@ interface PostCardProps {
   hasUpvoted: boolean;
 }
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 export default function PostCard({
   id,
   title,
@@ -29,6 +37,7 @@ export default function PostCard({
   likeCount,
   hasUpvoted,
 }: PostCardProps) {
+  const [location, setLocation] = useState<MapLocation | null>(null);
   const userId = localStorage.getItem("userId");
 
   if (!userId) {
@@ -38,6 +47,44 @@ export default function PostCard({
   if (!userId) {
     return;
   }
+
+  const fetchLocationById = async (id: string): Promise<void> => {
+    if (!id) {
+      return;
+    }
+
+    try {
+      emitter.emit("startLoading");
+      const userToken = localStorage.getItem("userToken");
+
+      if (!userToken) {
+        throw new Error("User is not authenticated");
+      }
+
+      const response = await fetch(`${apiUrl}/api/locations/${id}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        return;
+      }
+
+      const data: MapLocation = await response.json();
+      setLocation(data);
+    } catch (error: any) {
+      console.log(error);
+    } finally {
+      emitter.emit("stopLoading");
+    }
+  };
+
+  useEffect(() => {
+    fetchLocationById(locationId);
+  }, []);
 
   return (
     <div className="flex flex-col gap-y-2">
@@ -59,27 +106,40 @@ export default function PostCard({
             </h2>
           </div>
           <div className="flex flex-col text-sm text-slate-600 gap-y-2">
+            <Link to={`/posts/${id}`}>
+              <Button
+                variant="outline"
+                className="border-blue-600 text-blue-600 hover:bg-blue-50 hover:text-blue-700"
+              >
+                See full post
+              </Button>
+            </Link>
             <p>{creatadAt}</p>
-            <p>{locationId}</p>
           </div>
         </CardHeader>
-        <CardContent className="p-0 flex flex-col gap-y-2">
-          <h2 className="text-xl text-slate-800 font-semibold">{title}</h2>
-          <p className="text-md text-slate-700 font-normal">{body}</p>
-
-          {images.length > 0 && (
-            <div className="my-4">
-              <h3>Images</h3>
-              <div className="flex space-x-4">
-                {images.map((imageUrl, index) => (
-                  <img
-                    key={index}
-                    src={imageUrl}
-                    alt={`Post Image ${index}`}
-                    className="w-20 h-20 object-cover"
-                  />
-                ))}
+        <CardContent className="p-0 flex-row gap-y-2 flex-wrap md:flex-nowrap flex gap-x-4">
+          <div className="flex flex-col gap-y-4 w-full md:w-1/2">
+            <h2 className="text-xl text-slate-800 font-semibold">{title}</h2>
+            <p className="text-md text-slate-700 font-normal">{body}</p>
+            {images.length > 0 && (
+              <div className="my-4">
+                <h3>Images</h3>
+                <div className="flex space-x-4">
+                  {images.map((imageUrl, index) => (
+                    <img
+                      key={index}
+                      src={imageUrl}
+                      alt={`Post Image ${index}`}
+                      className="w-20 h-20 object-cover"
+                    />
+                  ))}
+                </div>
               </div>
+            )}
+          </div>
+          {location && (
+            <div className="h-[500px] rounded-md overflow-hidden border border-slate-300 w-full md:w-1/2 mt-3 md:mt-0">
+              <AeroPhoto selectedCoords={[location.lat, location.lon]} />
             </div>
           )}
         </CardContent>

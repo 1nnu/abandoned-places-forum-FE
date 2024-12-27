@@ -33,7 +33,7 @@ const LocationService = {
 
         } catch (error: any) {
             console.error("Error creating location:", error.message || error);
-            alert(error.message || "Failed to create new location"); // TODO replace with toast
+            console.error(error.message || "Failed to create new location"); // TODO replace with toast
 
             emitter.emit("stopLoading");
             return null;
@@ -63,7 +63,7 @@ const LocationService = {
             return await response.json();
         } catch (error: any) {
             console.error("Error creating location:", error.message || error);
-            alert(error.message || "Failed to fetch location attributes"); // TODO replace with toast
+            console.error(error.message || "Failed to fetch location attributes"); // TODO replace with toast
 
             emitter.emit("stopLoading");
             return null;
@@ -104,7 +104,7 @@ const LocationService = {
             return await response.json();
         } catch (error: any) {
             console.error("Error creating location:", error.message || error);
-            alert(error.message || "Failed to create new location"); // TODO replace with toast
+            console.error(error.message || "Failed to create new location"); // TODO replace with toast
 
             emitter.emit("stopLoading");
             return null;
