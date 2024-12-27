@@ -6,7 +6,7 @@ import {
   useEffect,
 } from "react";
 import { useNavigate } from "react-router-dom";
-import AuthService from "../auth/AuthService";
+import AuthService from "../service/AuthService";
 import { jwtDecode } from "jwt-decode";
 import * as jwt_decode from "jwt-decode";
 import { useToast } from "../hooks/use-toast";

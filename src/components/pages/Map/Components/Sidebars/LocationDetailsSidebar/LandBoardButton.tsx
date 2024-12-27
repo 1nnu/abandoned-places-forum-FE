@@ -5,11 +5,11 @@ interface LandBoardButtonProps {
 }
 
 function LandBoardButton({location}: LandBoardButtonProps) {
-    const handleClick = () => {
+    function handleClick() {
         const {lat, lon} = location;
         const url = `https://fotoladu.maaamet.ee/?basemap=hybriidk&zlevel=14,${lon},${lat}&overlay=avaleht&etak=${lon},${lat}`;
         window.open(url, "_blank");
-    };
+    }
 
     return (
         <div>
