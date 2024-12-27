@@ -37,9 +37,17 @@ interface FetchPostsDto {
   hasUpvoted: boolean;
 }
 
+interface Comment {
+  id: number;
+  body: string;
+  postId: number;
+  createdById: string;
+  createdByUsername: string;
+}
+
 export default function OpenedPost() {
   const { postId } = useParams<{ postId: string }>();
-  const [comments, setComments] = useState<string[]>([]);
+  const [comments, setComments] = useState<Comment[]>([]);
   const [post, setPost] = useState<FetchPostsDto | null>(null);
   const [location, setLocation] = useState<MapLocation | null>(null);
   const navigate = useNavigate();
@@ -52,10 +60,68 @@ export default function OpenedPost() {
 
   const endOfCommentsRef = useRef<HTMLDivElement>(null);
 
-  const handleAddComment: SubmitHandler<FieldValues> = (data) => {
+  const fetchComments = async () => {
+    try {
+      emitter.emit("startLoading");
+      const userToken = localStorage.getItem("userToken");
+
+      const response = await fetch(`${apiUrl}/api/feed/${postId}/comments`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const commentsData = await response.json();
+        setComments(commentsData);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      emitter.emit("stopLoading");
+    }
+  };
+
+  const handleAddComment: SubmitHandler<FieldValues> = async (data) => {
     if (data.comment) {
-      // Mock adding a comment
-      setComments((prevComments) => [...prevComments, data.comment]);
+      const newComment = {
+        body: data.comment,
+        createdByUsername: "User",
+        createdAt: new Date().toISOString(),
+      };
+
+      try {
+        emitter.emit("startLoading");
+        const userToken = localStorage.getItem("userToken");
+        const userId = localStorage.getItem("userId");
+
+        const response = await fetch(`${apiUrl}/api/feed/${postId}/comments`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            body: newComment.body,
+            postId: postId,
+            createdById: userId,
+          }),
+        });
+
+        if (response.ok) {
+          const commentData = await response.json();
+          setComments((prevComments) => [...prevComments, commentData]);
+          methods.reset({ comment: "" });
+        } else {
+          console.error("Failed to add comment");
+        }
+      } catch (error) {
+        console.error("Error adding comment:", error);
+      } finally {
+        emitter.emit("stopLoading");
+      }
     }
   };
 
@@ -135,6 +201,7 @@ export default function OpenedPost() {
     };
 
     fetchData();
+    fetchComments();
   }, [postId]);
 
   useEffect(() => {
@@ -203,7 +270,11 @@ export default function OpenedPost() {
           <div className="flex flex-col gap-y-2 h-[40vh] overflow-y-scroll">
             {comments.length > 0 ? (
               comments.map((comment, index) => (
-                <Comment name={"User"} comment={comment} key={index} />
+                <Comment
+                  name={comment.createdByUsername}
+                  comment={comment.body}
+                  key={index}
+                />
               ))
             ) : (
               <div className="p-2 text-slate-500 italic">No comments</div>
