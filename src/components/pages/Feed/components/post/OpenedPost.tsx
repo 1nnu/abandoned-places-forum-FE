@@ -37,17 +37,18 @@ interface FetchPostsDto {
   hasUpvoted: boolean;
 }
 
-interface Comment {
+interface CommentProps {
   id: number;
   body: string;
   postId: number;
   createdById: string;
   createdByUsername: string;
+  createdAt: string;
 }
 
 export default function OpenedPost() {
   const { postId } = useParams<{ postId: string }>();
-  const [comments, setComments] = useState<Comment[]>([]);
+  const [comments, setComments] = useState<CommentProps[]>([]);
   const [post, setPost] = useState<FetchPostsDto | null>(null);
   const [location, setLocation] = useState<MapLocation | null>(null);
   const navigate = useNavigate();
@@ -273,6 +274,7 @@ export default function OpenedPost() {
                 <Comment
                   name={comment.createdByUsername}
                   comment={comment.body}
+                  createdAt={comment.createdAt}
                   key={index}
                 />
               ))
