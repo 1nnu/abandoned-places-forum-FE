@@ -11,6 +11,7 @@ import LoadingSpinner from "./components/shared/LoadingSpinner";
 import emitter from "./emitter/eventEmitter";
 import Footer from "./components/shared/Footer";
 import MapPage from "./components/pages/Map/MapPage.tsx";
+import OpenedPost from "./components/pages/Feed/components/post/OpenedPost.tsx";
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -49,6 +50,14 @@ const App: React.FC = () => {
               element={
                 <ProtectedRoute>
                   <FeedPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/posts/:postId"
+              element={
+                <ProtectedRoute>
+                  <OpenedPost />
                 </ProtectedRoute>
               }
             />
