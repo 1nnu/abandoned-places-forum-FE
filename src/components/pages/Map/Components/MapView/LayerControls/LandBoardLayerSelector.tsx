@@ -1,5 +1,5 @@
-import React, { MutableRefObject, useState } from "react";
-import { createLandBoardTileMapSource, LandBoardLayerTypes } from "../mapLayers";
+import {MutableRefObject, useState} from "react";
+import {createLandBoardTileMapSource, LandBoardLayerTypes} from "../mapLayers";
 import TileLayer from "ol/layer/Tile";
 
 interface LandBoardLayerSelectorProps {
