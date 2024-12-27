@@ -11,9 +11,13 @@ import { Button } from "../../../../ui/button";
 import MapAddLocation from "./MapAddLocation";
 import ObliqueAeroPhotoContainer from "../../../Map/Components/ObliqueAeroPhoto/ObliqueAeroPhotoContainer";
 
-export default function AddLocationDialog(
-  selectLocation: (location: number[]) => void
-) {
+interface AddLocationDialogProps {
+  setSelectedLocation: (location: number[]) => void;
+}
+
+export default function AddLocationDialog({
+  setSelectedLocation,
+}: AddLocationDialogProps) {
   const [newLocationCoords, setNewLocationCoords] = useState<number[]>([]);
   const [obliqueAeroPhotoCoords, setObliqueAeroPhotoCoords] = useState<
     number[] | null
@@ -55,7 +59,7 @@ export default function AddLocationDialog(
             <AlertDialogAction asChild>
               <Button
                 className="bg-blue-600 hover:bg-blue-700"
-                onClick={() => selectLocation(newLocationCoords)}
+                onClick={() => setSelectedLocation(newLocationCoords)}
               >
                 Submit
               </Button>

@@ -6,6 +6,9 @@ import { Card, CardContent, CardFooter, CardHeader } from "../../../../ui/card";
 import { CircleArrowDown } from "lucide-react";
 import emitter from "../../../../../emitter/eventEmitter";
 import AddLocationDialog from "./AddLocationDialog";
+import MapAddLocation from "./MapAddLocation"; // Import MapAddLocation for map rendering
+import ObliqueAeroPhotoContainer from "../../../Map/Components/ObliqueAeroPhoto/ObliqueAeroPhotoContainer";
+import AeroPhoto from "./AeroPhoto";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -41,6 +44,7 @@ export default function CreatePost() {
 
       setTitle("");
       setBody("");
+      setSelectedLocation(undefined); // Reset location after creating the post
     } catch (error) {
       console.error("Error creating post:", error);
     } finally {
@@ -71,6 +75,11 @@ export default function CreatePost() {
             onChange={(e) => setBody(e.target.value)}
           />
         </div>
+        {selectedLocation && (
+          <div className="mt-4 border border-gray-300 rounded-md overflow-hidden h-[500px]">
+            <AeroPhoto selectedCoords={selectedLocation} />
+          </div>
+        )}
       </CardContent>
       <CardFooter>
         <div className="flex justify-end w-full gap-x-2">
