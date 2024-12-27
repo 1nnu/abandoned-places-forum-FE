@@ -16,6 +16,8 @@ import {
 import Comment from "../comment/Comment";
 import { zodResolver } from "@hookform/resolvers/zod";
 import emitter from "../../../../../emitter/eventEmitter";
+import SelectLocation from "./SelectLocation";
+import { MapLocation } from "../../../Map/Components/utils.ts";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -38,7 +40,8 @@ interface FetchPostsDto {
 export default function OpenedPost() {
   const { postId } = useParams<{ postId: string }>();
   const [comments, setComments] = useState<string[]>([]);
-  const [post, setPost] = useState<FetchPostsDto>();
+  const [post, setPost] = useState<FetchPostsDto | null>(null);
+  const [location, setLocation] = useState<MapLocation | null>(null);
   const navigate = useNavigate();
 
   const methods = useForm({
@@ -90,39 +93,81 @@ export default function OpenedPost() {
     }
   };
 
-  useEffect(() => {
-    if (postId) {
-      fetchPostById(postId);
+  const fetchLocationById = async (id: string): Promise<void> => {
+    if (!id) {
+      return;
     }
+
+    try {
+      emitter.emit("startLoading");
+      const userToken = localStorage.getItem("userToken");
+
+      if (!userToken) {
+        throw new Error("User is not authenticated");
+      }
+
+      const response = await fetch(`${apiUrl}/api/locations/${id}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        return;
+      }
+
+      const data: MapLocation = await response.json();
+      setLocation(data);
+    } catch (error: any) {
+      console.log(error);
+    } finally {
+      emitter.emit("stopLoading");
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (postId) {
+        await fetchPostById(postId);
+      }
+    };
+
+    fetchData();
   }, [postId]);
 
   useEffect(() => {
-    if (endOfCommentsRef.current) {
-      endOfCommentsRef.current.scrollIntoView({ behavior: "smooth" });
+    if (post && post.locationId && !location) {
+      fetchLocationById(post.locationId);
     }
-  }, [comments]);
+  }, [post, location]);
 
   return (
     post && (
       <div className="flex justify-center">
         <div className="max-w-[800px] w-full py-8 gap-y-2 flex flex-col">
           <Card className="w-full">
-            <CardHeader>
+            <CardHeader className="w-full justify-between items-center flex flex-row">
               <h2 className="text-2xl font-semibold mb-2">
                 {post.title || "Post"}
               </h2>
+              <Button variant="outline" onClick={() => navigate(-1)}>
+                Back
+              </Button>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-gray-600 mb-4">
                 {post.body || "Loading..."}
               </p>
+              {location && (
+                <div className="h-[400px] rounded-md overflow-hidden border border-slate-300">
+                  <SelectLocation locationsDisplayedOnMap={[location]} />
+                </div>
+              )}
             </CardContent>
             <CardFooter>
-              <div className="flex justify-end w-full gap-x-2">
-                <Button variant="outline" onClick={() => navigate(-1)}>
-                  Back
-                </Button>
-              </div>
+              <div className="flex justify-end w-full gap-x-2"></div>
             </CardFooter>
           </Card>
           <div>

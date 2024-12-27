@@ -109,7 +109,7 @@ export default function CommentsDialog({ postId }: CommentsDialogProps) {
       <AlertDialog>
         <AlertDialogTrigger
           onClick={() => setShowComments(!showComments)}
-          className="border-blue-600 border text-blue-600 hover:border-blue-700 hover:text-blue-700 flex px-4 py-2 rounded-sm gap-x-2 text-sm font-medium h-10 items-center"
+          className="border-blue-600 border text-blue-600 hover:border-blue-700 hover:text-blue-700 hover:bg-blue-50 flex px-4 py-2 rounded-sm gap-x-2 text-sm font-medium h-10 items-center"
         >
           Comment
           <MessageCircle className="w-4 h-4" />

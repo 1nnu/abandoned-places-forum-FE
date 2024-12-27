@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import { MapLocation } from "../../../Map/Components/utils.ts";
 import emitter from "../../../../../emitter/eventEmitter.ts";
 import AeroPhoto from "./AeroPhoto.tsx";
+import { Link } from "react-router-dom";
+import { Button } from "../../../../ui/button.tsx";
 
 interface PostCardProps {
   id: number;
@@ -47,6 +49,10 @@ export default function PostCard({
   }
 
   const fetchLocationById = async (id: string): Promise<void> => {
+    if (!id) {
+      return;
+    }
+
     try {
       emitter.emit("startLoading");
       const userToken = localStorage.getItem("userToken");
@@ -64,10 +70,7 @@ export default function PostCard({
       });
 
       if (!response.ok) {
-        if (response.status === 404) {
-          throw new Error("Location not found");
-        }
-        throw new Error("Failed to fetch location");
+        return;
       }
 
       const data: MapLocation = await response.json();
@@ -103,8 +106,15 @@ export default function PostCard({
             </h2>
           </div>
           <div className="flex flex-col text-sm text-slate-600 gap-y-2">
+            <Link to={`/posts/${id}`}>
+              <Button
+                variant="outline"
+                className="border-blue-600 text-blue-600 hover:bg-blue-50 hover:text-blue-700"
+              >
+                See full post
+              </Button>
+            </Link>
             <p>{creatadAt}</p>
-            <p>{locationId}</p>
           </div>
         </CardHeader>
         <CardContent className="p-0 flex flex-col gap-y-2">
@@ -128,7 +138,6 @@ export default function PostCard({
           )}
           {location && (
             <div className="h-[350px] rounded-md border border-slate-300 overflow-hidden">
-              {/* <SelectLocation locationsDisplayedOnMap={[location]} /> */}
               <AeroPhoto selectedCoords={[location.lat, location.lon]} />
             </div>
           )}
