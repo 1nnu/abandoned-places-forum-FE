@@ -117,27 +117,28 @@ export default function PostCard({
             <p>{creatadAt}</p>
           </div>
         </CardHeader>
-        <CardContent className="p-0 flex flex-col gap-y-2">
-          <h2 className="text-xl text-slate-800 font-semibold">{title}</h2>
-          <p className="text-md text-slate-700 font-normal">{body}</p>
-
-          {images.length > 0 && (
-            <div className="my-4">
-              <h3>Images</h3>
-              <div className="flex space-x-4">
-                {images.map((imageUrl, index) => (
-                  <img
-                    key={index}
-                    src={imageUrl}
-                    alt={`Post Image ${index}`}
-                    className="w-20 h-20 object-cover"
-                  />
-                ))}
+        <CardContent className="p-0 flex-row gap-y-2 flex-wrap md:flex-nowrap flex gap-x-4">
+          <div className="flex flex-col gap-y-4 w-full md:w-1/2">
+            <h2 className="text-xl text-slate-800 font-semibold">{title}</h2>
+            <p className="text-md text-slate-700 font-normal">{body}</p>
+            {images.length > 0 && (
+              <div className="my-4">
+                <h3>Images</h3>
+                <div className="flex space-x-4">
+                  {images.map((imageUrl, index) => (
+                    <img
+                      key={index}
+                      src={imageUrl}
+                      alt={`Post Image ${index}`}
+                      className="w-20 h-20 object-cover"
+                    />
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
           {location && (
-            <div className="h-[350px] rounded-md border border-slate-300 overflow-hidden">
+            <div className="h-[500px] rounded-md overflow-hidden border border-slate-300 w-full md:w-1/2 mt-3 md:mt-0">
               <AeroPhoto selectedCoords={[location.lat, location.lon]} />
             </div>
           )}

@@ -18,6 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import emitter from "../../../../../emitter/eventEmitter";
 import SelectLocation from "./SelectLocation";
 import { MapLocation } from "../../../Map/Components/utils.ts";
+import AeroPhoto from "./AeroPhoto.tsx";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -214,7 +215,7 @@ export default function OpenedPost() {
   return (
     post && (
       <div className="flex justify-center">
-        <div className="max-w-[800px] w-full py-8 gap-y-2 flex flex-col">
+        <div className="w-full py-8 gap-y-2 flex flex-col max-w-[1440px] px-4">
           <Card className="w-full">
             <CardHeader className="w-full justify-between items-center flex flex-row">
               <h2 className="text-2xl font-semibold mb-2">
@@ -224,15 +225,22 @@ export default function OpenedPost() {
                 Back
               </Button>
             </CardHeader>
-            <CardContent>
+            <CardContent className="">
               <p className="text-sm text-gray-600 mb-4">
                 {post.body || "Loading..."}
               </p>
-              {location && (
-                <div className="h-[400px] rounded-md overflow-hidden border border-slate-300">
-                  <SelectLocation locationsDisplayedOnMap={[location]} />
-                </div>
-              )}
+              <div className="flex flex-row flex-wrap md:flex-nowrap gap-x-2 gap-y-2">
+                {location && (
+                  <div className="h-[400px] rounded-md overflow-hidden border border-slate-300 w-full md:w-1/2">
+                    <SelectLocation locationsDisplayedOnMap={[location]} />
+                  </div>
+                )}
+                {location && (
+                  <div className="h-[400px] rounded-md overflow-hidden border border-slate-300 w-full md:w-1/2">
+                    <AeroPhoto selectedCoords={[location.lat, location.lon]} />
+                  </div>
+                )}
+              </div>
             </CardContent>
             <CardFooter>
               <div className="flex justify-end w-full gap-x-2"></div>
@@ -270,14 +278,17 @@ export default function OpenedPost() {
           </div>
           <div className="flex flex-col gap-y-2 h-[40vh] overflow-y-scroll">
             {comments.length > 0 ? (
-              comments.map((comment, index) => (
-                <Comment
-                  name={comment.createdByUsername}
-                  comment={comment.body}
-                  createdAt={comment.createdAt}
-                  key={index}
-                />
-              ))
+              comments
+                .slice()
+                .reverse()
+                .map((comment, index) => (
+                  <Comment
+                    name={comment.createdByUsername}
+                    comment={comment.body}
+                    createdAt={comment.createdAt}
+                    key={index}
+                  />
+                ))
             ) : (
               <div className="p-2 text-slate-500 italic">No comments</div>
             )}
