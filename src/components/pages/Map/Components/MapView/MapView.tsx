@@ -5,23 +5,22 @@ import {MutableRefObject, useEffect, useRef} from "react";
 import {toLonLat} from "ol/proj";
 import VectorSource from "ol/source/Vector";
 import {
-    BASE_MAP_LAYER,
     DEFAULT_INITIAL_VIEW,
     DEFAULT_SELECT_INTERACTION,
     generateLocationFeature,
     generateLocationInProgressFeature,
-    generateSelectedFeature
+    generateSelectedFeature,
+    L_EST
 } from "./mapUtils.ts";
 import {MapLocation, SidebarContent} from "../utils.ts";
-import {
-    createNewInProgressLocationLayer,
-    createPrivateLocationsLayer,
-    createPublicLocationsLayer,
-    createSelectedLocationsLayer
-} from "./mapLayers.ts";
+import {BASE_OSM_LAYER, createNewInProgressLocationLayer, createVectorLayer} from "./mapLayers.ts";
 import VectorLayer from "ol/layer/Vector";
 import {SelectEvent} from "ol/interaction/Select";
 import LocationLayerSelector from "./LayerControls/LocationLayerSelector.tsx";
+import proj4 from "proj4";
+import {register} from "ol/proj/proj4";
+import TileLayer from "ol/layer/Tile";
+import LandBoardLayerSelector from "./LayerControls/LandBoardLayerSelector.tsx";
 
 
 interface MapViewProps {
@@ -35,6 +34,10 @@ interface MapViewProps {
     sideBarContent: SidebarContent;
 }
 
+proj4.defs(L_EST, "+proj=lcc +lat_1=59.33333333333334 +lat_2=58 +lat_0=57.51755393055556 +lon_0=24 +x_0=500000 +y_0=6375000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
+register(proj4);
+
+
 function MapView({
                      globalMapClickCoords,
                      setGlobalMapClickCoords,
@@ -46,9 +49,11 @@ function MapView({
                      sideBarContent,
                  }: MapViewProps) {
 
+
     const mapRef: MutableRefObject<Map | null> = useRef<Map | null>(null);
 
     const selectInteraction: Select = DEFAULT_SELECT_INTERACTION;
+
 
     const publicLocationsVectorSource: MutableRefObject<VectorSource> = useRef(new VectorSource());
     const privateLocationsVectorSource: MutableRefObject<VectorSource> = useRef(new VectorSource());
@@ -56,17 +61,18 @@ function MapView({
     const selectedLocationsVectorSource: MutableRefObject<VectorSource> = useRef(new VectorSource());
 
     const publicLocationsLayer: MutableRefObject<VectorLayer> = useRef(
-        createPublicLocationsLayer(publicLocationsVectorSource.current)
+        createVectorLayer(publicLocationsVectorSource.current)
     );
     const privateLocationsLayer: MutableRefObject<VectorLayer> = useRef(
-        createPrivateLocationsLayer(privateLocationsVectorSource.current)
+        createVectorLayer(privateLocationsVectorSource.current)
     );
     const newLocationInProgressLayer: MutableRefObject<VectorLayer> = useRef(
         createNewInProgressLocationLayer(newLocationInProgressVectorSource.current)
     );
     const selectedLocationsVectorLayer: MutableRefObject<VectorLayer> = useRef(
-        createSelectedLocationsLayer(selectedLocationsVectorSource.current)
+        createVectorLayer(selectedLocationsVectorSource.current)
     );
+    const landBoardTileLayer: MutableRefObject<TileLayer> = useRef(new TileLayer());
 
 
     function handleSelectEvent(event: SelectEvent) {
@@ -83,8 +89,8 @@ function MapView({
     function initMap(): Map {
         const map = new Map({
             target: "map-container",
-            layers: [
-                BASE_MAP_LAYER,
+            layers: [BASE_OSM_LAYER,
+                landBoardTileLayer.current,
                 privateLocationsLayer.current,
                 publicLocationsLayer.current,
                 selectedLocationsVectorLayer.current,
@@ -94,7 +100,7 @@ function MapView({
             controls: [],
             interactions: defaultInteractions({
                 doubleClickZoom: false,
-            }),
+            })
         });
 
         map.on('dblclick', (event: MapBrowserEvent<PointerEvent>) => {
@@ -127,7 +133,6 @@ function MapView({
     useEffect(() => {
         if (!mapRef.current) {
             mapRef.current = initMap();
-
             return () => {
                 mapRef.current?.setTarget();
                 mapRef.current = null;
@@ -173,10 +178,13 @@ function MapView({
         <div>
             <div id="map-container" className="absolute top-0 left-0 h-screen w-screen"/>
             <LocationLayerSelector
-                publicLayer={publicLocationsLayer}
-                privateLayer={privateLocationsLayer}
+                publicLayerRef={publicLocationsLayer}
+                privateLayerRef={privateLocationsLayer}
                 globalSelectedLocation={globalSelectedLocation}
                 setGlobalSelectedLocation={setGlobalSelectedLocation}
+            />
+            <LandBoardLayerSelector
+                landBoardLayerRef={landBoardTileLayer}
             />
         </div>
     );

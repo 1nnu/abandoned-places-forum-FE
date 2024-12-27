@@ -3,15 +3,15 @@ import VectorLayer from "ol/layer/Vector";
 import {MapLocation} from "../../utils.ts";
 
 interface LocationLayerSelector {
-    publicLayer: MutableRefObject<VectorLayer>;
-    privateLayer: MutableRefObject<VectorLayer>;
+    publicLayerRef: MutableRefObject<VectorLayer>;
+    privateLayerRef: MutableRefObject<VectorLayer>;
     globalSelectedLocation: MapLocation | null;
     setGlobalSelectedLocation: (mapLocation: MapLocation | null) => void;
 }
 
 function LocationLayerSelector({
-                                   publicLayer,
-                                   privateLayer,
+                                   publicLayerRef,
+                                   privateLayerRef,
                                    globalSelectedLocation,
                                    setGlobalSelectedLocation
                                }: LocationLayerSelector) {
@@ -22,7 +22,7 @@ function LocationLayerSelector({
     function togglePublicLocationsVisibility() {
         const newVisibility = !displayPublicLocations;
         setDisplayPublicLocations(newVisibility);
-        publicLayer.current.setVisible(newVisibility);
+        publicLayerRef.current.setVisible(newVisibility);
 
         if (!newVisibility && globalSelectedLocation?.isPublic) {
             setGlobalSelectedLocation(null);
@@ -32,7 +32,7 @@ function LocationLayerSelector({
     function togglePrivateLocationsVisibility() {
         const newVisibility = !displayPrivateLocations;
         setDisplayPrivateLocations(newVisibility);
-        privateLayer.current.setVisible(newVisibility);
+        privateLayerRef.current.setVisible(newVisibility);
 
         if (!newVisibility && !globalSelectedLocation?.isPublic) {
             setGlobalSelectedLocation(null);

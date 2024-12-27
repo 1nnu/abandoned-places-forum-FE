@@ -47,8 +47,10 @@ function NewLocationSidebar({
             conditions: [] as FormOption[],
             statuses: [] as FormOption[]
         });
+
     useEffect(() => {
-        LocationService.fetchLocationAttributes().then((locationAttributes: LocationAttributes | null) => {
+        LocationService.fetchLocationAttributes()
+            .then((locationAttributes: LocationAttributes | null) => {
             if (locationAttributes) {
                 setLocationAttributesFormOptions(createFormOptions(locationAttributes));
             }
