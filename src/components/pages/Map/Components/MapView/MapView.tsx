@@ -1,7 +1,7 @@
 import Map from "ol/Map.js";
 import { defaults as defaultInteractions, Select } from "ol/interaction";
-import { Feature, MapBrowserEvent, View } from "ol";
-import { useEffect, useRef } from "react";
+import { Feature, MapBrowserEvent } from "ol";
+import { MutableRefObject, useEffect, useRef } from "react";
 import { toLonLat } from "ol/proj";
 import VectorSource from "ol/source/Vector";
 import VectorLayer from "ol/layer/Vector";
@@ -121,3 +121,5 @@ export default function MapView({
     </div>
   );
 }
+
+export default MapView;

@@ -1,25 +1,25 @@
 import { useEffect, useState } from "react";
 
 interface ObliqueAeroPhotoContainerProps {
-  selectedCoords: number[] | null;
+  obliqueAeroPhotoCoords: number[] | null;
   isSidebarOpen: boolean;
 }
 
 function ObliqueAeroPhotoContainer({
-  selectedCoords,
+  obliqueAeroPhotoCoords,
   isSidebarOpen,
 }: ObliqueAeroPhotoContainerProps) {
   const [iframeUrl, setIframeUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    if (selectedCoords != null) {
+    if (obliqueAeroPhotoCoords != null) {
       setIframeUrl(
-        `https://fotoladu.maaamet.ee/etak.php?B=${selectedCoords[0]}&L=${selectedCoords[1]}&fotoladu`
+        `https://fotoladu.maaamet.ee/etak.php?B=${obliqueAeroPhotoCoords[0]}&L=${obliqueAeroPhotoCoords[1]}&fotoladu`
       );
     } else {
       setIframeUrl(null);
     }
-  }, [selectedCoords]);
+  }, [obliqueAeroPhotoCoords]);
 
   return (
     <div>

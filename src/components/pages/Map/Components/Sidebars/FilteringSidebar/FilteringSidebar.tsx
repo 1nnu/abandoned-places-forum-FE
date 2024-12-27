@@ -164,81 +164,83 @@ function FilteringSidebar({ applyFilters }: FilteringSidebarProps) {
   };
 
   return (
-    <div className="p-8 text-white grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <h2 className="text-lg font-bold mb-4 col-span-3">Filter Locations</h2>
+      <div className="p-8 h-full w-full">
+        <h2 className="text-2xl font-bold text-white">Filter</h2>
+        <div className="pt-16 text-white grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-      {/* Categories Section */}
-      <div className="mb-4">
-        <h3 className="text-md font-semibold">Categories</h3>
-        <ul className="list-none">
-          {categories.map((category) => (
-            <li key={category.id} className="mt-2">
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  className="mr-2"
-                  checked={selectedCategories.includes(category.id)}
-                  onChange={() => handleCategoryChange(category.id)}
-                />
-                {category.name}
-              </label>
-            </li>
-          ))}
-        </ul>
-      </div>
+          {/* Categories Section */}
+          <div className="mb-4">
+            <h3 className="text-md font-semibold">Categories</h3>
+            <ul className="list-none">
+              {categories.map((category) => (
+                  <li key={category.id} className="mt-2">
+                    <label className="flex items-center">
+                      <input
+                          type="checkbox"
+                          className="mr-2"
+                          checked={selectedCategories.includes(category.id)}
+                          onChange={() => handleCategoryChange(category.id)}
+                      />
+                      {category.name}
+                    </label>
+                  </li>
+              ))}
+            </ul>
+          </div>
 
-      {/* Conditions Section */}
-      <div className="mb-4">
-        <h3 className="text-md font-semibold">Conditions</h3>
-        <ul className="list-none">
-          {conditions.map((condition) => (
-            <li key={condition.id} className="mt-2">
-              <label className="flex items-center">
-                <input
-                  type="radio"
-                  name="condition"
-                  className="mr-2"
-                  checked={selectedCondition === condition.id}
-                  onChange={() => setSelectedCondition(condition.id)}
-                />
-                {condition.name}
-              </label>
-            </li>
-          ))}
-        </ul>
-      </div>
+          {/* Conditions Section */}
+          <div className="mb-4">
+            <h3 className="text-md font-semibold">Conditions</h3>
+            <ul className="list-none">
+              {conditions.map((condition) => (
+                  <li key={condition.id} className="mt-2">
+                    <label className="flex items-center">
+                      <input
+                          type="radio"
+                          name="condition"
+                          className="mr-2"
+                          checked={selectedCondition === condition.id}
+                          onChange={() => setSelectedCondition(condition.id)}
+                      />
+                      {condition.name}
+                    </label>
+                  </li>
+              ))}
+            </ul>
+          </div>
 
-      {/* Statuses Section */}
-      <div className="mb-4">
-        <h3 className="text-md font-semibold">Statuses</h3>
-        <ul className="list-none">
-          {statuses.map((status) => (
-            <li key={status.id} className="mt-2">
-              <label className="flex items-center">
-                <input
-                  type="radio"
-                  name="status"
-                  className="mr-2"
-                  checked={selectedStatus === status.id}
-                  onChange={() => setSelectedStatus(status.id)}
-                />
-                {status.name}
-              </label>
-            </li>
-          ))}
-        </ul>
-      </div>
+          {/* Statuses Section */}
+          <div className="mb-4">
+            <h3 className="text-md font-semibold">Statuses</h3>
+            <ul className="list-none">
+              {statuses.map((status) => (
+                  <li key={status.id} className="mt-2">
+                    <label className="flex items-center">
+                      <input
+                          type="radio"
+                          name="status"
+                          className="mr-2"
+                          checked={selectedStatus === status.id}
+                          onChange={() => setSelectedStatus(status.id)}
+                      />
+                      {status.name}
+                    </label>
+                  </li>
+              ))}
+            </ul>
+          </div>
 
-      {/* Apply Filters Button */}
-      <div className="col-span-3 flex justify-between mt-4">
-        <button
-          className="bg-green-500 text-white px-4 py-2 rounded shadow"
-          onClick={handleApplyFilters}
-        >
-          Apply
-        </button>
+          {/* Apply Filters Button */}
+          <div className="col-span-3 flex justify-between mt-4">
+            <button
+                className="bg-green-500 text-white px-4 py-2 rounded shadow"
+                onClick={handleApplyFilters}
+            >
+              Apply
+            </button>
+          </div>
+        </div>
       </div>
-    </div>
   );
 }
 
