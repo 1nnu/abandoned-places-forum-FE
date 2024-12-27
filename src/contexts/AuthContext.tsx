@@ -76,7 +76,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       localStorage.setItem("role", decoded.role);
       localStorage.setItem("points", decoded.points.toString());
 
-      navigate("/dashboard");
+      navigate("/feed");
 
       toast({
         title: "Sucess!",
@@ -120,7 +120,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       localStorage.setItem("role", decoded.role);
       localStorage.setItem("points", decoded.points.toString());
 
-      navigate("/dashboard");
+      navigate("/feed");
 
       toast({
         title: "Sucess!",

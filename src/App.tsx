@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/pages/Auth/ProtectedRoute";
-import Dashboard from "./components/pages/Dashboard/DashboardPage";
 import LoginPage from "./components/pages/Auth/LoginPage";
 import NavMenu from "./components/shared/NavMenu";
 import FeedPage from "./components/pages/Feed/FeedPage";
@@ -37,14 +36,6 @@ const App: React.FC = () => {
           {loading && <LoadingSpinner />}
           <Routes>
             <Route path="/" element={<LoginPage />} />
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
             <Route
               path="/feed"
               element={
