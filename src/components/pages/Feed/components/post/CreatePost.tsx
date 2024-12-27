@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import { Button } from "../../../../ui/button";
 import { Input } from "../../../../ui/input";
 import { Textarea } from "../../../../ui/textarea";
-import { Card, CardContent, CardFooter, CardHeader } from "../../../../ui/card";
+import { Card, CardContent, CardHeader } from "../../../../ui/card";
 import { CircleArrowDown } from "lucide-react";
 import emitter from "../../../../../emitter/eventEmitter";
 import { MapLocation } from "../../../Map/Components/utils";
 import SelectLocation from "./SelectLocation";
 import LocationService from "../../../../../service/LocationService";
+import AeroPhoto from "./AeroPhoto";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -19,8 +20,6 @@ export default function CreatePost() {
   >([]);
   const [globalSelectedLocation, setGlobalSelectedLocation] =
     useState<MapLocation | null>(null);
-
-  console.log(globalSelectedLocation);
 
   const handleCreatePost = async (title: string, body: string) => {
     try {
@@ -76,15 +75,15 @@ export default function CreatePost() {
   }, []);
 
   return (
-    <Card className="">
+    <Card className="w-full">
       <CardHeader className="flex flex-col gap-y-2">
         <h2 className="text-3xl font-semibold">Create New Post</h2>
         <p className="text-sm text-gray-600 mb-4">
           Enter the title and content for your new post.
         </p>
       </CardHeader>
-      <CardContent>
-        <div className="flex flex-col gap-y-4">
+      <CardContent className="flex-wrap md:flex-nowrap flex gap-x-4">
+        <div className="flex flex-col gap-y-4 w-full md:w-1/2">
           <Input
             type="text"
             placeholder="Title"
@@ -96,25 +95,31 @@ export default function CreatePost() {
             value={body}
             onChange={(e) => setBody(e.target.value)}
           />
+          {globalSelectedLocation && (
+            <AeroPhoto
+              selectedCoords={[
+                globalSelectedLocation.lat,
+                globalSelectedLocation.lon,
+              ]}
+            />
+          )}
+          <div className="flex justify-end w-full gap-x-2">
+            <Button
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+              onClick={() => handleCreatePost(title, body)}
+            >
+              Add post
+              <CircleArrowDown />
+            </Button>
+          </div>
         </div>
-        <div className="h-[500px] w-full rounded-md overflow-hidden border border-slate-300 mt-2">
+        <div className="h-[500px] rounded-md overflow-hidden border border-slate-300 w-full md:w-1/2 mt-3 md:mt-0">
           <SelectLocation
             locationsDisplayedOnMap={locationsDisplayedOnMap}
             setGlobalSelectedLocation={setGlobalSelectedLocation}
           />
         </div>
       </CardContent>
-      <CardFooter>
-        <div className="flex justify-end w-full gap-x-2">
-          <Button
-            className="bg-blue-600 hover:bg-blue-700 text-white"
-            onClick={() => handleCreatePost(title, body)}
-          >
-            Add post
-            <CircleArrowDown />
-          </Button>
-        </div>
-      </CardFooter>
     </Card>
   );
 }
