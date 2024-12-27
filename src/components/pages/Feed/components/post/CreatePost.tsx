@@ -5,9 +5,6 @@ import { Textarea } from "../../../../ui/textarea";
 import { Card, CardContent, CardFooter, CardHeader } from "../../../../ui/card";
 import { CircleArrowDown } from "lucide-react";
 import emitter from "../../../../../emitter/eventEmitter";
-import AddLocationDialog from "./AddLocationDialog";
-import MapAddLocation from "./MapAddLocation"; // Import MapAddLocation for map rendering
-import ObliqueAeroPhotoContainer from "../../../Map/Components/ObliqueAeroPhoto/ObliqueAeroPhotoContainer";
 import AeroPhoto from "./AeroPhoto";
 
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -44,7 +41,7 @@ export default function CreatePost() {
 
       setTitle("");
       setBody("");
-      setSelectedLocation(undefined); // Reset location after creating the post
+      setSelectedLocation(undefined);
     } catch (error) {
       console.error("Error creating post:", error);
     } finally {
@@ -83,7 +80,6 @@ export default function CreatePost() {
       </CardContent>
       <CardFooter>
         <div className="flex justify-end w-full gap-x-2">
-          <AddLocationDialog setSelectedLocation={handleSetSelectedLocation} />
           <Button
             className="bg-blue-600 hover:bg-blue-700 text-white"
             onClick={() => handleCreatePost(title, body)}
