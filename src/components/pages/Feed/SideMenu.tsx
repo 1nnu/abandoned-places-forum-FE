@@ -1,4 +1,3 @@
-import CreatePostDialog from ".//components/post/CreatePostDialog";
 import ProfileCard from "./ProfileCard";
 
 export default function SideMenu() {
@@ -10,7 +9,6 @@ export default function SideMenu() {
         <div className="md:mb-4 w-fit md:w-full">
           <ProfileCard />
         </div>
-        <CreatePostDialog />
       </nav>
     </aside>
   );

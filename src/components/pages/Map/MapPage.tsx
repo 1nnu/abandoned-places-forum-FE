@@ -19,10 +19,6 @@ function MapPage() {
     number[] | null
   >(null);
 
-  const [selectedLocation, setSelectedLocation] = useState<MapLocation | null>(
-    null
-  );
-
   const [globalMapClickCoords, setGlobalMapClickCoords] = useState<
     number[] | null
   >(null);
