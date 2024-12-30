@@ -11,10 +11,9 @@ function LandBoardLayerSelector({ landBoardLayerRef }: LandBoardLayerSelectorPro
     const [activeLayer, setActiveLayer] = useState<LandBoardLayerTypes | null>(null);
 
     function handleLayerChange(layerType: LandBoardLayerTypes | null) {
-        if (layerType === activeLayer || layerType === null) {
-            landBoardLayerRef.current.setSource(null);
-            setActiveLayer(null);
-        } else {
+        landBoardLayerRef.current.setSource(null);
+        setActiveLayer(null);
+        if (layerType !== activeLayer && layerType !== null) {
             landBoardLayerRef.current.setSource(createLandBoardTileMapSource(layerType));
             setActiveLayer(layerType);
         }

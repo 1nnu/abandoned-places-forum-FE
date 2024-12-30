@@ -29,7 +29,7 @@ function LocationDetailsSidebar({globalSelectedLocation, stopDisplayingDeletedLo
       emitter.emit("startLoading");
       const userToken = localStorage.getItem("userToken");
 
-      const response = await fetch(`${API_URL}/api/locations?locationId=${globalSelectedLocation.id}`, {
+      const response = await fetch(`${API_URL}/api/locations/${globalSelectedLocation.id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${userToken}`,
