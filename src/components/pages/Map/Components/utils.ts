@@ -13,7 +13,7 @@ export interface MapLocation {
     lon: number;
     lat: number;
     mainCategory: LocationCategory;
-    locationCategory: LocationCategory[];
+    subCategories: LocationCategory[];
     condition: string;
     status: string;
     additionalInformation: string;

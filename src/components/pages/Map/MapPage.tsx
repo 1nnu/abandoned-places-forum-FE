@@ -115,7 +115,7 @@ function MapPage() {
         >
           x
         </button>
-        {sidebarContent === SidebarContent.DETAILS && (
+        {sidebarContent === SidebarContent.DETAILS && globalSelectedLocation !== null &&(
           <LocationDetailsSidebar
             globalSelectedLocation={globalSelectedLocation}
             stopDisplayingDeletedLocation={stopDisplayingDeletedLocation}

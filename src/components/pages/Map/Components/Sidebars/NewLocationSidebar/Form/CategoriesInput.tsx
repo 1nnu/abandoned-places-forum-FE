@@ -60,7 +60,8 @@ function CategoriesInput({
                 options={
                     locationAttributesFormOptions.categories
                         .filter(option =>
-                            option.value !== newLocationFormData.mainCategoryId
+                            option.value !== newLocationFormData.mainCategoryId &&
+                            option.label !== "Määramata"
                         )}
                 value={
                     locationAttributesFormOptions.categories
