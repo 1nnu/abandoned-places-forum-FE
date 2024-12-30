@@ -23,18 +23,18 @@ interface ConfirmPublishingDialogProps {
 export default function ConfirmPublishingDialog({ globalSelectedLocation }: ConfirmPublishingDialogProps) {
   const [points, setPoints] = useState<number>(0);
 
-  const publishLocation = async (locationId: string, minRequiredPoints: number) => {
+  const publishLocation = async (locationId: string, minRequiredPointsToView: number) => {
     try {
       emitter.emit("startLoading");
 
       const userToken = localStorage.getItem("userToken");
 
-      if (!userToken || !locationId || minRequiredPoints === undefined) {
+      if (!userToken || !locationId || minRequiredPointsToView === undefined) {
         console.error("Missing required data for publishing location");
         return;
       }
 
-      const response = await fetch(`${API_URL}/api/locations/publishLocation?locationId=${locationId}&minRequiredPoints=${minRequiredPoints}`, {
+      const response = await fetch(`${API_URL}/api/locations/publishLocation`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${userToken}`,
@@ -42,7 +42,7 @@ export default function ConfirmPublishingDialog({ globalSelectedLocation }: Conf
         },
         body: JSON.stringify({
           locationId,
-          minRequiredPoints
+          minRequiredPointsToView
         }),
       });
 
