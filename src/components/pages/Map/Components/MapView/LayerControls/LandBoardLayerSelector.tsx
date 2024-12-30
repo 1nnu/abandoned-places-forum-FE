@@ -11,6 +11,7 @@ function LandBoardLayerSelector({ landBoardLayerRef }: LandBoardLayerSelectorPro
     const [activeLayer, setActiveLayer] = useState<LandBoardLayerTypes | null>(null);
 
     function handleLayerChange(layerType: LandBoardLayerTypes | null) {
+        landBoardLayerRef.current.clearRenderer();
         landBoardLayerRef.current.setSource(null);
         setActiveLayer(null);
         if (layerType !== activeLayer && layerType !== null) {
