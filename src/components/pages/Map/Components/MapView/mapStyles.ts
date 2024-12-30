@@ -5,7 +5,7 @@ import CircleStyle from "ol/style/Circle";
 export function generateColoredLocationStyle(colorHex: string): Style {
     return new Style({
         image: new Icon({
-            src: `https://img.icons8.com/?size=128&id=85353&format=png&color=${colorHex.slice(1).toLowerCase()}`,
+            src: `https://img.icons8.com/?size=128&id=85353&format=png&color=${colorHex.toLowerCase()}`,
             scale: 0.25,
         }),
     });
@@ -34,7 +34,7 @@ export const SELECTED_LOCATION_STYLE_RECTANGLE = new Style({
         radius: 27,
         angle: Math.PI / 4,
         fill: new Fill({
-            color: 'rgba(250, 250, 250, 1)',
+            color: 'rgba(250, 250, 250, 0.75)',
         }),
         stroke: new Stroke({
             color: 'black',
