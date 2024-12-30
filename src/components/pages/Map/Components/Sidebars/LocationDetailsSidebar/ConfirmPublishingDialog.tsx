@@ -50,6 +50,7 @@ export default function ConfirmPublishingDialog({ globalSelectedLocation }: Conf
         throw new Error("Failed to publish location");
       }
 
+        window.location.reload();
     } catch (error) {
       console.error("Error publishing location:", error);
     } finally {
