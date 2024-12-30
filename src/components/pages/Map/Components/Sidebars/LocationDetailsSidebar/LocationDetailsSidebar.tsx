@@ -2,6 +2,7 @@ import Bookmark from "./Bookmark.tsx";
 import LandBoardButton from "./LandBoardButton.tsx";
 import {MapLocation} from "../../utils.ts";
 import emitter from "../../../../../../emitter/eventEmitter.ts";
+import { Button } from "../../../../../ui/button.tsx";
 
 interface LocationDetailsSidebarProps {
   globalSelectedLocation: MapLocation | null;
@@ -72,13 +73,10 @@ function LocationDetailsSidebar({globalSelectedLocation, stopDisplayingDeletedLo
               <LandBoardButton location={globalSelectedLocation}/>
             </div>
             {!globalSelectedLocation.isPublic ? (
-                <button
-                    className="bg-red-700 text-white py-1 px-2 rounded-sm shadow-md hover:bg-red-600 transition-all
-                     flex items-center space-x-2 h-5"
-                    onClick={deleteSelectedLocation}
-                >
-                  Delete
-                </button>
+              <div className="flex gap-x-4">
+                <Button className="bg-blue-600 hover:bg-blue-700">Publish Location</Button>
+                <Button variant="destructive" onClick={deleteSelectedLocation}>Delete</Button>
+              </div>
             ) : <p className="text-white"> Public location </p>}
           </div>
         </div>
