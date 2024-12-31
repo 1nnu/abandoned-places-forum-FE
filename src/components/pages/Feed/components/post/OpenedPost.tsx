@@ -189,7 +189,7 @@ export default function OpenedPost() {
       const data: MapLocation = await response.json();
       setLocation(data);
     } catch (error: any) {
-      console.log(error);
+      console.error(error);
     } finally {
       emitter.emit("stopLoading");
     }
