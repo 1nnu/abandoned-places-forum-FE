@@ -31,7 +31,7 @@ import { format } from "date-fns";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
-interface Post {
+export interface Post {
   id: number;
   title: string;
   body: string;
