@@ -157,8 +157,8 @@ export default function PostCard({
               </div>
             )}
           <div className="py-4 border-t border-slate-200 w-full flex flex-row flex-wrap md:flex-nowrap">
-            <div className="w-full md:w-1/2">
-              <h3 className="text-xl font-semibold text-slate-800">Location Details</h3>
+            <div className="w-full md:w-1/2 flex flex-col gap-y-4">
+              <h3 className="text-xl font-bold text-slate-800">Location Details</h3>
               <div className="flex flex-col gap-y-2">
                 <p><strong>Location Name:</strong> {locationName}</p>
                 <p><strong>Location Coordinates:</strong> Lat: {lat}, Lon: {lon}</p>
