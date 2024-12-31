@@ -10,6 +10,7 @@ import AeroPhoto from "./AeroPhoto.tsx";
 import { Link } from "react-router-dom";
 import { Button } from "../../../../ui/button.tsx";
 import { SubCategory } from "./PostList.tsx";
+import { Badge } from "../../../../ui/badge.tsx";
 
 interface PostCardProps {
   id: number;
@@ -161,14 +162,13 @@ export default function PostCard({
               <div className="flex flex-col gap-y-2">
                 <p><strong>Location Name:</strong> {locationName}</p>
                 <p><strong>Location Coordinates:</strong> Lat: {lat}, Lon: {lon}</p>
-                <p><strong>Main Category:</strong> {mainCategoryName}</p>
-                <p><strong>Main Category HEX:</strong> {mainCategoryHex}</p>
+                <p><strong>Main Category:</strong> <Badge style={{ backgroundColor: mainCategoryHex }}>{mainCategoryName}</Badge></p>
                 <div>
                   <strong>Sub Categories:</strong>
                   <ul className="list-disc pl-6">
                     {subCategories.map((subCategory, index) => (
-                      <li key={index} style={{ color: subCategory.colorHex }}>
-                        {subCategory.name}
+                      <li key={index} >
+                        <Badge style={{ backgroundColor: subCategory.colorHex }}>{subCategory.name}</Badge>
                       </li>
                     ))}
                   </ul>
