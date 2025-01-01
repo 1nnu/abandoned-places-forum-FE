@@ -2,6 +2,13 @@ import {useEffect, useState} from "react";
 import emitter from "../../../../../../emitter/eventEmitter.ts";
 import {MapLocation} from "../../utils.ts";
 
+const bookmarkTypes = [
+  { type: "JAA_MEELDE", label: "Jäta meelde" },
+  { type: "JUBA_KULASTATUD", label: "Juba külastatud" },
+  { type: "SUUR_RISK", label: "Suur risk" },
+  { type: "OSALISELT_AVASTATUD", label: "Osaliselt avastatud" },
+];
+
 interface FilteringSidebarProps {
   applyFilters: (filteredLocations: MapLocation[]) => void;
 }
@@ -22,6 +29,7 @@ function FilteringSidebar({ applyFilters }: FilteringSidebarProps) {
     null
   );
   const [selectedStatus, setSelectedStatus] = useState<number | null>(null);
+  const [selectedBookmarks, setSelectedBookmarks] = useState<string[]>([]);
 
   const fetchLocationCategories = async () => {
     try {
@@ -135,6 +143,12 @@ function FilteringSidebar({ applyFilters }: FilteringSidebarProps) {
     );
   };
 
+  const handleBookmarkChange = (type: string) => {
+    setSelectedBookmarks((prev) =>
+      prev.includes(type) ? prev.filter((bookmarkType) => bookmarkType !== type) : [...prev, type]
+    );
+  };
+
   const handleApplyFilters = async () => {
     try {
       const queryParams = new URLSearchParams();
@@ -155,6 +169,18 @@ function FilteringSidebar({ applyFilters }: FilteringSidebarProps) {
 
       if (selectedStatus !== null) {
         queryParams.append("statusId", String(selectedStatus));
+      }
+
+      if (selectedBookmarks.length > 0) {
+        selectedBookmarks.forEach((bookmarkType) => {
+          const bookmarkLabel = bookmarkTypes.find(
+            (bookmark) => bookmark.type === bookmarkType
+          )?.label;
+          
+          if (bookmarkLabel) {
+            queryParams.append("bookmarkTypes", bookmarkLabel);
+          }
+        });
       }
 
       await fetchLocationsWithParams(queryParams);
@@ -226,6 +252,26 @@ function FilteringSidebar({ applyFilters }: FilteringSidebarProps) {
                       {status.name}
                     </label>
                   </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Bookmark Types Section */}
+          <div className="mb-4">
+            <h3 className="text-md font-semibold">Bookmark Types</h3>
+            <ul className="list-none">
+              {bookmarkTypes.map((bookmark) => (
+                <li key={bookmark.type} className="mt-2">
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      className="mr-2"
+                      checked={selectedBookmarks.includes(bookmark.type)}
+                      onChange={() => handleBookmarkChange(bookmark.type)}
+                    />
+                    {bookmark.label}
+                  </label>
+                </li>
               ))}
             </ul>
           </div>
