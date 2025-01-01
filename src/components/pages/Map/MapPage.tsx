@@ -110,7 +110,7 @@ function MapPage() {
         <button
           className="absolute top-8 right-12 w-8 h-8 flex items-center justify-center text-white text-2xl
                         pb-1.5 rounded-full shadow-lg font-bold cursor-pointer transition-transform transform
-                        hover:scale-110 hover:bg-white hover:bg-opacity-20"
+                        hover:scale-110 hover:bg-white hover:bg-opacity-20 z-50"
           onClick={closeSidebar}
         >
           x
