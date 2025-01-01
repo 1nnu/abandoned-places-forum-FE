@@ -6,7 +6,7 @@ import {ImageWMS, OSM, XYZ} from "ol/source";
 import {TileGrid} from "ol/tilegrid";
 import {L_EST} from "./mapUtils.ts";
 import {Image} from "ol/layer";
-import {ImageTile} from "ol";
+import {ImageTile, Tile} from "ol";
 
 export enum LandBoardLayerTypes {
     ORTOPHOTO = "foto",
@@ -66,7 +66,7 @@ export const createLandBoardTileMapSource = (mapType: LandBoardLayerTypes) => {
     });
 };
 
-function removeWhiteBordersHack(tile, src) {
+function removeWhiteBordersHack(tile: Tile, src: string) {
     const imageTile = tile as ImageTile;
     const image = imageTile.getImage() as HTMLImageElement;
     image.crossOrigin = "anonymous";
