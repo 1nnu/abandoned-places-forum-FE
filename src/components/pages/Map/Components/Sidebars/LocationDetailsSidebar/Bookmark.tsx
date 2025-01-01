@@ -63,18 +63,12 @@ export default function Bookmark({ locationId }: { locationId: string }) {
       if (isChecked) {
         // Remove the bookmark
         const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/location-bookmarks`,
+          `${import.meta.env.VITE_API_URL}/api/location-bookmarks?userId=${userId}&locationId=${locationId}&bookmarkType=${type}`,
           {
             method: "DELETE",
             headers: {
               Authorization: `Bearer ${userToken}`,
-              "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-              userId,
-              locationId,
-              bookmarkType: type,
-            }),
           }
         );
 
