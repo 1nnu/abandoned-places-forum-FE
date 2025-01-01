@@ -1,6 +1,7 @@
 import Bookmark from "./Bookmark.tsx";
 import LandBoardButton from "./LandBoardButton.tsx";
 import {MapLocation} from "../../utils.ts";
+import ConfirmPublishingDialog from "./ConfirmPublishingDialog.tsx";
 import LocationService from "../../../../../../service/LocationService.ts";
 import {useEffect, useState} from "react";
 import EditSelectedLocation from "./Editing/EditSelectedLocation.tsx";
@@ -91,8 +92,7 @@ function LocationDetailsSidebar({
                                         {globalSelectedLocation.isPublic ? (
                                             <div></div>
                                         ) : (
-                                            <div className="bg-black bg-opacity-85 text-white border-2 border-transparent rounded-md
-                                 p-1.5 px-2 items-center space-x-3 font-bold hover:border-white">Avalikusta</div>
+                                            <ConfirmPublishingDialog globalSelectedLocation={globalSelectedLocation}/>
                                         )}
                                     </div>
                                 </div>
