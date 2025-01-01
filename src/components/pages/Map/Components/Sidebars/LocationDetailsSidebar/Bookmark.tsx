@@ -52,13 +52,13 @@ export default function Bookmark({ locationId }: { locationId: string }) {
   }, [userId, locationId]);
 
   // Toggle the bookmark state
-  const handleCheckboxChange = async (type: string) => {
+  const handleCheckboxChange = async (type: string, label: string) => {
     if (!userId) {
       console.error("User is not logged in");
       return;
     }
 
-    const isChecked = selectedBookmarks.includes(type);
+    const isChecked = selectedBookmarks.includes(label);
 
     try {
       if (isChecked) {
@@ -75,7 +75,7 @@ export default function Bookmark({ locationId }: { locationId: string }) {
 
         if (response.ok) {
           setSelectedBookmarks((prev) =>
-            prev.filter((bookmark) => bookmark !== type)
+            prev.filter((bookmark) => bookmark !== label)
           );
         } else {
           throw new Error("Failed to delete the bookmark");
@@ -99,7 +99,7 @@ export default function Bookmark({ locationId }: { locationId: string }) {
         );
 
         if (response.ok) {
-          setSelectedBookmarks((prev) => [...prev, type]);
+          setSelectedBookmarks((prev) => [...prev, label]);
         } else {
           throw new Error("Failed to create the bookmark");
         }
@@ -118,7 +118,7 @@ export default function Bookmark({ locationId }: { locationId: string }) {
             type="checkbox"
             id={type}
             checked={selectedBookmarks.includes(label)}
-            onChange={() => handleCheckboxChange(type)}
+            onChange={() => handleCheckboxChange(type, label)}
           />
           <label htmlFor={type}>{label}</label>
         </div>
