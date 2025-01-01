@@ -3,19 +3,27 @@ import {createLandBoardTileMapSource, LandBoardLayerTypes} from "../mapLayers";
 import TileLayer from "ol/layer/Tile";
 
 interface LandBoardLayerSelectorProps {
-    landBoardLayerRef: MutableRefObject<TileLayer>;
+    landBoardLayerRef1: MutableRefObject<TileLayer>;
+    landBoardLayerRef2: MutableRefObject<TileLayer>;
 }
 
-function LandBoardLayerSelector({ landBoardLayerRef }: LandBoardLayerSelectorProps) {
+function LandBoardLayerSelector({ landBoardLayerRef1, landBoardLayerRef2 }: LandBoardLayerSelectorProps) {
 
     const [activeLayer, setActiveLayer] = useState<LandBoardLayerTypes | null>(null);
 
     function handleLayerChange(layerType: LandBoardLayerTypes | null) {
-        landBoardLayerRef.current.clearRenderer();
-        landBoardLayerRef.current.setSource(null);
+        landBoardLayerRef1.current.clearRenderer();
+        landBoardLayerRef1.current.setSource(null);
+        landBoardLayerRef2.current.clearRenderer();
+        landBoardLayerRef2.current.setSource(null);
         setActiveLayer(null);
-        if (layerType !== activeLayer && layerType !== null) {
-            landBoardLayerRef.current.setSource(createLandBoardTileMapSource(layerType));
+
+        if (layerType !== activeLayer && layerType === LandBoardLayerTypes.HYBRID) {
+            landBoardLayerRef1.current.setSource(createLandBoardTileMapSource(LandBoardLayerTypes.ORTOPHOTO));
+            landBoardLayerRef2.current.setSource(createLandBoardTileMapSource(LandBoardLayerTypes.HYBRID));
+            setActiveLayer(LandBoardLayerTypes.HYBRID);
+        } else if (layerType !== activeLayer && layerType !== null) {
+            landBoardLayerRef1.current.setSource(createLandBoardTileMapSource(layerType));
             setActiveLayer(layerType);
         }
     }

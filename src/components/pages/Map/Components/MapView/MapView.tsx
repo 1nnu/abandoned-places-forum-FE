@@ -83,9 +83,8 @@ function MapView({
   const selectedLocationsVectorLayer: MutableRefObject<VectorLayer> = useRef(
     createVectorLayer(selectedLocationsVectorSource.current)
   );
-  const landBoardTileLayer: MutableRefObject<TileLayer> = useRef(
-    new TileLayer()
-  );
+  const landBoardTileLayer1: MutableRefObject<TileLayer> = useRef(new TileLayer());
+  const landBoardTileLayer2: MutableRefObject<TileLayer> = useRef(new TileLayer());
 
   function handleSelectEvent(event: SelectEvent) {
     const selectedFeatures: Feature[] = event.selected;
@@ -105,7 +104,8 @@ function MapView({
       target: "map-container",
       layers: [
         BASE_OSM_LAYER,
-        landBoardTileLayer.current,
+        landBoardTileLayer1.current,
+        landBoardTileLayer2.current,
         privateLocationsLayer.current,
         publicLocationsLayer.current,
         selectedLocationsVectorLayer.current,
@@ -199,7 +199,10 @@ function MapView({
         globalSelectedLocation={globalSelectedLocation}
         setGlobalSelectedLocation={setGlobalSelectedLocation}
       />
-      <LandBoardLayerSelector landBoardLayerRef={landBoardTileLayer} />
+      <LandBoardLayerSelector
+          landBoardLayerRef1={landBoardTileLayer1}
+          landBoardLayerRef2={landBoardTileLayer2}
+      />
     </div>
   );
 }

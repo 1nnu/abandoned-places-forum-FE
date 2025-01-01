@@ -49,7 +49,7 @@ export const LOCATION_IN_PROGRESS_STYLE_CIRCLE = new Style({
     image: new CircleStyle({
         radius: 12,
         fill: new Fill({
-            color: 'rgba(250, 250, 250, 1)',
+            color: 'rgba(250, 250, 250, 0.75)',
         }),
         stroke: new Stroke({
             color: 'black',
