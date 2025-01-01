@@ -276,7 +276,7 @@ export default function OpenedPost() {
               </form>
             </FormProvider>
           </div>
-          <div className="flex flex-col gap-y-2 h-[40vh] overflow-y-scroll">
+          <div className="flex flex-col gap-y-2">
             {comments.length > 0 ? (
               comments
                 .slice()
