@@ -68,7 +68,7 @@ function NewLocationSidebar({
     setGlobalCoordinateSelectionMode(false);
 
     const validationError =
-      LocationService.isFormDataValid(newLocationFormData);
+      LocationService.isLocationCreationFormDataValid(newLocationFormData);
     if (validationError) {
       console.error(validationError);
       return;

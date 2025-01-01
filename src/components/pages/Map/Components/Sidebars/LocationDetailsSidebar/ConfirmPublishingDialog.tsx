@@ -62,7 +62,7 @@ export default function ConfirmPublishingDialog({ globalSelectedLocation }: Conf
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-blue-600 hover:bg-blue-700">Confirm Publishing Location</Button>
+        <Button className="bg-blue-600 hover:bg-blue-700">Avalikusta</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
