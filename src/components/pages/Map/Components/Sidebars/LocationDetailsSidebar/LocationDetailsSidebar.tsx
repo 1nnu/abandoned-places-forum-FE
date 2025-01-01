@@ -54,12 +54,14 @@ function LocationDetailsSidebar({globalSelectedLocation, stopDisplayingDeletedLo
       <h2 className="text-2xl font-bold text-white">Details</h2>
       {globalSelectedLocation != null ? (
           <div className="pt-20">
-          <Bookmark locationId={globalSelectedLocation.id} />
           <div className="flex flex-col items-center space-y-4">
             <div className="text-white">
               <p>{globalSelectedLocation.name}</p>
               <p>{globalSelectedLocation.lat}</p>
               <p>{globalSelectedLocation.lon}</p>
+            </div>
+            <div>
+              <Bookmark locationId={globalSelectedLocation.id} />
             </div>
             <div className="flex row gap-4">
               <button
