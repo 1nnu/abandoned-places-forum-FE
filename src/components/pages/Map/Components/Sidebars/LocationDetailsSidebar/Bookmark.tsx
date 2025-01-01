@@ -37,10 +37,11 @@ export default function Bookmark({ locationId }: { locationId: string }) {
         );
 
         const data = await response.json();
-
+        
         const bookmarkTypes = data.map(
           (bookmark: { type: string }) => bookmark.type
         );
+        
         setSelectedBookmarks(bookmarkTypes);
       } catch (error) {
         console.error("Error fetching bookmarks", error);
@@ -116,7 +117,7 @@ export default function Bookmark({ locationId }: { locationId: string }) {
           <input
             type="checkbox"
             id={type}
-            checked={selectedBookmarks.includes(type)}
+            checked={selectedBookmarks.includes(label)}
             onChange={() => handleCheckboxChange(type)}
           />
           <label htmlFor={type}>{label}</label>
