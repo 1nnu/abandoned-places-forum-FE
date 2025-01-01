@@ -111,16 +111,17 @@ export default function Bookmark({ locationId }: { locationId: string }) {
 
   return (
     <div>
-      <h3>Bookmarks</h3>
+      <h3 className="text-lg text-slate-100">Bookmarks</h3>
       {bookmarkTypes.map(({ type, label }) => (
-        <div key={type}>
+        <div className="flex items-center" key={type}>
           <input
             type="checkbox"
             id={type}
             checked={selectedBookmarks.includes(label)}
             onChange={() => handleCheckboxChange(type, label)}
+            className="w-5 h-5"
           />
-          <label htmlFor={type}>{label}</label>
+          <label className="ml-2 text-slate-100" htmlFor={type}>{label}</label>
         </div>
       ))}
     </div>
