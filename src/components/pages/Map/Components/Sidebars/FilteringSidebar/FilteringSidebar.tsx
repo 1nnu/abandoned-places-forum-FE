@@ -190,7 +190,7 @@ function FilteringSidebar({ applyFilters }: FilteringSidebarProps) {
   };
 
   return (
-      <div className="p-8 h-full w-full">
+      <div className="p-8 h-full w-full overflow-y-auto">
         <h2 className="text-2xl font-bold text-white">Filter</h2>
         <div className="pt-16 text-white grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
