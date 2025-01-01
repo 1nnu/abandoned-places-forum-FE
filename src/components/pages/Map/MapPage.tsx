@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import MapView from "./Components/MapView/MapView.tsx";
 import LocationDetailsSidebar from "./Components/Sidebars/LocationDetailsSidebar/LocationDetailsSidebar.tsx";
 import FilteringSidebar from "./Components/Sidebars/FilteringSidebar/FilteringSidebar.tsx";
@@ -6,7 +6,7 @@ import ObliqueAeroPhotoContainer from "./Components/ObliqueAeroPhoto/ObliqueAero
 import NewLocationSidebar from "./Components/Sidebars/NewLocationSidebar/NewLocationSidebar.tsx";
 import NewLocationButton from "./Components/Sidebars/Buttons/NewLocationButton.tsx";
 import FilteringButton from "./Components/Sidebars/Buttons/FilteringButton.tsx";
-import { MapLocation, SidebarContent } from "./Components/utils.ts";
+import {MapLocation, SidebarContent} from "./Components/utils.ts";
 import LocationService from "../../../service/LocationService.ts";
 
 export const SIDEBAR_TRANSITION_DURATION = 300;
@@ -44,7 +44,7 @@ function MapPage() {
       createdLocation,
     ]);
   }
-  function stopDisplayingDeletedLocation(deletedLocationId: string) {
+  function stopDisplayingLocation(deletedLocationId: string) {
     setGlobalSelectedLocation(null);
     setLocationsDisplayedOnMap((prevLocations) =>
       prevLocations.filter((location) => location.id !== deletedLocationId)
@@ -118,7 +118,8 @@ function MapPage() {
         {sidebarContent === SidebarContent.DETAILS && globalSelectedLocation !== null &&(
           <LocationDetailsSidebar
             globalSelectedLocation={globalSelectedLocation}
-            stopDisplayingDeletedLocation={stopDisplayingDeletedLocation}
+            stopDisplayingLocation={stopDisplayingLocation}
+            displayEditedLocation={displayNewLocation}
             setObliqueAeroPhotoCoords={setObliqueAeroPhotoCoords}
           />
         )}
