@@ -10,7 +10,7 @@ interface AuthResponse {
 
 const AuthService = {
     login: async (username: string, password: string): Promise<AuthResponse> => {
-        const response = await fetch(`${apiUrl}/api/auth/login`, {
+        const response = await fetch(`${apiUrl}/api/public/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password }),
@@ -36,7 +36,7 @@ const AuthService = {
     },
 
     register: async (username: string, email: string, password: string): Promise<AuthResponse> => {
-        const response = await fetch(`${apiUrl}/api/auth/register`, {
+        const response = await fetch(`${apiUrl}/api/public/auth/register`, {
             method: 'POST',
             credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
@@ -90,7 +90,7 @@ const AuthService = {
     },
 
     getUserInfo: async (): Promise<any> => {
-        const response = await fetch(`${apiUrl}/api/auth/userinfo`, {
+        const response = await fetch(`${apiUrl}/api/public/auth/userinfo`, {
             credentials: 'include',
             method: 'GET',
             headers: AuthService.setAuthHeader({

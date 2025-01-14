@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import emitter from "../../../../../../emitter/eventEmitter.ts";
-import {MapLocation} from "../../utils.ts";
+import {LocationAttributes, MapLocation} from "../../utils.ts";
+import LocationService from "../../../../../../service/LocationService.ts";
 
 const bookmarkTypes = [
   { type: "JAA_MEELDE", label: "Jäta meelde" },
@@ -31,74 +32,6 @@ function FilteringSidebar({ applyFilters }: FilteringSidebarProps) {
   const [selectedStatus, setSelectedStatus] = useState<number | null>(null);
   const [selectedBookmarks, setSelectedBookmarks] = useState<string[]>([]);
 
-  const fetchLocationCategories = async () => {
-    try {
-      emitter.emit("startLoading");
-      const userToken = localStorage.getItem("userToken");
-
-      const response = await fetch(`${API_URL}/api/location-categories`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      const data = await response.json();
-
-      setCategories(data);
-    } catch (error) {
-      console.error("Error fetching:", error);
-    } finally {
-      emitter.emit("stopLoading");
-    }
-  };
-
-  const fetchLocationConditions = async () => {
-    try {
-      emitter.emit("startLoading");
-      const userToken = localStorage.getItem("userToken");
-
-      const response = await fetch(`${API_URL}/api/locations/conditions`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      const data = await response.json();
-
-      setConditions(data);
-    } catch (error) {
-      console.error("Error fetching:", error);
-    } finally {
-      emitter.emit("stopLoading");
-    }
-  };
-
-  const fetchLocationStatuses = async () => {
-    try {
-      emitter.emit("startLoading");
-      const userToken = localStorage.getItem("userToken");
-
-      const response = await fetch(`${API_URL}/api/locations/statuses`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      const data = await response.json();
-
-      setStatuses(data);
-    } catch (error) {
-      console.error("Error fetching:", error);
-    } finally {
-      emitter.emit("stopLoading");
-    }
-  };
 
   const fetchLocationsWithParams = async (queryParams: URLSearchParams) => {
     try {
@@ -124,17 +57,15 @@ function FilteringSidebar({ applyFilters }: FilteringSidebarProps) {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        fetchLocationCategories();
-        fetchLocationConditions();
-        fetchLocationStatuses();
-      } catch (error) {
-        console.error("Error fetching filter options:", error);
-      }
-    };
-
-    fetchData();
+    LocationService.fetchLocationAttributes().then(
+        (locationAttributes: LocationAttributes | null) => {
+          if (locationAttributes) {
+            setCategories(locationAttributes.categories);
+            setConditions(locationAttributes.conditions);
+            setStatuses(locationAttributes.statuses);
+          }
+        }
+    );
   }, []);
 
   const handleCategoryChange = (id: number) => {
