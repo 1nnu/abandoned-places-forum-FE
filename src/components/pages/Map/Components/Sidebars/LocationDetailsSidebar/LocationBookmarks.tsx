@@ -7,7 +7,11 @@ const bookmarkTypes = [
   { type: "OSALISELT_AVASTATUD", label: "Osaliselt avastatud" },
 ];
 
-export default function Bookmark({ locationId }: { locationId: string }) {
+export default function LocationBookmarks({
+  locationId,
+}: {
+  locationId: string;
+}) {
   const [selectedBookmarks, setSelectedBookmarks] = useState<string[]>([]);
 
   // Get userId from localStorage
@@ -37,11 +41,11 @@ export default function Bookmark({ locationId }: { locationId: string }) {
         );
 
         const data = await response.json();
-        
+
         const bookmarkTypes = data.map(
           (bookmark: { type: string }) => bookmark.type
         );
-        
+
         setSelectedBookmarks(bookmarkTypes);
       } catch (error) {
         console.error("Error fetching bookmarks", error);
@@ -64,7 +68,9 @@ export default function Bookmark({ locationId }: { locationId: string }) {
       if (isChecked) {
         // Remove the bookmark
         const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/location-bookmarks?userId=${userId}&locationId=${locationId}&bookmarkType=${type}`,
+          `${
+            import.meta.env.VITE_API_URL
+          }/api/location-bookmarks?userId=${userId}&locationId=${locationId}&bookmarkType=${type}`,
           {
             method: "DELETE",
             headers: {
@@ -121,7 +127,9 @@ export default function Bookmark({ locationId }: { locationId: string }) {
             onChange={() => handleCheckboxChange(type, label)}
             className="w-5 h-5"
           />
-          <label className="ml-2 text-slate-100" htmlFor={type}>{label}</label>
+          <label className="ml-2 text-slate-100" htmlFor={type}>
+            {label}
+          </label>
         </div>
       ))}
     </div>
