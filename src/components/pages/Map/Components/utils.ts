@@ -13,7 +13,7 @@ export interface MapLocation {
     lon: number;
     lat: number;
     mainCategory: LocationCategory;
-    locationCategory: LocationCategory[];
+    subCategories: LocationCategory[];
     condition: string;
     status: string;
     additionalInformation: string;
@@ -57,6 +57,16 @@ export interface LocationCreateDto {
     additionalInformation: string;
 }
 
+export interface LocationPatchDto {
+    id: string;
+    name: string;
+    mainCategoryId: number | null;
+    subCategoryIds: number[];
+    conditionId: number | null;
+    statusId: number | null;
+    additionalInformation: string;
+}
+
 export interface NewLocationFormData {
     name: string;
     mainCategoryId: number | null;
@@ -66,6 +76,16 @@ export interface NewLocationFormData {
     additionalInformation: string;
     lon: number | null;
     lat: number | null;
+}
+
+export interface EditLocationFromData {
+    id: string
+    name: string;
+    mainCategoryId: number | null;
+    subCategoryIds: number[];
+    conditionId: number | null;
+    statusId: number | null;
+    additionalInformation: string;
 }
 
 export interface LocationAttributesFormOptions {
