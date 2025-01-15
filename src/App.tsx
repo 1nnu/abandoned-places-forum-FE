@@ -11,6 +11,8 @@ import emitter from "./emitter/eventEmitter";
 import Footer from "./components/shared/Footer";
 import MapPage from "./components/pages/Map/MapPage.tsx";
 import OpenedPost from "./components/pages/Feed/components/post/OpenedPost.tsx";
+import { ToastProvider } from "./components/ui/toast.tsx";
+import { Toaster } from "./components/ui/toaster.tsx";
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -29,50 +31,53 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
-      <Router>
-        <AuthProvider>
-          <NavMenu />
-          {loading && <LoadingSpinner />}
-          <Routes>
-            <Route path="/" element={<LoginPage />} />
-            <Route
-              path="/feed"
-              element={
-                <ProtectedRoute>
-                  <FeedPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/posts/:postId"
-              element={
-                <ProtectedRoute>
-                  <OpenedPost />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/map"
-              element={
-                <ProtectedRoute>
-                  <MapPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/profile"
-              element={
-                <ProtectedRoute>
-                  <ProfilePage />
-                </ProtectedRoute>
-              }
-            />
-          </Routes>
-        </AuthProvider>
-        <Footer />
-      </Router>
-    </div>
+    <ToastProvider>
+      <div className="min-h-screen bg-slate-50 flex flex-col">
+        <Router>
+          <AuthProvider>
+            <NavMenu />
+            {loading && <LoadingSpinner />}
+            <Routes>
+              <Route path="/" element={<LoginPage />} />
+              <Route
+                path="/feed"
+                element={
+                  <ProtectedRoute>
+                    <FeedPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/posts/:postId"
+                element={
+                  <ProtectedRoute>
+                    <OpenedPost />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/map"
+                element={
+                  <ProtectedRoute>
+                    <MapPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <ProfilePage />
+                  </ProtectedRoute>
+                }
+              />
+            </Routes>
+          </AuthProvider>
+          <Toaster />
+          <Footer />
+        </Router>
+      </div>
+    </ToastProvider>
   );
 };
 

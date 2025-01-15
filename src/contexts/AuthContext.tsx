@@ -79,11 +79,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       navigate("/feed");
 
       toast({
-        title: "Sucess!",
+        title: "Success!",
         description: "User logged in successfully.",
       });
     } catch (error) {
-      if (error instanceof Error && "code" in error) {
+      if (error instanceof Error && "message" in error) {
         toast({
           title: "Error!",
           description: error.message || "An unknown error occurred.",
@@ -127,7 +127,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         description: "User registered successfully.",
       });
     } catch (error) {
-      if (error instanceof Error && "code" in error) {
+      if (error instanceof Error && "message" in error) {
         toast({
           title: "Error!",
           description: error.message || "An unknown error occurred.",

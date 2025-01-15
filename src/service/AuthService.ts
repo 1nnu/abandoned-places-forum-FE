@@ -17,7 +17,8 @@ const AuthService = {
         });
 
         if (!response.ok) {
-            throw new Error('Failed to login');
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Username " + errorData.username || "Password " + errorData.password || 'An error occurred during login');
         }
 
         const data = await response.json();
@@ -45,7 +46,7 @@ const AuthService = {
 
         if (!response.ok) {
             const errorData = await response.json();
-            throw new Error(errorData.message || 'Failed to register');
+            throw new Error(errorData.message || "Username " + errorData.username || "Password " + errorData.password || 'Failed to register');
         }
 
         const data = await response.json();
