@@ -9,6 +9,7 @@ import { MapLocation } from "../../../Map/Components/utils";
 import SelectLocation from "./SelectLocation";
 import LocationService from "../../../../../service/LocationService";
 import AeroPhoto from "./AeroPhoto";
+import { useToast } from "../../../../../hooks/use-toast";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -20,6 +21,7 @@ export default function CreatePost() {
   >([]);
   const [globalSelectedLocation, setGlobalSelectedLocation] =
     useState<MapLocation | null>(null);
+  const { toast } = useToast();
 
   const handleCreatePost = async (title: string, body: string) => {
     try {
@@ -28,6 +30,10 @@ export default function CreatePost() {
       const userId = localStorage.getItem("userId");
 
       if (!userId || !title || !body || !globalSelectedLocation?.id) {
+        toast({
+          title: "Error!",
+          description: "Title, body or location is missing.",
+        });
         return;
       }
 
@@ -49,11 +55,20 @@ export default function CreatePost() {
         throw new Error("Failed to create post");
       }
 
+      toast({
+        title: "Success!",
+        description: "Post uploaded.",
+      });
+
       setTitle("");
       setBody("");
       setGlobalSelectedLocation(null);
     } catch (error) {
       console.error("Error creating post:", error);
+      toast({
+        title: "Error!",
+        description: "Unexpected error: " + error,
+      });
     } finally {
       emitter.emit("refreshPostList");
       emitter.emit("stopLoading");
