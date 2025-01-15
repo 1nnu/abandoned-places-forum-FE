@@ -13,6 +13,7 @@ import MapPage from "./components/pages/Map/MapPage.tsx";
 import OpenedPost from "./components/pages/Feed/components/post/OpenedPost.tsx";
 import { ToastProvider } from "./components/ui/toast.tsx";
 import { Toaster } from "./components/ui/toaster.tsx";
+import UsersPage from "./components/pages/Users/UsersPage.tsx";
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -68,6 +69,14 @@ const App: React.FC = () => {
                 element={
                   <ProtectedRoute>
                     <ProfilePage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/users"
+                element={
+                  <ProtectedRoute>
+                    <UsersPage />
                   </ProtectedRoute>
                 }
               />
