@@ -99,9 +99,10 @@ export default function CommentsDialog({ postId }: CommentsDialogProps) {
           });
         } else {
           console.error("Failed to add comment");
+          const errorData = await response.json();
           toast({
             title: "Error!",
-            description: "Unexpected error: " + response,
+            description: "Unexpected error: " + errorData.message,
           });
         }
       } catch (error) {
