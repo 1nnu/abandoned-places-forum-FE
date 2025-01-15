@@ -28,6 +28,7 @@ import { XIcon } from "lucide-react";
 import emitter from "../../../../../emitter/eventEmitter";
 import CommentsList from "./CommentsList";
 import { AlertDialogAction } from "@radix-ui/react-alert-dialog";
+import { useToast } from "../../../../../hooks/use-toast";
 
 const CommentSchema = z.object({
   comment: z.string().min(1, "Comment cannot be empty"),
@@ -47,6 +48,7 @@ const apiUrl = import.meta.env.VITE_API_URL;
 export default function CommentsDialog({ postId }: CommentsDialogProps) {
   const [comments, setComments] = useState<CommentProps[]>([]);
   const [showComments, setShowComments] = useState(false);
+  const { toast } = useToast();
 
   const methods = useForm({
     resolver: zodResolver(CommentSchema),
@@ -91,11 +93,23 @@ export default function CommentsDialog({ postId }: CommentsDialogProps) {
           const commentData = await response.json();
           setComments((prevComments) => [...prevComments, commentData.body]);
           methods.reset({ comment: "" });
+          toast({
+            title: "Success!",
+            description: "Comment added.",
+          });
         } else {
           console.error("Failed to add comment");
+          toast({
+            title: "Error!",
+            description: "Unexpected error: " + response,
+          });
         }
       } catch (error) {
         console.error("Error adding comment:", error);
+        toast({
+          title: "Error!",
+          description: "Unexpected error: " + error,
+        });
       } finally {
         emitter.emit("refreshCommentList");
         emitter.emit("refreshPostList");
