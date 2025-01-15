@@ -10,14 +10,15 @@ interface AuthResponse {
 
 const AuthService = {
     login: async (username: string, password: string): Promise<AuthResponse> => {
-        const response = await fetch(`${apiUrl}/api/auth/login`, {
+        const response = await fetch(`${apiUrl}/api/public/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password }),
         });
 
         if (!response.ok) {
-            throw new Error('Failed to login');
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Username " + errorData.username || "Password " + errorData.password || 'An error occurred during login');
         }
 
         const data = await response.json();
@@ -36,7 +37,7 @@ const AuthService = {
     },
 
     register: async (username: string, email: string, password: string): Promise<AuthResponse> => {
-        const response = await fetch(`${apiUrl}/api/auth/register`, {
+        const response = await fetch(`${apiUrl}/api/public/auth/register`, {
             method: 'POST',
             credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
@@ -45,7 +46,7 @@ const AuthService = {
 
         if (!response.ok) {
             const errorData = await response.json();
-            throw new Error(errorData.message || 'Failed to register');
+            throw new Error(errorData.message || "Username " + errorData.username || "Password " + errorData.password || 'Failed to register');
         }
 
         const data = await response.json();
