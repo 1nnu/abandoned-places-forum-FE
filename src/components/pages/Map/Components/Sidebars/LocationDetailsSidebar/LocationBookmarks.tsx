@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 
 const bookmarkTypes = [
   { type: "JAA_MEELDE", label: "Jäta meelde" },
@@ -116,8 +116,7 @@ export default function LocationBookmarks({
   };
 
   return (
-    <div>
-      <h3 className="text-lg text-slate-100">Bookmarks</h3>
+    <div className="absolute top-24 left-6 bg-black bg-opacity-75 rounded-lg p-1.5 pl-2">
       {bookmarkTypes.map(({ type, label }) => (
         <div className="flex items-center" key={type}>
           <input

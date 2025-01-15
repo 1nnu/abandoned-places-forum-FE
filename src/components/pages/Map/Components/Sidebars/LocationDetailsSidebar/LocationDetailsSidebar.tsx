@@ -1,9 +1,9 @@
 import LocationBookmarks from "./LocationBookmarks.tsx";
 import LandBoardButton from "./LandBoardButton.tsx";
-import { MapLocation } from "../../utils.ts";
+import {MapLocation} from "../../utils.ts";
 import ConfirmPublishingDialog from "./ConfirmPublishingDialog.tsx";
 import LocationService from "../../../../../../service/LocationService.ts";
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import EditSelectedLocation from "./Editing/EditSelectedLocation.tsx";
 
 interface LocationDetailsSidebarProps {
@@ -71,7 +71,7 @@ function LocationDetailsSidebar({
           >
             <div className="p-8 pl-6">
               <div className="flex flex-row gap-3">
-                <div className="inline-flex items-center space-x-3 bg-opacity-85 bg-black text-white rounded-md py-1.5 pl-2 pr-3">
+                <div className="inline-flex items-center h-10 space-x-3 bg-opacity-85 bg-black text-white rounded-md py-1.5 pl-2 pr-3">
                   {globalSelectedLocation.isPublic ? (
                     <img
                       className="w-6 pb-0.5"
@@ -132,7 +132,7 @@ function LocationDetailsSidebar({
                   style={{
                     backgroundColor: `#${globalSelectedLocation.mainCategory.colorHex}`,
                   }}
-                  className="flex items-center whitespace-nowrap px-3 pb-0.5 text-md rounded-full w-min space-x-2 h-[1.9rem] mr-2"
+                  className="flex items-center whitespace-nowrap px-3 text-md rounded-full w-min space-x-2 h-[1.9rem]"
                 >
                   {globalSelectedLocation.mainCategory.name}
                 </div>
@@ -142,7 +142,7 @@ function LocationDetailsSidebar({
                       title="Alamkategooria"
                       key={index}
                       style={{ backgroundColor: `#${subcategory.colorHex}` }}
-                      className=" px-2.5 pb-0.5 rounded-full flex items-center h-6 text-sm"
+                      className=" px-2.5 rounded-full flex items-center h-6 text-sm"
                     >
                       {subcategory.name}
                     </div>
