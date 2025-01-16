@@ -19,6 +19,7 @@ import CategoriesInput from "./Form/CategoriesInput.tsx";
 import ConditionInput from "./Form/ConditionInput.tsx";
 import StatusInput from "./Form/StatusInput.tsx";
 import AutoSelectionCheckbox from "./AutoSelectionButton/AutoSelectionButton.tsx";
+import { useToast } from "../../../../../../hooks/use-toast.ts";
 
 interface NewLocationSidebarProps {
   globalCoordinateSelectionMode: boolean;
@@ -38,7 +39,7 @@ function NewLocationSidebar({
 }: NewLocationSidebarProps) {
   const [selectLocationAfterCreating, setSelectLocationAfterCreating] =
     useState<boolean>(true);
-
+  const { toast } = useToast();
   const [newLocationFormData, setNewLocationFormData] =
     useState<NewLocationFormData>(DEFAULT_FORM_DATA);
   function resetFormData() {
@@ -53,7 +54,7 @@ function NewLocationSidebar({
     });
 
   useEffect(() => {
-    LocationService.fetchLocationAttributes().then(
+    LocationService.fetchLocationAttributes(toast).then(
       (locationAttributes: LocationAttributes | null) => {
         if (locationAttributes) {
           setLocationAttributesFormOptions(
@@ -71,11 +72,16 @@ function NewLocationSidebar({
       LocationService.isLocationCreationFormDataValid(newLocationFormData);
     if (validationError) {
       console.error(validationError);
+      toast({
+          title: "Error!",
+          description: validationError,
+      });
       return;
     }
 
     LocationService.createLocation(
-      newLocationFormData as LocationCreateDto
+      newLocationFormData as LocationCreateDto,
+      toast
     ).then((newLocation: MapLocation | null) => {
       if (newLocation) {
         displayCreatedLocation(newLocation, selectLocationAfterCreating);

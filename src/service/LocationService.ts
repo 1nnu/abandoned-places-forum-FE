@@ -7,14 +7,12 @@ import {
     NewLocationFormData
 } from "../components/pages/Map/Components/utils.ts";
 import emitter from "../emitter/eventEmitter.ts";
-import { useToast } from "../hooks/use-toast.ts";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 const LocationService = {
 
-    fetchAllAvailableLocations: async (): Promise<MapLocation[] | null> => {
-        const { toast } = useToast();
+    fetchAllAvailableLocations: async (toast: Function): Promise<MapLocation[] | null> => {
         try {
             emitter.emit("startLoading");
             const userToken = localStorage.getItem("userToken");
@@ -48,8 +46,7 @@ const LocationService = {
         }
     },
 
-    fetchLocationAttributes: async (): Promise<LocationAttributes | null> => {
-        const { toast } = useToast();
+    fetchLocationAttributes: async (toast: Function): Promise<LocationAttributes | null> => {
         try {
             emitter.emit("startLoading");
 
@@ -92,8 +89,7 @@ const LocationService = {
         return null;
     },
 
-    createLocation: async (newLocationPayload: LocationCreateDto): Promise<MapLocation | null> => {
-        const { toast } = useToast();
+    createLocation: async (newLocationPayload: LocationCreateDto, toast: Function): Promise<MapLocation | null> => {
         try {
             emitter.emit("startLoading");
 
@@ -111,6 +107,11 @@ const LocationService = {
                 const errorData = await response.json(); // TODO make backend respond with {'message': "error description"} to all errors
                 throw new Error(errorData.message || "An unknown error occurred while creating the location.");
             }
+
+            toast({
+                title: "Success!",
+                description: "Location added.",
+            });
 
             return await response.json();
         } catch (error: any) {
@@ -135,8 +136,7 @@ const LocationService = {
         return null;
     },
 
-    patchLocation: async (patchLocationPayload: LocationPatchDto): Promise<MapLocation | null> => {
-        const { toast } = useToast();
+    patchLocation: async (patchLocationPayload: LocationPatchDto, toast: Function): Promise<MapLocation | null> => {
         try {
             emitter.emit("startLoading");
 
@@ -155,6 +155,11 @@ const LocationService = {
                 throw new Error(errorData.message || "An unknown error occurred while editing the location.");
             }
 
+            toast({
+                title: "Success!",
+                description: "Changes were made.",
+            });
+
             return await response.json();
         } catch (error: any) {
             console.error("Error editing location:", error.message || error);
@@ -170,8 +175,7 @@ const LocationService = {
         }
     },
 
-    deleteLocation: async (deletedLocationId: string): Promise<boolean> => {
-        const { toast } = useToast();
+    deleteLocation: async (deletedLocationId: string, toast: Function): Promise<boolean> => {
         try {
             emitter.emit("startLoading");
 
@@ -188,6 +192,10 @@ const LocationService = {
                 const errorData = await response.json(); // TODO make backend respond with {'message': "error description"} to all errors
                 throw new Error(errorData.message || "An unknown error occurred while deleting the location.");
             } else {
+                toast({
+                    title: "Success!",
+                    description: "Location deleted.",
+                });
                 return true;
             }
 

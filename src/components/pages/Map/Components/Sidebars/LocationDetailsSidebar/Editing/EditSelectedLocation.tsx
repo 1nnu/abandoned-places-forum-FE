@@ -14,6 +14,7 @@ import {
 } from "../../../utils.ts";
 import LocationService from "../../../../../../../service/LocationService.ts";
 import {createFormOptions} from "./locationEditingUtils.ts";
+import { useToast } from "../../../../../../../hooks/use-toast.ts";
 
 interface EditLocationProps {
     stopEditing: () => void;
@@ -49,6 +50,8 @@ function EditSelectedLocation({
             conditions: [] as FormOption[],
             statuses: [] as FormOption[],
         });
+    
+    const { toast } = useToast();
 
     function setPrevConditionAndStatus(locationAttributes: LocationAttributes | null) {
         if (locationAttributes) {
@@ -63,7 +66,7 @@ function EditSelectedLocation({
     }
 
     useEffect(() => {
-        LocationService.fetchLocationAttributes().then(
+        LocationService.fetchLocationAttributes(toast).then(
             (locationAttributes: LocationAttributes | null) => {
                 if (locationAttributes) {
                     setLocationAttributesFormOptions(
@@ -85,7 +88,8 @@ function EditSelectedLocation({
         }
 
         LocationService.patchLocation(
-            editLocationFormData as LocationPatchDto
+            editLocationFormData as LocationPatchDto,
+            toast
         ).then((editedLocation: MapLocation | null) => {
             if (editedLocation) {
                 stopDisplayingLocation(editedLocation.id);

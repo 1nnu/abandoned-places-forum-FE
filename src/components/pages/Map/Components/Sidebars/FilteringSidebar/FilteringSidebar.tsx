@@ -2,6 +2,7 @@ import {useEffect, useState} from "react";
 import emitter from "../../../../../../emitter/eventEmitter.ts";
 import {LocationAttributes, MapLocation} from "../../utils.ts";
 import LocationService from "../../../../../../service/LocationService.ts";
+import { useToast } from "../../../../../../hooks/use-toast.ts";
 
 const bookmarkTypes = [
   { type: "JAA_MEELDE", label: "Jäta meelde" },
@@ -31,7 +32,7 @@ function FilteringSidebar({ applyFilters }: FilteringSidebarProps) {
   );
   const [selectedStatus, setSelectedStatus] = useState<number | null>(null);
   const [selectedBookmarks, setSelectedBookmarks] = useState<string[]>([]);
-
+  const { toast } = useToast();
 
   const fetchLocationsWithParams = async (queryParams: URLSearchParams) => {
     try {
@@ -57,7 +58,7 @@ function FilteringSidebar({ applyFilters }: FilteringSidebarProps) {
   };
 
   useEffect(() => {
-    LocationService.fetchLocationAttributes().then(
+    LocationService.fetchLocationAttributes(toast).then(
         (locationAttributes: LocationAttributes | null) => {
           if (locationAttributes) {
             setCategories(locationAttributes.categories);
