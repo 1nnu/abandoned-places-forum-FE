@@ -1,4 +1,6 @@
-# Frontend Repository
+# Work in progress
+
+# Frontend of an abandoned places forum and map application
 
 This repository contains the frontend for the web application built with React. It is designed to be deployed using Docker, Docker Compose, and GitLab CI/CD pipelines.
 
