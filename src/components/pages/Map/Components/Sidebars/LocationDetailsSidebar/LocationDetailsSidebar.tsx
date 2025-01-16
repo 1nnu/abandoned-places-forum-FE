@@ -10,7 +10,7 @@ import { useToast } from "../../../../../../hooks/use-toast.ts";
 interface LocationDetailsSidebarProps {
   globalSelectedLocation: MapLocation;
   stopDisplayingLocation: (deletedLocationId: string) => void;
-  displayEditedLocation: (
+  displayModifiedLocation: (
     createdLocation: MapLocation,
     selectOnMap: boolean
   ) => void;
@@ -22,7 +22,7 @@ interface LocationDetailsSidebarProps {
 function LocationDetailsSidebar({
   globalSelectedLocation,
   stopDisplayingLocation,
-  displayEditedLocation,
+  displayModifiedLocation,
   setObliqueAeroPhotoCoords,
 }: LocationDetailsSidebarProps) {
   const [isEditingActive, setIsEditingActive] = useState<boolean>(false);
@@ -60,7 +60,7 @@ function LocationDetailsSidebar({
         <EditSelectedLocation
           globalSelectedLocation={globalSelectedLocation}
           stopDisplayingLocation={stopDisplayingLocation}
-          displayEditedLocation={displayEditedLocation}
+          displayEditedLocation={displayModifiedLocation}
           stopEditing={cancelEditing}
         />
       ) : (
@@ -98,6 +98,8 @@ function LocationDetailsSidebar({
                   ) : (
                     <ConfirmPublishingDialog
                       globalSelectedLocation={globalSelectedLocation}
+                      stopDisplayingLocation={stopDisplayingLocation}
+                      displayModifiedLocation={displayModifiedLocation}
                     />
                   )}
                 </div>
@@ -106,12 +108,14 @@ function LocationDetailsSidebar({
                 <LocationBookmarks locationId={globalSelectedLocation.id} />
               </div>
               <div className="absolute bottom-2 left-6">
-                <button className="bg-black bg-opacity-85 text-white py-1 px-3 rounded-md hover:bg-opacity-75">
+                <button
+                    className="bg-black bg-opacity-85 text-white py-1 px-3 rounded-md opacity-60 cursor-default">
                   Vaata postitusi (13)
                 </button>
               </div>
               <div className="absolute bottom-2 right-6">
-                <button className="bg-black bg-opacity-85 text-white py-1 px-3 rounded-md hover:bg-opacity-75">
+                <button
+                    className="bg-black bg-opacity-85 text-white py-1 px-3 rounded-md opacity-60 cursor-default">
                   Lisa postitus +
                 </button>
               </div>
@@ -169,6 +173,7 @@ function LocationDetailsSidebar({
                         globalSelectedLocation.additionalInformation.length > 35
                           ? "1px solid gray"
                           : "transparent",
+                      wordBreak: "break-word"
                     }}
                     className="rounded-sm flex-grow text-justify leading-tight p-2 pt-1"
                   >

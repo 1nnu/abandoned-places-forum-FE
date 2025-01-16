@@ -122,7 +122,7 @@ function MapPage() {
           <LocationDetailsSidebar
             globalSelectedLocation={globalSelectedLocation}
             stopDisplayingLocation={stopDisplayingLocation}
-            displayEditedLocation={displayNewLocation}
+            displayModifiedLocation={displayNewLocation}
             setObliqueAeroPhotoCoords={setObliqueAeroPhotoCoords}
           />
         )}

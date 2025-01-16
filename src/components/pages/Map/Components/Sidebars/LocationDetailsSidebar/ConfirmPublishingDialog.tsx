@@ -18,9 +18,16 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 interface ConfirmPublishingDialogProps {
   globalSelectedLocation: MapLocation;
+  stopDisplayingLocation: (deletedLocationId: string) => void;
+  displayModifiedLocation: (
+      createdLocation: MapLocation,
+      selectOnMap: boolean
+  ) => void;
 }
 
-export default function ConfirmPublishingDialog({ globalSelectedLocation }: ConfirmPublishingDialogProps) {
+export default function ConfirmPublishingDialog({ globalSelectedLocation, stopDisplayingLocation, displayModifiedLocation }: ConfirmPublishingDialogProps) {
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+
   const [points, setPoints] = useState<number>(0);
 
   const publishLocation = async (locationId: string, minRequiredPointsToView: number) => {
@@ -34,7 +41,7 @@ export default function ConfirmPublishingDialog({ globalSelectedLocation }: Conf
         return;
       }
 
-      const response = await fetch(`${API_URL}/api/locations/publishLocation`, {
+      const response = await fetch(`${API_URL}/api/locations/publish`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${userToken}`,
@@ -50,7 +57,12 @@ export default function ConfirmPublishingDialog({ globalSelectedLocation }: Conf
         throw new Error("Failed to publish location");
       }
 
-      window.location.reload();
+      const publishedLocation = await response.json();
+
+      stopDisplayingLocation(publishedLocation.id);
+      displayModifiedLocation(publishedLocation, true);
+
+      setIsDialogOpen(false);
     } catch (error) {
       console.error("Error publishing location:", error);
     } finally {
@@ -60,7 +72,7 @@ export default function ConfirmPublishingDialog({ globalSelectedLocation }: Conf
   };
 
   return (
-    <Dialog>
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
         <Button className="bg-blue-600 hover:bg-blue-700">Avalikusta</Button>
       </DialogTrigger>
