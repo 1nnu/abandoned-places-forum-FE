@@ -50,7 +50,6 @@ export default function ConfirmPublishingDialog({ globalSelectedLocation }: Conf
         throw new Error("Failed to publish location");
       }
 
-      // TODO: use stopDisplayingLocation() and displayNewLocation() functions from MapPage to avoid refreshing
       window.location.reload();
     } catch (error) {
       console.error("Error publishing location:", error);

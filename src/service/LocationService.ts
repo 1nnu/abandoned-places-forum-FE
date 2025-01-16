@@ -7,13 +7,14 @@ import {
     NewLocationFormData
 } from "../components/pages/Map/Components/utils.ts";
 import emitter from "../emitter/eventEmitter.ts";
+import { useToast } from "../hooks/use-toast.ts";
 
 const API_URL = import.meta.env.VITE_API_URL;
-
 
 const LocationService = {
 
     fetchAllAvailableLocations: async (): Promise<MapLocation[] | null> => {
+        const { toast } = useToast();
         try {
             emitter.emit("startLoading");
             const userToken = localStorage.getItem("userToken");
@@ -35,7 +36,10 @@ const LocationService = {
 
         } catch (error: any) {
             console.error("Error creating location:", error.message || error);
-            console.error(error.message || "Failed to create new location"); // TODO replace with toast
+            toast({
+              title: "Error!",
+              description: "Unexpected error: " + error.message,
+            });
 
             emitter.emit("stopLoading");
             return null;
@@ -45,6 +49,7 @@ const LocationService = {
     },
 
     fetchLocationAttributes: async (): Promise<LocationAttributes | null> => {
+        const { toast } = useToast();
         try {
             emitter.emit("startLoading");
 
@@ -65,7 +70,10 @@ const LocationService = {
             return await response.json();
         } catch (error: any) {
             console.error("Error creating location:", error.message || error);
-            console.error(error.message || "Failed to fetch location attributes"); // TODO replace with toast
+            toast({
+                title: "Error!",
+                description: "Unexpected error: " + error.message,
+            });
 
             emitter.emit("stopLoading");
             return null;
@@ -85,6 +93,7 @@ const LocationService = {
     },
 
     createLocation: async (newLocationPayload: LocationCreateDto): Promise<MapLocation | null> => {
+        const { toast } = useToast();
         try {
             emitter.emit("startLoading");
 
@@ -106,7 +115,10 @@ const LocationService = {
             return await response.json();
         } catch (error: any) {
             console.error("Error creating location:", error.message || error);
-            console.error(error.message || "Failed to create new location"); // TODO replace with toast
+            toast({
+                title: "Error!",
+                description: "Unexpected error: " + error.message,
+            });
 
             emitter.emit("stopLoading");
             return null;
@@ -124,6 +136,7 @@ const LocationService = {
     },
 
     patchLocation: async (patchLocationPayload: LocationPatchDto): Promise<MapLocation | null> => {
+        const { toast } = useToast();
         try {
             emitter.emit("startLoading");
 
@@ -145,7 +158,10 @@ const LocationService = {
             return await response.json();
         } catch (error: any) {
             console.error("Error editing location:", error.message || error);
-            console.error(error.message || "Failed to edit location"); // TODO replace with toast
+            toast({
+                title: "Error!",
+                description: "Unexpected error: " + error.message,
+            });
 
             emitter.emit("stopLoading");
             return null;
@@ -155,6 +171,7 @@ const LocationService = {
     },
 
     deleteLocation: async (deletedLocationId: string): Promise<boolean> => {
+        const { toast } = useToast();
         try {
             emitter.emit("startLoading");
 
@@ -175,7 +192,10 @@ const LocationService = {
             }
 
         } catch (error: any) {
-            console.error("Error deleting location:", error); // TODO replace with toast
+            toast({
+                title: "Error!",
+                description: "Unexpected error: " + error.message,
+            });
 
             emitter.emit("stopLoading");
             return false;

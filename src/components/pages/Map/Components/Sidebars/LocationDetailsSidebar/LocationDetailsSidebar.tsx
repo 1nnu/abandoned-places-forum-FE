@@ -1,9 +1,9 @@
 import LocationBookmarks from "./LocationBookmarks.tsx";
 import LandBoardButton from "./LandBoardButton.tsx";
-import {MapLocation} from "../../utils.ts";
+import { MapLocation } from "../../utils.ts";
 import ConfirmPublishingDialog from "./ConfirmPublishingDialog.tsx";
 import LocationService from "../../../../../../service/LocationService.ts";
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import EditSelectedLocation from "./Editing/EditSelectedLocation.tsx";
 
 interface LocationDetailsSidebarProps {
@@ -52,7 +52,6 @@ function LocationDetailsSidebar({
     setIsEditingActive(false);
   }, [globalSelectedLocation]);
 
-  //TODO Divide into subcomponents in the future
   return (
     <div className="flex flex-col w-full h-full overflow-y-auto">
       {isEditingActive ? (
