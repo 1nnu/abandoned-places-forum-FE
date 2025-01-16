@@ -27,11 +27,12 @@ function FilteringSidebar({ applyFilters }: FilteringSidebarProps) {
   const [statuses, setStatuses] = useState<{ id: number; name: string }[]>([]);
 
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
-  const [selectedCondition, setSelectedCondition] = useState<number | null>(
-    null
-  );
-  const [selectedStatus, setSelectedStatus] = useState<number | null>(null);
+  const [selectedConditions, setSelectedConditions] = useState<number[]>([]);
+  const [selectedStatuses, setSelectedStatuses] = useState<number[]>([]);
   const [selectedBookmarks, setSelectedBookmarks] = useState<string[]>([]);
+
+  const [filterMainCategoriesOnly, setFilterMainCategoriesOnly] = useState(false);
+
   const { toast } = useToast();
 
   const fetchLocationsWithParams = async (queryParams: URLSearchParams) => {
@@ -74,6 +75,16 @@ function FilteringSidebar({ applyFilters }: FilteringSidebarProps) {
       prev.includes(id) ? prev.filter((catId) => catId !== id) : [...prev, id]
     );
   };
+  const handleConditionChange = (id: number) => {
+    setSelectedConditions((prev) =>
+        prev.includes(id) ? prev.filter((condId) => condId !== id) : [...prev, id]
+    );
+  };
+  const handleStatusChange = (id: number) => {
+    setSelectedStatuses((prev) =>
+        prev.includes(id) ? prev.filter((statId) => statId !== id) : [...prev, id]
+    );
+  };
 
   const handleBookmarkChange = (type: string) => {
     setSelectedBookmarks((prev) =>
@@ -81,26 +92,35 @@ function FilteringSidebar({ applyFilters }: FilteringSidebarProps) {
     );
   };
 
+  const toggleAll = (list: any[], selectedList: any[], setSelectedList: Function) => {
+    if (list.length === selectedList.length) {
+      setSelectedList([]);
+    } else {
+      setSelectedList(list.map((item) => item.id || item.type));
+    }
+  };
+
+
   const handleApplyFilters = async () => {
     try {
       const queryParams = new URLSearchParams();
 
-      if (selectedCategories.length > 0) {
-        queryParams.append("mainCategoryId", String(selectedCategories[0]));
-      }
+      queryParams.append("filterByMainCategoryOnly", String(filterMainCategoriesOnly));
 
-      if (selectedCategories.length > 1) {
-        selectedCategories.slice(1).forEach((subCategoryId) => {
-          queryParams.append("subCategoryIds", String(subCategoryId));
+      if (selectedCategories.length > 0) {
+        selectedCategories.forEach((subCategoryId) => {
+          queryParams.append("categoryIds", String(subCategoryId));
         });
       }
-
-      if (selectedCondition !== null) {
-        queryParams.append("conditionId", String(selectedCondition));
+      if (selectedConditions.length > 0) {
+        selectedConditions.forEach((conditionId) => {
+          queryParams.append("conditionIds", String(conditionId));
+        });
       }
-
-      if (selectedStatus !== null) {
-        queryParams.append("statusId", String(selectedStatus));
+      if (selectedStatuses.length > 0) {
+        selectedStatuses.forEach((statusId) => {
+          queryParams.append("statusIds", String(statusId));
+        });
       }
 
       if (selectedBookmarks.length > 0) {
@@ -129,9 +149,30 @@ function FilteringSidebar({ applyFilters }: FilteringSidebarProps) {
           {/* Categories Section */}
           <div className="mb-4">
             <h3 className="text-md font-semibold">Categories</h3>
+            <label className=" flex items-center">
+              <input
+                  type="checkbox"
+                  className="mr-2"
+                  checked={filterMainCategoriesOnly}
+                  onChange={() =>
+                      setFilterMainCategoriesOnly((prev) => !prev)
+                  }
+              />
+              Must be main category
+            </label>
+            <button
+                onClick={() =>
+                    toggleAll(categories, selectedCategories, setSelectedCategories)
+                }
+                className="text-sm text-blue-500 underline mb-2"
+            >
+              {categories.length === selectedCategories.length
+                  ? "Unselect All"
+                  : "Select All"}
+            </button>
             <ul className="list-none">
               {categories.map((category) => (
-                  <li key={category.id} className="mt-2">
+                  <li key={category.id} className="mt-1">
                     <label className="flex items-center">
                       <input
                           type="checkbox"
@@ -149,19 +190,30 @@ function FilteringSidebar({ applyFilters }: FilteringSidebarProps) {
           {/* Conditions Section */}
           <div className="mb-4">
             <h3 className="text-md font-semibold">Conditions</h3>
+            <button
+                onClick={() =>
+                    toggleAll(conditions, selectedConditions, setSelectedConditions)
+                }
+                className="text-sm text-blue-500 underline mb-2"
+            >
+            {conditions.length === selectedConditions.length
+                  ? "Unselect All"
+                  : "Select All"}
+            </button>
             <ul className="list-none">
               {conditions.map((condition) => (
-                  <li key={condition.id} className="mt-2">
-                    <label className="flex items-center">
-                      <input
-                          type="radio"
-                          name="condition"
-                          className="mr-2"
-                          checked={selectedCondition === condition.id}
-                          onChange={() => setSelectedCondition(condition.id)}
-                      />
-                      {condition.name}
-                    </label>
+                  <li key={condition.id} className="mt-1">
+                    <li key={condition.id} className="mt-1">
+                      <label className="flex items-center">
+                        <input
+                            type="checkbox"
+                            className="mr-2"
+                            checked={selectedConditions.includes(condition.id)}
+                            onChange={() => handleConditionChange(condition.id)}
+                        />
+                        {condition.name}
+                      </label>
+                    </li>
                   </li>
               ))}
             </ul>
@@ -170,19 +222,30 @@ function FilteringSidebar({ applyFilters }: FilteringSidebarProps) {
           {/* Statuses Section */}
           <div className="mb-4">
             <h3 className="text-md font-semibold">Statuses</h3>
+            <button
+                onClick={() =>
+                    toggleAll(statuses, selectedStatuses, setSelectedStatuses)
+                }
+                className="text-sm text-blue-500 underline mb-2"
+            >
+              {statuses.length === selectedStatuses.length
+                  ? "Unselect All"
+                  : "Select All"}
+            </button>
             <ul className="list-none">
               {statuses.map((status) => (
-                  <li key={status.id} className="mt-2">
-                    <label className="flex items-center">
-                      <input
-                          type="radio"
-                          name="status"
-                          className="mr-2"
-                          checked={selectedStatus === status.id}
-                          onChange={() => setSelectedStatus(status.id)}
-                      />
-                      {status.name}
-                    </label>
+                  <li key={status.id} className="mt-1">
+                    <li key={status.id} className="mt-1">
+                      <label className="flex items-center">
+                        <input
+                            type="checkbox"
+                            className="mr-2"
+                            checked={selectedStatuses.includes(status.id)}
+                            onChange={() => handleStatusChange(status.id)}
+                        />
+                        {status.name}
+                      </label>
+                    </li>
                   </li>
               ))}
             </ul>
@@ -191,19 +254,33 @@ function FilteringSidebar({ applyFilters }: FilteringSidebarProps) {
           {/* Bookmark Types Section */}
           <div className="mb-4">
             <h3 className="text-md font-semibold">Bookmark Types</h3>
+            <button
+                onClick={() =>
+                    toggleAll(
+                        bookmarkTypes,
+                        selectedBookmarks,
+                        setSelectedBookmarks
+                    )
+                }
+                className="text-sm text-blue-500 underline mb-2"
+            >
+              {bookmarkTypes.length === selectedBookmarks.length
+                  ? "Unselect All"
+                  : "Select All"}
+            </button>
             <ul className="list-none">
               {bookmarkTypes.map((bookmark) => (
-                <li key={bookmark.type} className="mt-2">
-                  <label className="flex items-center">
-                    <input
-                      type="checkbox"
-                      className="mr-2"
-                      checked={selectedBookmarks.includes(bookmark.type)}
-                      onChange={() => handleBookmarkChange(bookmark.type)}
-                    />
-                    {bookmark.label}
-                  </label>
-                </li>
+                  <li key={bookmark.type} className="mt-1">
+                    <label className="flex items-center">
+                      <input
+                          type="checkbox"
+                          className="mr-2"
+                          checked={selectedBookmarks.includes(bookmark.type)}
+                          onChange={() => handleBookmarkChange(bookmark.type)}
+                      />
+                      {bookmark.label}
+                    </label>
+                  </li>
               ))}
             </ul>
           </div>
