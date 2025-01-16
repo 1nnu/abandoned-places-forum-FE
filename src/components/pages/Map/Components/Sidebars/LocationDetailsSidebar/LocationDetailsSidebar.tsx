@@ -1,10 +1,11 @@
 import LocationBookmarks from "./LocationBookmarks.tsx";
 import LandBoardButton from "./LandBoardButton.tsx";
-import {MapLocation} from "../../utils.ts";
+import { MapLocation } from "../../utils.ts";
 import ConfirmPublishingDialog from "./ConfirmPublishingDialog.tsx";
 import LocationService from "../../../../../../service/LocationService.ts";
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import EditSelectedLocation from "./Editing/EditSelectedLocation.tsx";
+import { useToast } from "../../../../../../hooks/use-toast.ts";
 
 interface LocationDetailsSidebarProps {
   globalSelectedLocation: MapLocation;
@@ -28,6 +29,7 @@ function LocationDetailsSidebar({
   const cancelEditing = () => {
     setIsEditingActive(false);
   };
+  const { toast } = useToast();
 
   function showLocationObliqueAeroPhoto() {
     if (globalSelectedLocation) {
@@ -39,7 +41,7 @@ function LocationDetailsSidebar({
   }
 
   function deleteSelectedLocation() {
-    LocationService.deleteLocation(globalSelectedLocation.id).then(
+    LocationService.deleteLocation(globalSelectedLocation.id, toast).then(
       (isDeleted) => {
         if (isDeleted) {
           stopDisplayingLocation(globalSelectedLocation.id);
@@ -52,7 +54,6 @@ function LocationDetailsSidebar({
     setIsEditingActive(false);
   }, [globalSelectedLocation]);
 
-  //TODO Divide into subcomponents in the future
   return (
     <div className="flex flex-col w-full h-full overflow-y-auto">
       {isEditingActive ? (

@@ -29,7 +29,6 @@ function LandBoardLayerSelector({ landBoardLayerRef1, landBoardLayerRef2 }: Land
     }
 
     return (
-        // TODO refactor GPT-made buttons and add collapsing functionality to the menu
         <div className="absolute bottom-4 left-4 p-4 bg-black bg-opacity-75 rounded-lg flex flex-col space-y-2">
             <button
                 className={`px-4 py-2 rounded-lg text-white ${activeLayer === null ? "bg-blue-500" : "bg-gray-800"}`}

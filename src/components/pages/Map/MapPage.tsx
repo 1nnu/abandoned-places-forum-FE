@@ -8,6 +8,7 @@ import NewLocationButton from "./Components/Sidebars/Buttons/NewLocationButton.t
 import FilteringButton from "./Components/Sidebars/Buttons/FilteringButton.tsx";
 import {MapLocation, SidebarContent} from "./Components/utils.ts";
 import LocationService from "../../../service/LocationService.ts";
+import { useToast } from "../../../hooks/use-toast.ts";
 
 export const SIDEBAR_TRANSITION_DURATION = 300;
 
@@ -28,6 +29,8 @@ function MapPage() {
   const [locationsDisplayedOnMap, setLocationsDisplayedOnMap] = useState<
     MapLocation[]
   >([]);
+  const { toast } = useToast();
+  
   function handleLocationFiltering(filteredLocations: MapLocation[]) {
     setLocationsDisplayedOnMap(filteredLocations);
   }
@@ -74,7 +77,7 @@ function MapPage() {
   }
 
   useEffect(() => {
-    LocationService.fetchAllAvailableLocations().then(
+    LocationService.fetchAllAvailableLocations(toast).then(
       (locations: MapLocation[] | null) => {
         if (locations) {
           setLocationsDisplayedOnMap(locations);

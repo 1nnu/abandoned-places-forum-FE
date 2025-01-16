@@ -111,6 +111,13 @@ export default function NavMenu() {
                   Map
                 </Link>
                 <Link
+                  to={"users"}
+                  onClick={toggleMobileMenu}
+                  className="text-slate-50 hover:text-slate-100"
+                >
+                  Users
+                </Link>
+                <Link
                   to={"feed"}
                   onClick={toggleMobileMenu}
                   className="text-slate-50 hover:text-slate-100"
@@ -143,6 +150,9 @@ export default function NavMenu() {
             <>
               <Link to={"map"} className="text-blue-50 hover:text-blue-100">
                 Map
+              </Link>
+              <Link to={"users"} className="text-blue-50 hover:text-blue-100">
+                Users
               </Link>
               <Link to={"feed"} className="text-blue-50 hover:text-blue-100">
                 Feed

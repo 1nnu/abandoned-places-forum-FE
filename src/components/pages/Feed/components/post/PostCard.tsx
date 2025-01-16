@@ -3,9 +3,6 @@ import CommentsDialog from "../comment/CommentsDialog";
 import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
 import UpvoteButton from "../upvote/UpvoteButton";
 import AuthService from "../../../../../service/AuthService";
-import { useEffect, useState } from "react";
-import { MapLocation } from "../../../Map/Components/utils.ts";
-import emitter from "../../../../../emitter/eventEmitter.ts";
 import AeroPhoto from "./AeroPhoto.tsx";
 import { Link } from "react-router-dom";
 import { Button } from "../../../../ui/button.tsx";
@@ -34,13 +31,10 @@ interface PostCardProps {
   additionalInformation: string
 }
 
-const apiUrl = import.meta.env.VITE_API_URL;
-
 export default function PostCard({
   id,
   title,
   body,
-  locationId,
   createdBy,
   creatadAt,
   images = [],
@@ -57,7 +51,6 @@ export default function PostCard({
   status,
   additionalInformation
 }: PostCardProps) {
-  const [location, setLocation] = useState<MapLocation | null>(null);
   const userId = localStorage.getItem("userId");
 
   if (!userId) {
@@ -67,44 +60,6 @@ export default function PostCard({
   if (!userId) {
     return;
   }
-
-  const fetchLocationById = async (id: string): Promise<void> => {
-    if (!id) {
-      return;
-    }
-
-    try {
-      emitter.emit("startLoading");
-      const userToken = localStorage.getItem("userToken");
-
-      if (!userToken) {
-        throw new Error("User is not authenticated");
-      }
-
-      const response = await fetch(`${apiUrl}/api/locations/${id}`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        return;
-      }
-
-      const data: MapLocation = await response.json();
-      setLocation(data);
-    } catch (error: any) {
-      console.error(error);
-    } finally {
-      emitter.emit("stopLoading");
-    }
-  };
-
-  useEffect(() => {
-    fetchLocationById(locationId);
-  }, []);
 
   return (
     <div className="flex flex-col gap-y-2">
@@ -180,7 +135,7 @@ export default function PostCard({
           </div>
           {location && (
             <div className="h-[500px] rounded-md overflow-hidden border border-slate-300 w-full md:w-1/2 mt-3 md:mt-0">
-              <AeroPhoto selectedCoords={[location.lat, location.lon]} />
+              <AeroPhoto selectedCoords={[lat, lon]} />
             </div>
           )}
         </div>

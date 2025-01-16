@@ -78,7 +78,7 @@ export default function CreatePost() {
   };
 
   useEffect(() => {
-    LocationService.fetchAllAvailableLocations().then(
+    LocationService.fetchAllAvailableLocations(toast).then(
       (locations: MapLocation[] | null) => {
         if (locations) {
           const publicLocations = locations.filter(

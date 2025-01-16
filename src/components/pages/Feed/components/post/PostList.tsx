@@ -44,7 +44,7 @@ export interface Post {
   location: Location;
 }
 
-interface Location {
+export interface Location {
   id: string;
   name: string;
   lon: number;
