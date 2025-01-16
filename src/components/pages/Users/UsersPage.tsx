@@ -177,7 +177,7 @@ export default function UsersPage() {
                 <div className="flex-shrink-0">
                   <Avatar className="w-20 h-20 rounded-full border-2 border-slate-300">
                     <AvatarImage
-                      src="https://www.example.com/user-avatar.jpg"
+                      src="https://github.com/shadcn.png"
                       alt="User Avatar"
                       className="object-cover w-full h-full rounded-full"
                     />

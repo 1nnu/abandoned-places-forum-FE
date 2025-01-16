@@ -5,7 +5,6 @@ import { Button } from "../../../../ui/button";
 import { FormControl, FormItem, FormField } from "../../../../ui/form";
 import { Input } from "../../../../ui/input";
 import { SendIcon } from "lucide-react";
-
 import { z } from "zod";
 import {
   useForm,
@@ -36,6 +35,11 @@ interface FetchPostsDto {
   likeCount: number;
   commentCount: number;
   hasUpvoted: boolean;
+  location: MapLocation;
+}
+
+interface Upvotes {
+  postId: number;
 }
 
 interface CommentProps {
@@ -51,6 +55,7 @@ export default function OpenedPost() {
   const { postId } = useParams<{ postId: string }>();
   const [comments, setComments] = useState<CommentProps[]>([]);
   const [post, setPost] = useState<FetchPostsDto | null>(null);
+  const [upvotes, setUpvotes] = useState<Upvotes[]>([]);
   const [location, setLocation] = useState<MapLocation | null>(null);
   const navigate = useNavigate();
 
@@ -154,27 +159,25 @@ export default function OpenedPost() {
 
       const data: FetchPostsDto = await response.json();
       setPost(data);
+      setLocation(data.location)
     } catch (error: any) {
-      console.log(error);
+      console.error(error);
     } finally {
       emitter.emit("stopLoading");
     }
   };
 
-  const fetchLocationById = async (id: string): Promise<void> => {
-    if (!id) {
-      return;
-    }
-
+  const fetchUpvotes = async (): Promise<void> => {
     try {
       emitter.emit("startLoading");
+
       const userToken = localStorage.getItem("userToken");
 
       if (!userToken) {
         throw new Error("User is not authenticated");
       }
 
-      const response = await fetch(`${apiUrl}/api/locations/${id}`, {
+      const response = await fetch(`${apiUrl}/api/feed/upvotes/${postId}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${userToken}`,
@@ -183,11 +186,11 @@ export default function OpenedPost() {
       });
 
       if (!response.ok) {
-        return;
+        throw new Error("Failed to fetch upvotes");
       }
 
-      const data: MapLocation = await response.json();
-      setLocation(data);
+      const data: Upvotes[] = await response.json();
+      setUpvotes(data)
     } catch (error: any) {
       console.error(error);
     } finally {
@@ -203,14 +206,9 @@ export default function OpenedPost() {
     };
 
     fetchData();
+    fetchUpvotes();
     fetchComments();
   }, [postId]);
-
-  useEffect(() => {
-    if (post && post.locationId && !location) {
-      fetchLocationById(post.locationId);
-    }
-  }, [post, location]);
 
   return (
     post && (
@@ -243,7 +241,7 @@ export default function OpenedPost() {
               </div>
             </CardContent>
             <CardFooter>
-              <div className="flex justify-end w-full gap-x-2"></div>
+              <div className="flex justify-start w-full gap-x-2"><p className="text-sm text-slate-700">Upvotes: {upvotes.length}</p></div>
             </CardFooter>
           </Card>
           <div>
