@@ -3,27 +3,27 @@ import {createLandBoardTileMapSource, LandBoardLayerTypes} from "../mapLayers";
 import TileLayer from "ol/layer/Tile";
 
 interface LandBoardLayerSelectorProps {
-    landBoardLayerRef1: MutableRefObject<TileLayer>;
-    landBoardLayerRef2: MutableRefObject<TileLayer>;
+    landBoardBaseLayer: MutableRefObject<TileLayer>;
+    landBoardOverlayLayer: MutableRefObject<TileLayer>;
 }
 
-function LandBoardLayerSelector({ landBoardLayerRef1, landBoardLayerRef2 }: LandBoardLayerSelectorProps) {
+function LandBoardLayerSelector({ landBoardBaseLayer, landBoardOverlayLayer }: LandBoardLayerSelectorProps) {
 
     const [activeLayer, setActiveLayer] = useState<LandBoardLayerTypes | null>(null);
 
     function handleLayerChange(layerType: LandBoardLayerTypes | null) {
-        landBoardLayerRef1.current.clearRenderer();
-        landBoardLayerRef1.current.setSource(null);
-        landBoardLayerRef2.current.clearRenderer();
-        landBoardLayerRef2.current.setSource(null);
+        landBoardBaseLayer.current.clearRenderer();
+        landBoardBaseLayer.current.setSource(null);
+        landBoardOverlayLayer.current.clearRenderer();
+        landBoardOverlayLayer.current.setSource(null);
         setActiveLayer(null);
 
         if (layerType !== activeLayer && layerType === LandBoardLayerTypes.HYBRID) {
-            landBoardLayerRef1.current.setSource(createLandBoardTileMapSource(LandBoardLayerTypes.ORTOPHOTO));
-            landBoardLayerRef2.current.setSource(createLandBoardTileMapSource(LandBoardLayerTypes.HYBRID));
+            landBoardBaseLayer.current.setSource(createLandBoardTileMapSource(LandBoardLayerTypes.ORTOPHOTO));
+            landBoardOverlayLayer.current.setSource(createLandBoardTileMapSource(LandBoardLayerTypes.HYBRID, "png"));
             setActiveLayer(LandBoardLayerTypes.HYBRID);
         } else if (layerType !== activeLayer && layerType !== null) {
-            landBoardLayerRef1.current.setSource(createLandBoardTileMapSource(layerType));
+            landBoardBaseLayer.current.setSource(createLandBoardTileMapSource(layerType));
             setActiveLayer(layerType);
         }
     }

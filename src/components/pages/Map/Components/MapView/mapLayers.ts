@@ -7,6 +7,8 @@ import {TileGrid} from "ol/tilegrid";
 import {L_EST} from "./mapUtils.ts";
 import {Image} from "ol/layer";
 import {ImageTile, Tile} from "ol";
+import proj4 from "proj4";
+import {register} from "ol/proj/proj4";
 
 export enum LandBoardLayerTypes {
     ORTOPHOTO = "foto",
@@ -15,6 +17,11 @@ export enum LandBoardLayerTypes {
     HYBRID = "hybriid"
 }
 
+proj4.defs(
+    L_EST,
+    "+proj=lcc +lat_1=59.33333333333334 +lat_2=58 +lat_0=57.51755393055556 +lon_0=24 +x_0=500000 +y_0=6375000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
+);
+register(proj4);
 
 export const BASE_OSM_LAYER: TileLayer<OSM> = new TileLayer({
     source: new OSM(),
@@ -50,7 +57,7 @@ export const createImageLayer = () => {
 };
 
 
-export const createLandBoardTileMapSource = (mapType: LandBoardLayerTypes) => {
+export const createLandBoardTileMapSource = (mapType: LandBoardLayerTypes, tileFormat: string = "jpg") => {
     return new XYZ({
         projection: L_EST,
         tileGrid: new TileGrid({
@@ -58,11 +65,29 @@ export const createLandBoardTileMapSource = (mapType: LandBoardLayerTypes) => {
             minZoom: 3,
             resolutions: [
                 4000, 2000, 1000, 500, 250, 125, 62.5, 31.25, 15.625, 7.8125,
-                3.90625, 1.953125, 0.9765625, 0.48828125,
+                3.90625, 1.953125, 0.9765625, 0.48828125, 0.244140625,
             ],
         }),
-        url: `https://tiles.maaamet.ee/tm/tms/1.0.0/${mapType}/{z}/{x}/{-y}.jpg`,
+        url: `https://tiles.maaamet.ee/tm/tms/1.0.0/${mapType}/{z}/{x}/{-y}.${tileFormat}`,
         tileLoadFunction: removeWhiteBordersHack,
+    });
+};
+
+export const createLandBoardWmsSource = () => {
+    return new ImageWMS({
+        url: 'https://xgis.maaamet.ee/xgis2/service/1gj4lm9',
+        params: {
+            REQUEST: 'GetMap',
+            SERVICE: 'WMS',
+            VERSION: '1.1.1',
+            FORMAT: 'image/jpeg',
+            STYLES: '',
+            TRANSPARENT: true,
+            LAYERS: 'EESTIFOTO',
+            SRS: 'EPSG:3301',
+        },
+        serverType: 'geoserver', // Optional, adjust based on WMS server type
+        projection: L_EST,
     });
 };
 

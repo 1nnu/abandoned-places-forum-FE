@@ -13,6 +13,7 @@ export const INITIAL_MAP_VIEW_CENTRE_WGS84 = [25.5, 58.8];
 export const DEFAULT_INITIAL_VIEW = new View({
   center: transform(INITIAL_MAP_VIEW_CENTRE_WGS84, WGS84, MERCATOR),
   zoom: 8,
+  constrainResolution: true,
 })
 
 export const DEFAULT_SELECT_INTERACTION: Select = new Select({
