@@ -85,10 +85,7 @@ function MapView({
   function handleSelectEvent(event: SelectEvent) {
     const selectedFeatures: Feature[] = event.selected;
 
-    if (
-      selectedFeatures.length &&
-      !selectedFeatures[0]?.get("isNewLocationInProgress")
-    ) {
+    if (selectedFeatures.length && !selectedFeatures[0]?.get("isNewLocationInProgress")) {
       setGlobalSelectedLocation(selectedFeatures[0].get("location"));
     } else {
       setGlobalSelectedLocation(null);

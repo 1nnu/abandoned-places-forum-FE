@@ -5,10 +5,10 @@ import TileLayer from "ol/layer/Tile";
 import {ImageWMS, OSM, XYZ} from "ol/source";
 import {TileGrid} from "ol/tilegrid";
 import {L_EST} from "./mapUtils.ts";
-import {Image} from "ol/layer";
 import {ImageTile, Tile} from "ol";
 import proj4 from "proj4";
 import {register} from "ol/proj/proj4";
+import ImageLayer from "ol/layer/Image";
 
 export enum LandBoardLayerTypes {
     ORTOPHOTO = "foto",
@@ -42,19 +42,24 @@ export const createNewInProgressLocationLayer = (source: VectorSource) =>
 
 
 export const createImageLayer = () => {
-    new Image({
+    return new ImageLayer({
         source: new ImageWMS({
-            url: 'https://kaart.maaamet.ee/wms/alus?',
+            url: 'https://xgis.maaamet.ee/xgis2/service/r979dl',
             params: {
-                LAYERS: 'MA-ALUS',
+                REQUEST: 'GetMap',
+                SERVICE: 'WMS',
+                LAYERS: 'EESTIFOTO', // Desired layer
                 VERSION: '1.1.1',
-                FORMAT: 'image/png',
+                FORMAT: 'image/jpeg', // Use JPEG format as in the example
+                STYLES: '',
                 TRANSPARENT: true,
-                SRS: L_EST,
             },
+            projection: 'EPSG:3301', // Use EPSG:3301 projection
+            ratio: 1, // Prevent blurry images (adjust as needed)
         }),
-    })
+    });
 };
+
 
 
 export const createLandBoardTileMapSource = (mapType: LandBoardLayerTypes, tileFormat: string = "jpg") => {
