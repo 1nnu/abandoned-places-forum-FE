@@ -10,15 +10,12 @@ import {
   generateLocationFeature,
   generateLocationInProgressFeature,
   generateSelectedFeature,
-  L_EST,
 } from "./mapUtils.ts";
 import {MapLocation, SidebarContent} from "../utils.ts";
 import {BASE_OSM_LAYER, createNewInProgressLocationLayer, createVectorLayer,} from "./mapLayers.ts";
 import VectorLayer from "ol/layer/Vector";
 import {SelectEvent} from "ol/interaction/Select";
 import LocationLayerSelector from "./LayerControls/LocationLayerSelector.tsx";
-import proj4 from "proj4";
-import {register} from "ol/proj/proj4";
 import LandBoardLayerSelector from "./LayerControls/LandBoardLayerSelector.tsx";
 import TileLayer from "ol/layer/Tile";
 
@@ -34,12 +31,6 @@ interface MapViewProps {
   locationsDisplayedOnMap: MapLocation[];
   sideBarContent: SidebarContent;
 }
-
-proj4.defs(
-  L_EST,
-  "+proj=lcc +lat_1=59.33333333333334 +lat_2=58 +lat_0=57.51755393055556 +lon_0=24 +x_0=500000 +y_0=6375000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
-);
-register(proj4);
 
 function MapView({
   globalMapClickCoords,

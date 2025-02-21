@@ -6,8 +6,6 @@ import {ImageWMS, OSM, XYZ} from "ol/source";
 import {TileGrid} from "ol/tilegrid";
 import {L_EST} from "./mapUtils.ts";
 import {ImageTile, Tile} from "ol";
-import proj4 from "proj4";
-import {register} from "ol/proj/proj4";
 import ImageLayer from "ol/layer/Image";
 
 export enum LandBoardLayerTypes {
@@ -17,11 +15,6 @@ export enum LandBoardLayerTypes {
     HYBRID = "hybriid"
 }
 
-proj4.defs(
-    L_EST,
-    "+proj=lcc +lat_1=59.33333333333334 +lat_2=58 +lat_0=57.51755393055556 +lon_0=24 +x_0=500000 +y_0=6375000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
-);
-register(proj4);
 
 export const BASE_OSM_LAYER: TileLayer<OSM> = new TileLayer({
     source: new OSM(),
@@ -41,27 +34,6 @@ export const createNewInProgressLocationLayer = (source: VectorSource) =>
     });
 
 
-export const createImageLayer = () => {
-    return new ImageLayer({
-        source: new ImageWMS({
-            url: 'https://xgis.maaamet.ee/xgis2/service/r979dl',
-            params: {
-                REQUEST: 'GetMap',
-                SERVICE: 'WMS',
-                LAYERS: 'EESTIFOTO', // Desired layer
-                VERSION: '1.1.1',
-                FORMAT: 'image/jpeg', // Use JPEG format as in the example
-                STYLES: '',
-                TRANSPARENT: true,
-            },
-            projection: 'EPSG:3301', // Use EPSG:3301 projection
-            ratio: 1, // Prevent blurry images (adjust as needed)
-        }),
-    });
-};
-
-
-
 export const createLandBoardTileMapSource = (mapType: LandBoardLayerTypes, tileFormat: string = "jpg") => {
     return new XYZ({
         projection: L_EST,
@@ -78,23 +50,6 @@ export const createLandBoardTileMapSource = (mapType: LandBoardLayerTypes, tileF
     });
 };
 
-export const createLandBoardWmsSource = () => {
-    return new ImageWMS({
-        url: 'https://xgis.maaamet.ee/xgis2/service/1gj4lm9',
-        params: {
-            REQUEST: 'GetMap',
-            SERVICE: 'WMS',
-            VERSION: '1.1.1',
-            FORMAT: 'image/jpeg',
-            STYLES: '',
-            TRANSPARENT: true,
-            LAYERS: 'EESTIFOTO',
-            SRS: 'EPSG:3301',
-        },
-        serverType: 'geoserver', // Optional, adjust based on WMS server type
-        projection: L_EST,
-    });
-};
 
 function removeWhiteBordersHack(tile: Tile, src: string) {
     const imageTile = tile as ImageTile;
@@ -120,3 +75,44 @@ function removeWhiteBordersHack(tile: Tile, src: string) {
     }
     image.src = src;
 }
+
+
+// this WMS would probably violate Estonian Land Board API terms of service, a TMS should be used instead if possible
+export const createImageLayer = () => {
+    return new ImageLayer({
+        source: new ImageWMS({
+            url: 'https://xgis.maaamet.ee/xgis2/service/r979dl',
+            params: {
+                REQUEST: 'GetMap',
+                SERVICE: 'WMS',
+                LAYERS: 'EESTIFOTO',
+                VERSION: '1.1.1',
+                FORMAT: 'image/jpeg', // Use JPEG format as in the example
+                STYLES: '',
+                TRANSPARENT: true,
+            },
+            projection: 'EPSG:3301', // Use EPSG:3301 projection
+            ratio: 1, // Prevent blurry images (adjust as needed)
+        }),
+    });
+};
+
+
+// this WMS would probably violate Estonian Land Board API terms of service, a TMS should be used instead if possible
+export const createLandBoardWmsSource = () => {
+    return new ImageWMS({
+        url: 'https://xgis.maaamet.ee/xgis2/service/1gj4lm9',
+        params: {
+            REQUEST: 'GetMap',
+            SERVICE: 'WMS',
+            VERSION: '1.1.1',
+            FORMAT: 'image/jpeg',
+            STYLES: '',
+            TRANSPARENT: true,
+            LAYERS: 'EESTIFOTO',
+            SRS: 'EPSG:3301',
+        },
+        serverType: 'geoserver',
+        projection: L_EST,
+    });
+};
