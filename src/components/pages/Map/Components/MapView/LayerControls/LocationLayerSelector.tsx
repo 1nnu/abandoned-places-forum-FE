@@ -41,7 +41,7 @@ function LocationLayerSelector({
 
     return (
         <div
-            className="absolute top-24 left-4 bg-black bg-opacity-80 text-white p-2.5 rounded shadow-lg z-50"
+            className="absolute top-24 left-4 bg-black bg-opacity-80 text-white p-2.5 rounded shadow-lg z-25"
         >
             <div className="space-y-2">
                 <div className="flex items-center">
@@ -51,7 +51,7 @@ function LocationLayerSelector({
                         onChange={togglePublicLocationsVisibility}
                         className="mr-2 w-4 h-4"
                     />
-                    <label className="text-sm">Public Map</label>
+                    <label className="text-sm">Public locations</label>
                 </div>
                 <div className="flex items-center">
                     <input
@@ -60,7 +60,7 @@ function LocationLayerSelector({
                         onChange={togglePrivateLocationsVisibility}
                         className="mr-2 w-4 h-4"
                     />
-                    <label className="text-sm">Private Map</label>
+                    <label className="text-sm">Private locations</label>
                 </div>
             </div>
         </div>

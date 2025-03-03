@@ -45,12 +45,12 @@ export default function NavMenu() {
   return (
     <div className="w-full h-20 bg-blue-600 rounded-b-sm flex items-center justify-center px-6 z-10">
       <div className="flex flex-row items-center justify-between w-full max-w-[1440px]">
-        <Link to={"/dashboard"} className="font-bold text-2xl text-white">
+        <Link to={"/map"} className="font-bold text-2xl text-white">
           Urbex
         </Link>
 
         <div className="absolute w-auto left-1/2 overflow-hidden text-ellipsis whitespace-nowrap top-5 bg-white p-2 rounded-sm font-sans transform -translate-x-1/2">
-          NB! This is a test environment. All data might be lost.
+          NB! This is a test environment.
         </div>
 
         <div className="lg:hidden">
