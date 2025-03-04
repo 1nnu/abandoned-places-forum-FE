@@ -117,7 +117,7 @@ export default function LocationBookmarks({
 
   return (
     <div className="absolute top-24 left-6 bg-black bg-opacity-75 rounded-lg p-1.5 pl-2">
-      {bookmarkTypes.map(({ type, label }) => (
+      {bookmarkTypes.slice(0, 2).map(({ type, label }) => (
         <div className="flex items-center" key={type}>
           <input
             type="checkbox"

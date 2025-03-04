@@ -54,9 +54,15 @@ export default function Login() {
           </div>
           <Button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700"
+            className="w-full bg-blue-300 hover:bg-blue-700"
           >
             Login
+          </Button>
+          <Button
+              className="w-full text-md bg-green-600 hover:bg-green-700"
+              onClick={() => login("user", "user")}
+          >
+            Login as test user
           </Button>
           {error && <p className="mt-2 text-red-600">{error}</p>}
         </form>
