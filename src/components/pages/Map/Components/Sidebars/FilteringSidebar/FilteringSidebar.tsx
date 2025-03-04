@@ -24,7 +24,7 @@ function FilteringSidebar({applyFilters}: FilteringSidebarProps) {
     const [isStatusesOpen, setIsStatusesOpen] = useState(false);
     const [isBookmarkTypesOpen, setIsBookmarkTypesOpen] = useState(false);
 
-    const toggleDropdown = (type) => {
+    const toggleDropdown = (type: string) => {
         switch (type) {
             case 'categories':
                 setIsCategoriesOpen(!isCategoriesOpen);
