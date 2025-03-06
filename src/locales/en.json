@@ -1,5 +1,31 @@
 {
   "welcome": "Welcome to our app",
+  "auth": {
+    "registerText": "Don't have an account? Register",
+    "loginText": "Already have an account? Log in",
+    "login": {
+      "title": "Login",
+      "username": "Username",
+      "password": "Username",
+      "submit": "Login",
+      "loginAsTestUser": "Login as test user"
+    },
+    "register": {
+      "title": "Register",
+      "username": "Username",
+      "password": "Username",
+      "email": "Email",
+      "submit": "Register"
+    }
+  },
+  "navMenu": {
+    "testEnvironment": "NB! This is a test environment.",
+    "map": "Map",
+    "feed": "Feed",
+    "profile": "Profile",
+    "users": "Users",
+    "logout": "Log out"
+  },
   "map": {
     "controls": {
       "displayedLocations": {

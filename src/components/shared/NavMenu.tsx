@@ -50,15 +50,37 @@ export default function NavMenu() {
 
   return (
     <div className="w-full h-20 bg-blue-600 rounded-b-sm flex items-center justify-center px-6 z-10">
-      <div className="flex flex-row items-center justify-between w-full max-w-[1440px]">
+      <div className="flex flex-row items-center justify-center w-full max-w-[1440px]">
         <Link to={"/map"} className="font-bold text-2xl text-white">
           Urbex
         </Link>
 
-        <div className="absolute text-sm w-auto left-1/2 overflow-hidden text-ellipsis whitespace-nowrap top-5 bg-white p-2 rounded-sm font-sans transform -translate-x-1/2">
-          NB! This is a test environment.
+        <div className="text-sm ml-auto overflow-hidden whitespace-nowrap top-5 bg-white p-2 rounded-sm font-sans">
+          {t("navMenu.testEnvironment")}
         </div>
+        <div className="ml-auto">
+          {!isAuthenticated && (
 
+              <div className="text-white flex space-x-4">
+                <button
+                    onClick={() => i18n.changeLanguage("en")}
+                    className={`${
+                        currentLanguage === "en" ? "font-bold" : ""
+                    } hover:text-blue-100`}
+                >
+                  ENG
+                </button>
+                <button
+                    onClick={() => i18n.changeLanguage("et")}
+                    className={`${
+                        currentLanguage === "et" ? "font-bold" : ""
+                    } hover:text-blue-100`}
+                >
+                  EST
+                </button>
+              </div>
+          )}
+        </div>
         <div className="lg:hidden">
           <button onClick={toggleMobileMenu} className="text-white">
             {isMobileMenuOpen ? (
@@ -118,28 +140,28 @@ export default function NavMenu() {
                       onClick={toggleMobileMenu}
                       className="text-slate-50 hover:text-slate-100"
                   >
-                    Map
+                    {t("navMenu.map")}
                   </Link>
                   <Link
                       to={"feed"}
                       onClick={toggleMobileMenu}
                       className="text-slate-50 hover:text-slate-100"
                   >
-                    Feed
+                    {t("navMenu.feed")}
                   </Link>
                   <Link
                       to={"profile"}
                       onClick={toggleMobileMenu}
                       className="text-slate-50 hover:text-slate-100"
                   >
-                    Profile
+                    {t("navMenu.profile")}
                   </Link>
                   <Link
                       to={"users"}
                       onClick={toggleMobileMenu}
                       className="text-slate-50 hover:text-slate-100"
                   >
-                    Users
+                    {t("navMenu.users")}
                   </Link>
                   <div className="text-white flex space-x-4">
                     <button
@@ -166,7 +188,7 @@ export default function NavMenu() {
                       }}
                       className="bg-blue-50 hover:bg-blue-100 text-blue-600 w-fit"
                   >
-                    Log out
+                    {t("navMenu.logout")}
                   </Button>
                 </>
             )}
@@ -177,22 +199,22 @@ export default function NavMenu() {
           {isAuthenticated && (
               <>
                 <Link to={"map"} className="text-blue-50 hover:text-blue-100">
-                  Map
+                  {t("navMenu.map")}
                 </Link>
                 <Link to={"feed"} className="text-blue-50 hover:text-blue-100">
-                  Feed
+                  {t("navMenu.feed")}
                 </Link>
                 <Link to={"profile"} className="text-blue-50 hover:text-blue-100">
-                  Profile
+                  {t("navMenu.profile")}
                 </Link>
                 <Link to={"users"} className="text-blue-50 hover:text-blue-100">
-                  Users
+                  {t("navMenu.users")}
                 </Link>
                 <Button
                     onClick={handleLogout}
                     className="bg-blue-50 hover:bg-blue-100 text-blue-600"
                 >
-                  Log out
+                  {t("navMenu.logout")}
                 </Button>
                 <div className="text-white flex space-x-4 ml-2">
                   <button
