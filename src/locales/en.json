@@ -6,6 +6,63 @@
         "private": "Private locations",
         "public": "Public locations"
       }
+    },
+    "sidebar": {
+      "new": {
+        "title": "Add to private map",
+        "coordinates": "Coordinates",
+        "selectOnMap": "Select on map",
+        "name": "Name",
+        "mainCategory": "Main category",
+        "subCategories": "Subcategories",
+        "condition": "Condition",
+        "status": "Accessibility",
+        "additionalInfo": "Other info",
+        "submit": "Add to map",
+        "detailsView": "Auto-select after adding"
+      },
+      "filtering": {
+        "title": "Filter locations",
+        "category": "Categories",
+        "mustBeMainCategory": "Must be main category",
+        "selectAll": "Select all",
+        "unselectAll": "Unselect all",
+        "condition": "Condition",
+        "status": "Accessibility",
+        "bookmark": "Bookmark",
+        "submit": "Apply filters"
+      },
+      "details": {
+        "private": "Private",
+        "public": "Public",
+        "publish": "Publish",
+        "viewPosts": "View posts",
+        "addPost": "Add a post",
+        "condition": "Condition",
+        "status": "Accessibility",
+        "additionalInfo": "Other info",
+        "obliqueAerophoto": "Oblique photo",
+        "landBoardLink": "Fotoladu",
+        "edit": "Edit",
+        "delete": "Delete",
+        "publishPopup": {
+          "title": "Set required points",
+          "description": "How many points should other users have to see this location?",
+          "submit": "Publish location",
+          "points": "Points"
+        },
+        "editing": {
+          "title": "Edit existing location",
+          "name": "Name",
+          "mainCategory": "Main category",
+          "subCategories": "Subcategories",
+          "condition": "Condition",
+          "status": "Accessibility",
+          "additionalInfo": "Other info",
+          "submit": "Save changes",
+          "cancel": "Cancel"
+        }
+      }
     }
   }
 }

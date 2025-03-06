@@ -3,6 +3,8 @@ import emitter from "../../../../../../emitter/eventEmitter.ts";
 import {LocationAttributes, MapLocation} from "../../utils.ts";
 import LocationService from "../../../../../../service/LocationService.ts";
 import {useToast} from "../../../../../../hooks/use-toast.ts";
+import {useTranslation} from "react-i18next";
+import {TFunction} from "i18next";
 
 const bookmarkTypes = [
     {type: "JAA_MEELDE", label: "Jäta meelde"},
@@ -18,6 +20,7 @@ interface FilteringSidebarProps {
 function FilteringSidebar({applyFilters}: FilteringSidebarProps) {
     // TODO refactor this whole component
     const API_URL = import.meta.env.VITE_API_URL;
+    const {t}: { t: TFunction } = useTranslation();
 
     const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
     const [isConditionsOpen, setIsConditionsOpen] = useState(false);
@@ -168,7 +171,7 @@ function FilteringSidebar({applyFilters}: FilteringSidebarProps) {
 
     return (
         <div className="p-8 h-full w-full overflow-y-auto">
-            <h2 className="text-2xl font-bold text-white">Filter locations</h2>
+            <h2 className="text-2xl font-bold text-white">{t("map.sidebar.filtering.title")}</h2>
             <div className="pt-16 text-white">
 
                 {/* Categories Section */}
@@ -193,7 +196,7 @@ function FilteringSidebar({applyFilters}: FilteringSidebarProps) {
                                 d="M19 9l-7 7-7-7"
                             />
                         </svg>
-                        Categories
+                        {t("map.sidebar.filtering.category")}
                     </button>
                     {isCategoriesOpen && (
                         <div className="ml-8">
@@ -206,7 +209,7 @@ function FilteringSidebar({applyFilters}: FilteringSidebarProps) {
                                         setFilterMainCategoriesOnly((prev) => !prev)
                                     }
                                 />
-                                Must be main category
+                                {t("map.sidebar.filtering.mustBeMainCategory")} *
                             </label>
                             <button
                                 onClick={() =>
@@ -215,8 +218,8 @@ function FilteringSidebar({applyFilters}: FilteringSidebarProps) {
                                 className="text-sm bg-black rounded-sm px-1"
                             >
                                 {categories.length === selectedCategories.length
-                                    ? "Unselect All"
-                                    : "Select All"}
+                                    ? t("map.sidebar.filtering.unselectAll")
+                                    : t("map.sidebar.filtering.selectAll")}
                             </button>
                             <ul className="list-none">
                                 {categories.map((category) => (
@@ -259,7 +262,7 @@ function FilteringSidebar({applyFilters}: FilteringSidebarProps) {
                                 d="M19 9l-7 7-7-7"
                             />
                         </svg>
-                        Conditions
+                        {t("map.sidebar.filtering.condition")}
                     </button>
                     {isConditionsOpen && (
                         <div className="ml-8">
@@ -270,8 +273,8 @@ function FilteringSidebar({applyFilters}: FilteringSidebarProps) {
                                 className="text-sm bg-black rounded-sm px-1"
                             >
                                 {conditions.length === selectedConditions.length
-                                    ? "Unselect All"
-                                    : "Select All"}
+                                    ? t("map.sidebar.filtering.unselectAll")
+                                    : t("map.sidebar.filtering.selectAll")}
                             </button>
                             <ul className="list-none">
                                 {conditions.map((condition) => (
@@ -316,7 +319,7 @@ function FilteringSidebar({applyFilters}: FilteringSidebarProps) {
                                 d="M19 9l-7 7-7-7"
                             />
                         </svg>
-                        Statuses
+                        {t("map.sidebar.filtering.status")}
                     </button>
                     {isStatusesOpen && (
                         <div className="ml-8">
@@ -327,8 +330,8 @@ function FilteringSidebar({applyFilters}: FilteringSidebarProps) {
                                 className="text-sm bg-black rounded-sm px-1"
                             >
                                 {statuses.length === selectedStatuses.length
-                                    ? "Unselect All"
-                                    : "Select All"}
+                                    ? t("map.sidebar.filtering.unselectAll")
+                                    : t("map.sidebar.filtering.selectAll")}
                             </button>
                             <ul className="list-none">
                                 {statuses.map((status) => (
@@ -373,7 +376,7 @@ function FilteringSidebar({applyFilters}: FilteringSidebarProps) {
                                 d="M19 9l-7 7-7-7"
                             />
                         </svg>
-                        Bookmark types
+                        {t("map.sidebar.filtering.bookmark")}
                     </button>
                     {isBookmarkTypesOpen && (
                         <div className="ml-8">
@@ -388,8 +391,8 @@ function FilteringSidebar({applyFilters}: FilteringSidebarProps) {
                                 className="text-sm bg-black rounded-sm px-1"
                             >
                                 {bookmarkTypes.length === selectedBookmarks.length
-                                    ? "Unselect All"
-                                    : "Select All"}
+                                    ? t("map.sidebar.filtering.unselectAll")
+                                    : t("map.sidebar.filtering.selectAll")}
                             </button>
                             <ul className="list-none">
                                 {bookmarkTypes.slice(0, 2).map((bookmark) => (
@@ -416,7 +419,7 @@ function FilteringSidebar({applyFilters}: FilteringSidebarProps) {
                         className="w-full bg-black text-white px-4 py-1 rounded border-2 border-black hover:border-white"
                         onClick={handleApplyFilters}
                     >
-                        Apply
+                        {t("map.sidebar.filtering.submit")}
                     </button>
                 </div>
             </div>

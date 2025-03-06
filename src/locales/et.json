@@ -6,6 +6,62 @@
         "private": "Privaatsed asukohad",
         "public": "Avalikud asukohad"
       }
+    },
+    "sidebar": {
+      "new": {
+        "title": "Lisa privaatsele kaardile",
+        "coordinates": "Koordinaadid",
+        "selectOnMap": "Määra kaardil",
+        "name": "Nimi",
+        "mainCategory": "Põhikategooria",
+        "subCategories": "Alamkategooriad",
+        "condition": "Seisukord",
+        "status": "Ligipääsetavus",
+        "additionalInfo": "Muu info",
+        "submit": "Lisa kaardile",
+        "detailsView": "Kuva peale lisamist detailvaade"
+      },
+      "filtering": {
+        "title": "Filtreeri asukohti",
+        "category": "Kategooriad",
+        "mustBeMainCategory": "Peab olema põhikategooria",
+        "selectAll": "Vali kõik",
+        "unselectAll": "Eemalda kõik valikud",
+        "condition": "Seisukord",
+        "status": "Ligipääsetavus",
+        "bookmark": "Meelespea",
+        "submit": "Rakenda filtrid"
+      },
+      "details": {
+        "private": "Privaatne",
+        "public": "Avalik",
+        "publish": "Avalikusta",
+        "viewPosts": "Vaata postitusi",
+        "addPost": "Lisa postitus",
+        "condition": "Seisukord",
+        "status": "Ligipääsetavus",
+        "additionalInfo": "Muu info",
+        "obliqueAerophoto": "Kaldaerofoto",
+        "landBoardLink": "Fotoladu",
+        "edit": "Muuda",
+        "delete": "Kustuta",
+        "publishPopup": {
+          "title": "Määra nõutud punktid",
+          "description": "Mitu punkti peab teistel kasutajatel olema, et seda asukohta näha?",
+          "submit": "Avalikusta asukoht",
+          "points": "Punktid"
+        }, "editing": {
+          "title": "Muuda olemasolevat asukoha",
+          "name": "Nimi",
+          "mainCategory": "Põhikategooria",
+          "subCategories": "Alamkategooriad",
+          "condition": "Seisukord",
+          "status": "Ligipääsetavus",
+          "additionalInfo": "Muu info",
+          "submit": "Salvesta muudatused",
+          "cancel": "Loobu"
+        }
+      }
     }
   }
 }
