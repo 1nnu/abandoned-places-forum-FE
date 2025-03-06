@@ -1,0 +1,11 @@
+{
+  "welcome": "Welcome to our app",
+  "map": {
+    "controls": {
+      "displayedLocations": {
+        "private": "Privaatsed asukohad",
+        "public": "Avalikud asukohad"
+      }
+    }
+  }
+}

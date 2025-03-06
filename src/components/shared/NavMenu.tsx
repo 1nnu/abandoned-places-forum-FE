@@ -1,11 +1,17 @@
-import { Link } from "react-router-dom";
-import { Button } from "../ui/button";
-import { useState, useEffect } from "react";
-import { useAuth } from "../../contexts/AuthContext";
+import {Link} from "react-router-dom";
+import {Button} from "../ui/button";
+import {useEffect, useState} from "react";
+import {useAuth} from "../../contexts/AuthContext";
+import {useTranslation} from "react-i18next";
+import type { TFunction } from "i18next";
+import i18n from "i18next";
 
 export default function NavMenu() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { isAuthenticated, logout } = useAuth();
+
+  const currentLanguage = i18n.language;
+  const { t }: { t: TFunction } = useTranslation();
 
   const handleLogout = async () => {
     try {
@@ -49,7 +55,7 @@ export default function NavMenu() {
           Urbex
         </Link>
 
-        <div className="absolute w-auto left-1/2 overflow-hidden text-ellipsis whitespace-nowrap top-5 bg-white p-2 rounded-sm font-sans transform -translate-x-1/2">
+        <div className="absolute text-sm w-auto left-1/2 overflow-hidden text-ellipsis whitespace-nowrap top-5 bg-white p-2 rounded-sm font-sans transform -translate-x-1/2">
           NB! This is a test environment.
         </div>
 
@@ -135,6 +141,24 @@ export default function NavMenu() {
                   >
                     Users
                   </Link>
+                  <div className="text-white flex space-x-4">
+                    <button
+                        onClick={() => i18n.changeLanguage("en")}
+                        className={`${
+                            currentLanguage === "en" ? "font-bold" : ""
+                        } hover:text-blue-100`}
+                    >
+                      ENG
+                    </button>
+                    <button
+                        onClick={() => i18n.changeLanguage("et")}
+                        className={`${
+                            currentLanguage === "et" ? "font-bold" : ""
+                        } hover:text-blue-100`}
+                    >
+                      EST
+                    </button>
+                  </div>
                   <Button
                       onClick={() => {
                         handleLogout();
@@ -170,6 +194,24 @@ export default function NavMenu() {
                 >
                   Log out
                 </Button>
+                <div className="text-white flex space-x-4 ml-2">
+                  <button
+                      onClick={() => i18n.changeLanguage("en")}
+                      className={`${
+                          currentLanguage === "en" ? "font-bold" : ""
+                      } hover:text-blue-100`}
+                  >
+                    ENG
+                  </button>
+                  <button
+                      onClick={() => i18n.changeLanguage("et")}
+                      className={`${
+                          currentLanguage === "et" ? "font-bold" : ""
+                      } hover:text-blue-100`}
+                  >
+                    EST
+                  </button>
+                </div>
               </>
           )}
         </div>
