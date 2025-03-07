@@ -6,7 +6,7 @@
     "login": {
       "title": "Login",
       "username": "Username",
-      "password": "Username",
+      "password": "Password",
       "submit": "Login",
       "loginAsTestUser": "Login as test user"
     },
