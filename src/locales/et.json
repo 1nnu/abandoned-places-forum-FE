@@ -33,6 +33,13 @@
         "public": "Avalikud asukohad"
       }
     },
+    "layers": {
+      "default": "BAASKAART",
+      "ORTOPHOTO": "ORTOFOTO",
+      "RELIEF": "RELJEEF",
+      "BASIC": "PÕHIKAART",
+      "HYBRID": "HÜBRIID"
+    },
     "sidebar": {
       "new": {
         "title": "Lisa privaatsele kaardile",
@@ -89,6 +96,42 @@
           "cancel": "Loobu"
         }
       }
+    }
+  },
+  "location": {
+    "category": {
+      "1": "Määramata",
+      "2": "Kontor",
+      "3": "Arhiiv",
+      "4": "Elumaja",
+      "5": "Hästi säilinud sisustus",
+      "6": "Kool",
+      "7": "Kõrgus",
+      "8": "Ladu",
+      "9": "Maa-alune",
+      "10": "Militaar",
+      "11": "Tööstus",
+      "12": "Varemed",
+      "13": "Varjend",
+      "14": "Muu"
+    },
+    "condition": {
+      "1": "Määramata",
+      "2": "Eluohtlik",
+      "3": "Ohtlik",
+      "4": "Keskpärane",
+      "5": "Hea",
+      "6": "Väga hea"
+    },
+    "status": {
+      "1": "Määramata",
+      "2": "Lammutatud",
+      "3": "Renoveeritud",
+      "4": "Vabalt ligipääsetav",
+      "5": "Raskesti ligipääsetav",
+      "6": "Suletud",
+      "7": "Korraldatakse ekskursioone",
+      "8": "Omaniku loal ligipääsetav"
     }
   }
 }

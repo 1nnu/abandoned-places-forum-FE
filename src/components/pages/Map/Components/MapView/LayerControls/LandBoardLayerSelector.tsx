@@ -1,6 +1,8 @@
 import {MutableRefObject, useState} from "react";
 import {createLandBoardTileMapSource, LandBoardLayerTypes} from "../mapLayers";
 import TileLayer from "ol/layer/Tile";
+import type {TFunction} from "i18next";
+import {useTranslation} from "react-i18next";
 
 interface LandBoardLayerSelectorProps {
     landBoardBaseLayer: MutableRefObject<TileLayer>;
@@ -8,6 +10,8 @@ interface LandBoardLayerSelectorProps {
 }
 
 function LandBoardLayerSelector({ landBoardBaseLayer, landBoardOverlayLayer }: LandBoardLayerSelectorProps) {
+
+    const {t}: { t: TFunction } = useTranslation();
 
     const [activeLayer, setActiveLayer] = useState<LandBoardLayerTypes | null>(null);
 
@@ -34,19 +38,19 @@ function LandBoardLayerSelector({ landBoardBaseLayer, landBoardOverlayLayer }: L
                 className={`px-4 py-2 rounded-lg text-white ${activeLayer === null ? "bg-blue-500" : "bg-gray-800"}`}
                 onClick={() => handleLayerChange(null)}
             >
-                {"BASE MAP ONLY"}
+                {t("map.layers.default")}
             </button>
             {Object.keys(LandBoardLayerTypes).map((key) => {
                 const layerType = LandBoardLayerTypes[key as keyof typeof LandBoardLayerTypes];
                 return (
                     <button
                         key={layerType}
-                        className={`px-4 py-2 rounded-lg text-white ${
+                        className={`px-4 py-2 rounded-lg text-white min-w-36 ${
                             activeLayer === layerType ? "bg-blue-500" : "bg-gray-800"
                         }`}
                         onClick={() => handleLayerChange(layerType)}
                     >
-                        {key}
+                        {t(`map.layers.${key}`)}
                     </button>
                 );
             })}

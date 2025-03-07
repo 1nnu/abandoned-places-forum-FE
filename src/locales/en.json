@@ -33,6 +33,13 @@
         "public": "Public locations"
       }
     },
+    "layers": {
+      "default": "DEFAULT MAP",
+      "ORTOPHOTO": "ORTOPHOTO",
+      "RELIEF": "RELIEF",
+      "BASIC": "BASE MAP",
+      "HYBRID": "HYBRID"
+    },
     "sidebar": {
       "new": {
         "title": "Add to private map",
@@ -89,6 +96,42 @@
           "cancel": "Cancel"
         }
       }
+    }
+  },
+  "location": {
+    "category": {
+      "1": "Not specified",
+      "2": "Office",
+      "3": "Archive",
+      "4": "Residential building",
+      "5": "Well-preserved interior",
+      "6": "School",
+      "7": "Height",
+      "8": "Warehouse",
+      "9": "Underground",
+      "10": "Military",
+      "11": "Industry",
+      "12": "Ruins",
+      "13": "Bomb shelter",
+      "14": "Other"
+    },
+    "condition": {
+      "1": "Not specified",
+      "2": "Life-threatening",
+      "3": "Dangerous",
+      "4": "Mediocre",
+      "5": "Good",
+      "6": "Very good"
+    },
+    "status": {
+      "1": "Not specified",
+      "2": "Demolished",
+      "3": "Renovated",
+      "4": "Freely accessible",
+      "5": "Difficult to access",
+      "6": "Closed",
+      "7": "Guided tours available",
+      "8": "Accessible with owner's permission"
     }
   }
 }

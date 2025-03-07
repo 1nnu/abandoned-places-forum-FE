@@ -231,7 +231,7 @@ function FilteringSidebar({applyFilters}: FilteringSidebarProps) {
                                                 checked={selectedCategories.includes(category.id)}
                                                 onChange={() => handleCategoryChange(category.id)}
                                             />
-                                            {category.name}
+                                            {t(`location.category.${category.id}`)}
                                         </label>
                                     </li>
                                 ))}
@@ -287,7 +287,7 @@ function FilteringSidebar({applyFilters}: FilteringSidebarProps) {
                                                     checked={selectedConditions.includes(condition.id)}
                                                     onChange={() => handleConditionChange(condition.id)}
                                                 />
-                                                {condition.name}
+                                                {t(`location.condition.${condition.id}`)}
                                             </label>
                                         </li>
                                     </li>
@@ -344,7 +344,7 @@ function FilteringSidebar({applyFilters}: FilteringSidebarProps) {
                                                     checked={selectedStatuses.includes(status.id)}
                                                     onChange={() => handleStatusChange(status.id)}
                                                 />
-                                                {status.name}
+                                                {t(`location.status.${status.id}`)}
                                             </label>
                                         </li>
                                     </li>
@@ -414,7 +414,7 @@ function FilteringSidebar({applyFilters}: FilteringSidebarProps) {
                 </div>
 
                 {/* Apply Filters Button */}
-                <div className="col-span-3 flex justify-between mt-4">
+                <div className="col-span-3 flex justify-between mt-12">
                     <button
                         className="w-full bg-black text-white px-4 py-1 rounded border-2 border-black hover:border-white"
                         onClick={handleApplyFilters}
