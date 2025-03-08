@@ -132,6 +132,10 @@
       "6": "Closed",
       "7": "Guided tours available",
       "8": "Accessible with owner's permission"
+    },
+    "temporaryBookmark": {
+      "remember": "Remember",
+      "alreadyVisited": "Already visited"
     }
   }
 }

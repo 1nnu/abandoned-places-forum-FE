@@ -13,10 +13,10 @@ import {
     MapLocation
 } from "../../../utils.ts";
 import LocationService from "../../../../../../../service/LocationService.ts";
-import {createFormOptions} from "./locationEditingUtils.ts";
-import { useToast } from "../../../../../../../hooks/use-toast.ts";
+import {useToast} from "../../../../../../../hooks/use-toast.ts";
 import {useTranslation} from "react-i18next";
 import {TFunction} from "i18next";
+import {createFormOptions} from "../../NewLocationSidebar/newLocationSidebarUtils.ts";
 
 interface EditLocationProps {
     stopEditing: () => void;
@@ -44,8 +44,8 @@ function EditSelectedLocation({
             name: globalSelectedLocation.name,
             mainCategoryId: globalSelectedLocation.mainCategory.id,
             subCategoryIds: globalSelectedLocation.subCategories.map(x => x.id),
-            conditionId: 1, // Direct assignment would require the full condition object in each MapLocation
-            statusId: 1,
+            conditionId: globalSelectedLocation.condition.id,
+            statusId: globalSelectedLocation.status.id,
             additionalInformation: globalSelectedLocation.additionalInformation,
         });
 
@@ -56,33 +56,7 @@ function EditSelectedLocation({
             statuses: [] as FormOption[],
         });
 
-    function setPrevConditionAndStatus(locationAttributes: LocationAttributes | null) {
-        if (locationAttributes) {
-            setEditLocationFormData((prevData): EditLocationFromData => ({
-                ...prevData,
-                conditionId: locationAttributes.conditions
-                    .find(x => x.name === globalSelectedLocation.condition)?.id ?? prevData.conditionId,
-                statusId: locationAttributes.statuses
-                    .find(x => x.name === globalSelectedLocation.status)?.id ?? prevData.statusId
-            }));
-        }
-    }
-
-    useEffect(() => {
-        LocationService.fetchLocationAttributes(toast).then(
-            (locationAttributes: LocationAttributes | null) => {
-                if (locationAttributes) {
-                    setLocationAttributesFormOptions(
-                        createFormOptions(locationAttributes)
-                    );
-                    setPrevConditionAndStatus(locationAttributes);
-                }
-            }
-        );
-    }, []);
-
     function patchSelectedLocation() {
-
         const validationError =
             LocationService.isLocationEditingFormDataValid(editLocationFormData);
         if (validationError) {
@@ -101,6 +75,19 @@ function EditSelectedLocation({
             }
         });
     }
+
+
+    useEffect(() => {
+        LocationService.fetchLocationAttributes(toast).then(
+            (locationAttributes: LocationAttributes | null) => {
+                if (locationAttributes) {
+                    setLocationAttributesFormOptions(
+                        createFormOptions(locationAttributes, t)
+                    );
+                }
+            }
+        );
+    }, []);
 
     return (
         <div className="flex flex-col p-8 h-full w-full overflow-y-auto">

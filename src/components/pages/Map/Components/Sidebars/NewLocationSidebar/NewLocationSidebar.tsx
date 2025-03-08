@@ -65,7 +65,7 @@ function NewLocationSidebar({
       (locationAttributes: LocationAttributes | null) => {
         if (locationAttributes) {
           setLocationAttributesFormOptions(
-            createFormOptions(locationAttributes)
+            createFormOptions(locationAttributes, t)
           );
         }
       }

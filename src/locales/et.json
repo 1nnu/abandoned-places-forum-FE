@@ -132,6 +132,10 @@
       "6": "Suletud",
       "7": "Korraldatakse ekskursioone",
       "8": "Omaniku loal ligipääsetav"
+    },
+    "temporaryBookmark": {
+      "remember": "Jäta meelde",
+      "alreadyVisited": "Juba külastatud"
     }
   }
 }

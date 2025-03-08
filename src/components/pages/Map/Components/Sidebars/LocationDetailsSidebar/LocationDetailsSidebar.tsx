@@ -144,7 +144,7 @@ function LocationDetailsSidebar({
                   }}
                   className="flex items-center whitespace-nowrap px-3 text-md rounded-full w-min space-x-2 h-[1.9rem]"
                 >
-                  {globalSelectedLocation.mainCategory.name}
+                  {t(`location.category.${globalSelectedLocation.mainCategory.id}`)}
                 </div>
                 {globalSelectedLocation.subCategories.map(
                   (subcategory, index) => (
@@ -154,7 +154,7 @@ function LocationDetailsSidebar({
                       style={{ backgroundColor: `#${subcategory.colorHex}` }}
                       className=" px-2.5 rounded-full flex items-center h-6 text-sm"
                     >
-                      {subcategory.name}
+                      {t(`location.category.${subcategory.id}`)}
                     </div>
                   )
                 )}
@@ -162,11 +162,12 @@ function LocationDetailsSidebar({
               <div className="flex flex-col pt-2">
                 <div className="flex">
                   <p className="w-[110px] text-right  mr-4">{t("map.sidebar.details.condition")}:</p>
-                  <p>{globalSelectedLocation.condition}</p>
+                  <p>{t(`location.condition.${globalSelectedLocation.condition.id}`)}</p>
                 </div>
                 <div className="flex pt-1">
                   <p className="w-[110px] text-right mr-4">{t("map.sidebar.details.status")}:</p>
-                  <p>{globalSelectedLocation.status}</p>
+                  <p>{t(`location.status.${globalSelectedLocation.status.id}`)}
+                  </p>
                 </div>
                 <div className="flex flex-row pt-6">
                   <p className="w-[110px] text-right mr-3 whitespace-nowrap pt-1">

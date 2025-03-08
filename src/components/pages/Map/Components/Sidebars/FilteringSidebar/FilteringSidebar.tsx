@@ -6,13 +6,6 @@ import {useToast} from "../../../../../../hooks/use-toast.ts";
 import {useTranslation} from "react-i18next";
 import {TFunction} from "i18next";
 
-const bookmarkTypes = [
-    {type: "JAA_MEELDE", label: "Jäta meelde"},
-    {type: "JUBA_KULASTATUD", label: "Juba külastatud"},
-    {type: "SUUR_RISK", label: "Suur risk"},
-    {type: "OSALISELT_AVASTATUD", label: "Osaliselt avastatud"},
-];
-
 interface FilteringSidebarProps {
     applyFilters: (filteredLocations: MapLocation[]) => void;
 }
@@ -21,6 +14,13 @@ function FilteringSidebar({applyFilters}: FilteringSidebarProps) {
     // TODO refactor this whole component
     const API_URL = import.meta.env.VITE_API_URL;
     const {t}: { t: TFunction } = useTranslation();
+
+    const bookmarkTypes = [
+        {type: "JAA_MEELDE", label: t("location.temporaryBookmark.remember")},
+        {type: "JUBA_KULASTATUD", label: t("location.temporaryBookmark.alreadyVisited")},
+        {type: "SUUR_RISK", label: "Suur risk"},
+        {type: "OSALISELT_AVASTATUD", label: "Osaliselt avastatud"},
+    ];
 
     const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
     const [isConditionsOpen, setIsConditionsOpen] = useState(false);
