@@ -14,7 +14,7 @@ pipeline {
         }
         stage('Deploy') {
             environment { 
-                AN_ACCESS_KEY = credentials('my-predefined-secret-text') 
+                AN_ACCESS_KEY = credentials('hetzner_cloud_token') 
             }
             steps {
                 echo 'Deploying....'
