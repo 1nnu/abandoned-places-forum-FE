@@ -1,8 +1,8 @@
 pipeline {
     agent {
         docker {
-            image 'hashicorp/terraform:light' // You can use your own custom image here
-            args '-u root' // Allows use of package installs or accessing credentials
+            image 'viiin/terraform-ansible:latest'
+            args '-u root'
         }
     }
 
@@ -12,14 +12,6 @@ pipeline {
     }
 
     stages {
-        stage('Install Tools') {
-            steps {
-                sh '''
-                    apk update && apk add git ansible bash curl openssh
-                '''
-            }
-        }
-
         stage('Checkout Infra') {
             steps {
                 sh '''
