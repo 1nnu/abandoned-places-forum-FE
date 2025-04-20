@@ -1,9 +1,6 @@
 pipeline {
     agent {
-        docker {
-            // Use a custom image with both Terraform and Ansible preinstalled
-            image 'viiin/terraform-ansible:latest' // <-- Build this if it doesn't exist yet
-        }
+        label 'agent1' // make sure this matches your agent label in Jenkins
     }
 
     environment {
