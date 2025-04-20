@@ -26,11 +26,15 @@ pipeline {
                 HETZNER_TOKEN = credentials('hetzner_cloud_token')
             }
             steps {
-                dir("${INFRA_DIR}") {
-                    sh '''
-                        terraform init
-                        terraform apply -auto-approve -var "hcloud_token=${HETZNER_TOKEN}"
-                    '''
+                withCredentials([file(credentialsId: 'public_key', variable: 'PUBLIC_KEY')]) {
+                    dir("${INFRA_DIR}") {
+                        sh '''
+                            mkdir -p ~/.ssh/
+                            cp $PUBLIC_KEY ~/.ssh/id_ed25519.pub
+                            terraform init
+                            terraform apply -auto-approve -var "hcloud_token=${HETZNER_TOKEN}"
+                        '''
+                    }
                 }
             }
         }
