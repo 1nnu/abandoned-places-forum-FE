@@ -1,32 +1,47 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            // Use a custom image with both Terraform and Ansible preinstalled
+            image 'viiin/terraform-ansible:latest' // <-- Build this if it doesn't exist yet
+        }
+    }
+
+    environment {
+        INFRA_REPO = 'https://github.com/1nnu/urbex-infrastructure.git'
+        INFRA_DIR = 'urbex-infrastructure'
+    }
 
     stages {
-        stage('Test') {
+        stage('Checkout Infra') {
             steps {
-                echo 'Testing..'
+                sh '''
+                    rm -rf ${INFRA_DIR}
+                    git clone ${INFRA_REPO}
+                '''
             }
         }
 
-        stage('Deploy') {
+        stage('Terraform Apply') {
             environment {
                 HETZNER_TOKEN = credentials('hetzner_cloud_token')
             }
-
             steps {
-                sh '''
-                    apk add --no-cache git ansible openssh terraform
+                dir("${INFRA_DIR}") {
+                    sh '''
+                        terraform init
+                        terraform apply -auto-approve -var "hcloud_token=${HETZNER_TOKEN}"
+                    '''
+                }
+            }
+        }
 
-                    git clone https://github.com/1nnu/urbex-infrastructure.git
-
-                    cd urbex-infrastructure
-                    echo "$HETZNER_TOKEN" > hetzner_token.txt
-
-                    terraform init
-                    terraform apply -auto-approve -var "hcloud_token=$(cat hetzner_token.txt)"
-
-                    ansible-playbook -i inventory.ini playbook.yml
-                '''
+        stage('Ansible Provision') {
+            steps {
+                dir("${INFRA_DIR}") {
+                    sh '''
+                        ansible-playbook playbook.yaml -e "api_token=${HETZNER_TOKEN}"
+                    '''
+                }
             }
         }
     }
