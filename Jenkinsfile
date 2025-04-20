@@ -1,8 +1,8 @@
 pipeline {
     agent {
-        docker {
-            image 'hashicorp/terraform:light' // You can use your own custom image here
-            args '-u root' // Allows use of package installs or accessing credentials
+        dockerContainer {
+            image 'hashicorp/terraform:light'
+            args '-u root'
         }
     }
 
