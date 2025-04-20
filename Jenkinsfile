@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'viiin/terraform-ansible:latest'
-            args '-u root'
+            args '--entrypoint=""'
         }
     }
 
