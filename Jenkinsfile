@@ -1,6 +1,9 @@
 pipeline {
     agent {
-        label 'agent1' // make sure this matches your agent label in Jenkins
+        docker {
+            image 'hashicorp/terraform:light' // You can use your own custom image here
+            args '-u root' // Allows use of package installs or accessing credentials
+        }
     }
 
     environment {
@@ -9,6 +12,14 @@ pipeline {
     }
 
     stages {
+        stage('Install Tools') {
+            steps {
+                sh '''
+                    apk update && apk add git ansible bash curl openssh
+                '''
+            }
+        }
+
         stage('Checkout Infra') {
             steps {
                 sh '''
@@ -33,6 +44,9 @@ pipeline {
         }
 
         stage('Ansible Provision') {
+            environment {
+                HETZNER_TOKEN = credentials('hetzner_cloud_token')
+            }
             steps {
                 dir("${INFRA_DIR}") {
                     sh '''
