@@ -29,8 +29,7 @@ pipeline {
                 withCredentials([file(credentialsId: 'public_key', variable: 'PUBLIC_KEY')]) {
                     dir("${INFRA_DIR}") {
                         sh '''
-                            mkdir -p ~/.ssh/
-                            cp $PUBLIC_KEY ~/.ssh/id_ed25519.pub
+                            cp $PUBLIC_KEY ./id_ed25519.pub
                             terraform init
                             terraform apply -auto-approve -var "hcloud_token=${HETZNER_TOKEN}"
                         '''
