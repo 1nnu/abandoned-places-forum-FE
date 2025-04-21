@@ -23,6 +23,9 @@ pipeline {
 
         stage('Terraform Apply') {
             environment {
+                AWS_ACCESS_KEY_ID     = credentials('aws-access-key-tf')
+                AWS_SECRET_ACCESS_KEY = credentials('aws-secret-key-tf')
+                AWS_REGION            = 'eu-west-1'
                 HETZNER_TOKEN = credentials('hetzner_cloud_token')
             }
             steps {
