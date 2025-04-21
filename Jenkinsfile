@@ -48,7 +48,8 @@ pipeline {
             steps {
                 dir("${INFRA_DIR}") {
                     sh '''
-                        ansible-playbook playbook.yaml -e "api_token=${HETZNER_TOKEN}"
+                        ansible-galaxy collection install -r requirements.yaml
+                        ansible-playbook -i inventory/hcloud.yaml playbook.yaml -e "api_token=${HETZNER_TOKEN}"
                     '''
                 }
             }
