@@ -9,6 +9,10 @@ pipeline {
     environment {
         INFRA_REPO = 'https://github.com/1nnu/urbex-infrastructure.git'
         INFRA_DIR = 'urbex-infrastructure'
+        AWS_ACCESS_KEY_ID     = credentials('aws-access-key-tf')
+        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-key-tf')
+        AWS_REGION            = credentials('aws-region')
+        HETZNER_TOKEN         = credentials('hetzner_cloud_token')
     }
 
     stages {
@@ -22,12 +26,6 @@ pipeline {
         }
 
         stage('Terraform Apply') {
-            environment {
-                AWS_ACCESS_KEY_ID     = credentials('aws-access-key-tf')
-                AWS_SECRET_ACCESS_KEY = credentials('aws-secret-key-tf')
-                AWS_REGION            = 'eu-west-1'
-                HETZNER_TOKEN         = credentials('hetzner_cloud_token')
-            }
             steps {
                 withCredentials([string(credentialsId: 'public_key', variable: 'PUBLIC_KEY')]) {
                     dir("${INFRA_DIR}") {
@@ -42,9 +40,6 @@ pipeline {
         }
 
         stage('Ansible Provision') {
-            environment {
-                HETZNER_TOKEN = credentials('hetzner_cloud_token')
-            }
             steps {
                 dir("${INFRA_DIR}") {
                     withCredentials([sshUserPrivateKey(credentialsId: 'private_key', keyFileVariable: 'PRIVATE_SSH_KEY')]) {
