@@ -11,7 +11,7 @@ pipeline {
         INFRA_DIR = 'urbex-infrastructure'
         AWS_ACCESS_KEY_ID     = credentials('aws-access-key-tf')
         AWS_SECRET_ACCESS_KEY = credentials('aws-secret-key-tf')
-        AWS_REGION            = credentials('aws-region')
+        AWS_REGION            = credentials('aws_region')
         HETZNER_TOKEN         = credentials('hetzner_cloud_token')
     }
 
